@@ -32,22 +32,16 @@ struct WelcomeView: View {
                 Text("Fast grocery delivery at your convenience.")
                     .font(.customfont(.medium, fontSize: 16))
                     .foregroundColor(.white.opacity(0.7))
-                    .padding(.bottom, 20)
                     .multilineTextAlignment(.center)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 30)
                
-                Button {
-                    print()
+                NavigationLink {
+                    SignInView()
                 } label: {
-                    Text("Get Started")
-                        .font(.customfont(.semibold, fontSize: 18))
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
+                    RoundButton(title: "Get Started") {
+                    }
                 }
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 60, maxHeight: 60)
-                .background(Color.primaryApp)
-                .cornerRadius(20)
-               
+                
                 Spacer()
                     .frame(height: 60)
             }
@@ -59,10 +53,11 @@ struct WelcomeView: View {
         .navigationBarHidden(true)
         .ignoresSafeArea()
         
-        
     }
 }
 
 #Preview {
-    WelcomeView()
+    NavigationStack {
+        WelcomeView()
+    }
 }
