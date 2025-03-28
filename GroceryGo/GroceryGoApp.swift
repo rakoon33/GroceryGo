@@ -11,9 +11,7 @@ import SwiftUI
 struct GroceryGoApp: App {
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                WelcomeView()
-            }
+            WelcomeView()
         }
     }
 }
