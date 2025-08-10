@@ -42,7 +42,7 @@ struct WelcomeView: View {
                         RoundButton(title: "Get Started") {
                         }
                     }
-                    
+                                        
                     Spacer()
                         .frame(height: 60)
                 }

@@ -19,7 +19,7 @@ struct RoundButton: View {
         } label: {
             Text(title)
                 .font(.customfont(.semibold, fontSize: 18))
-                .foregroundColor(.primary)
+                .foregroundColor(.white)
                 .multilineTextAlignment(.center)
             
         }
