@@ -34,7 +34,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C4CF554C2D91A14900A22244 /* Exceptions for "GroceryGo" folder in "GroceryGo" target */ = {
+		C41E0A7C2E4A4A47002793F5 /* Exceptions for "GroceryGo" folder in "GroceryGo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -47,7 +47,7 @@
 		C4CF54ED2D91976700A22244 /* GroceryGo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C4CF554C2D91A14900A22244 /* Exceptions for "GroceryGo" folder in "GroceryGo" target */,
+				C41E0A7C2E4A4A47002793F5 /* Exceptions for "GroceryGo" folder in "GroceryGo" target */,
 			);
 			path = GroceryGo;
 			sourceTree = "<group>";
@@ -218,6 +218,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				vi,
 				Base,
 			);
 			mainGroup = C4CF54E22D91976700A22244;
@@ -351,6 +352,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -408,6 +410,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;

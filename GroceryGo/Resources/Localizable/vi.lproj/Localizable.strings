@@ -1,0 +1,74 @@
+/* 
+  Localizable.strings
+  GroceryGo
+
+  Created by Phạm Văn Nam on 11/8/25.
+  
+*/
+
+// MARK: - Login/Signin/SignUp
+
+/* View */
+"login_title" = "Đăng nhập";
+"login_subtitle" = "Nhập email và mật khẩu của bạn";
+"login_email_title" = "Email";
+"login_email_placeholder" = "Nhập địa chỉ email";
+"login_password_title" = "Mật khẩu";
+"login_password_placeholder" = "Nhập mật khẩu";
+"login_forgot_password" = "Quên mật khẩu?";
+"login_button" = "Đăng nhập";
+"signup_button" = "Đăng ký";
+"login_no_account" = "Chưa có tài khoản?";
+"ok_button" = "Ok";
+
+// MARK: - SignInView
+/* View */
+"sign_in_title" = "Nhận hàng tạp hóa của bạn\nvới GroceryGo";
+"sign_in_placeholder_mobile" = "Nhập số điện thoại";
+"sign_in_continue_email_login" = "Tiếp tục với Email Đăng nhập";
+"sign_in_continue_email_signup" = "Tiếp tục với Email Đăng ký";
+"sign_in_social_title" = "Hoặc kết nối qua mạng xã hội";
+"sign_in_continue_google" = "Tiếp tục với Google";
+"sign_in_continue_facebook" = "Tiếp tục với Facebook";
+
+// MARK: - SignUpView
+"signup_title" = "Đăng ký";
+"signup_subtitle" = "Nhập thông tin của bạn để tiếp tục";
+"signup_email_title" = "Email";
+"signup_email_placeholder" = "Nhập địa chỉ email";
+"signup_username_title" = "Tên người dùng";
+"signup_username_placeholder" = "Nhập tên người dùng";
+"signup_password_title" = "Mật khẩu";
+"signup_password_placeholder" = "Nhập mật khẩu";
+"signup_terms_prefix" = "Bằng cách tiếp tục, bạn đồng ý với";
+"signup_terms_title" = "Điều khoản dịch vụ";
+"signup_and" = "và";
+"signup_privacy_title" = "Chính sách bảo mật.";
+"signup_button" = "Đăng ký";
+"signup_already_have" = "Đã có tài khoản?";
+"signup_signin" = "Đăng nhập";
+
+// MARK: - WelcomeView
+"welcome_title" = "Chào mừng\ntới cửa hàng của chúng tôi";
+"welcome_subtitle" = "Giao hàng tạp hóa nhanh chóng, tiện lợi.";
+"welcome_get_started" = "Bắt đầu";
+
+// MARK: - MainModel
+"error_invalid_email" = "Vui lòng nhập địa chỉ email hợp lệ";
+"error_invalid_password" = "Vui lòng nhập mật khẩu hợp lệ";
+"error_invalid_username" = "Vui lòng nhập tên người dùng hợp lệ";
+"success_message" = "Thành công";
+"fail_message" = "Thất bại";
+
+// MARK: -  Error messages
+"invalid_URL" = "URL không hợp lệ.";
+"no_data" = "Không nhận được dữ liệu.";
+"decoding_failed" = "Không thể giải mã dữ liệu.";
+"encoding_failed" = "Không thể mã hóa dữ liệu.";
+"timeout" = "Yêu cầu hết thời gian chờ.";
+"network_lost" = "Mất kết nối mạng.";
+"unauthorized" = "Không được phép truy cập.";
+"forbidden" = "Truy cập bị cấm.";
+"not_found" = "Không tìm thấy tài nguyên.";
+"server_error" = "Đã xảy ra lỗi máy chủ.";
+"verification_expired" = "Xác thực đã hết hạn.";

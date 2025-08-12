@@ -12,6 +12,17 @@ enum Gilroy: String {
     case medium = "Gilroy-Medium"
     case semibold = "Gilroy-SemiBold"
     case bold = "Gilroy-Bold"
+
+//    case regular = "Inter-Regular"
+//    case medium = "Inter-Medium"
+//    case semibold = "Inter-SemiBold"
+//    case bold = "Inter-Bold"
+    
+//    case regular = "SVN-Gilroy-Regular"
+//    case medium = "SVN-Gilroy-Medium"
+//    case semibold = "SVN-Gilroy-SemiBold"
+//    case bold = "SVN-Gilroy-Bold"
+
 }
 
 extension Font {

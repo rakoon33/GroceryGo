@@ -1,0 +1,76 @@
+/* 
+  Localizable.strings
+  GroceryGo
+
+  Created by Phạm Văn Nam on 11/8/25.
+  
+*/
+
+// MARK: - Login/Signin/SignUp
+
+/* View */
+
+"login_title" = "Login";
+"login_subtitle" = "Enter your email and password";
+"login_email_title" = "Email";
+"login_email_placeholder" = "Enter your email address";
+"login_password_title" = "Password";
+"login_password_placeholder" = "Enter your password";
+"login_forgot_password" = "Forgot password?";
+"login_button" = "Log in";
+"signup_button" = "Sign Up";
+"login_no_account" = "Don't have an account?";
+"ok_button" = "Ok";
+
+// MARK: - SignInView
+/* View */
+"sign_in_title" = "Get your groceries\nwith GroceryGo";
+"sign_in_placeholder_mobile" = "Enter mobile";
+"sign_in_continue_email_login" = "Continue with Email Sign In";
+"sign_in_continue_email_signup" = "Continue with Email Sign Up";
+"sign_in_social_title" = "Or connect with social media";
+"sign_in_continue_google" = "Continue with Google";
+"sign_in_continue_facebook" = "Continue with Facebook";
+
+// MARK: - SignUpView
+"signup_title" = "Sign Up";
+"signup_subtitle" = "Enter your credentials to continue";
+"signup_email_title" = "Email";
+"signup_email_placeholder" = "Enter your email address";
+"signup_username_title" = "Username";
+"signup_username_placeholder" = "Enter your username";
+"signup_password_title" = "Password";
+"signup_password_placeholder" = "Enter your password";
+"signup_terms_prefix" = "By continuing you agree to our";
+"signup_terms_title" = "Terms of services";
+"signup_and" = "and";
+"signup_privacy_title" = "Privacy Policy.";
+"signup_button" = "Sign Up";
+"signup_already_have" = "Already have an account?";
+"signup_signin" = "Sign In";
+
+// MARK: - WelcomeView
+"welcome_title" = "Welcome\nto our shop";
+"welcome_subtitle" = "Fast grocery delivery at your convenience.";
+"welcome_get_started" = "Get Started";
+
+// MARK: - MainModel
+"error_invalid_email" = "Please enter valid email address";
+"error_invalid_password" = "Please enter valid password";
+"error_invalid_username" = "Please enter valid username";
+"success_message" = "Success";
+"fail_message" = "Fail";
+
+
+// MARK: -  Error messages
+"invalid_URL" = "Invalid URL.";
+"no_data" = "No data received.";
+"decoding_failed" = "Failed to decode data.";
+"encoding_failed" = "Failed to encode data.";
+"timeout" = "Request timed out.";
+"network_lost" = "Network connection lost.";
+"unauthorized" = "Unauthorized access.";
+"forbidden" = "Access forbidden.";
+"not_found" = "Resource not found.";
+"server_error" = "Server error occurred.";
+"verification_expired" = "Verification expired.";

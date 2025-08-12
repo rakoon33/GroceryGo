@@ -9,7 +9,8 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    @Binding var path: NavigationPath
+//    @Environment(\.presentationMode) var mode: Binding<PresentationMode> nếu xài navigationView
     @StateObject var loginVM = MainViewModel.shared;
     
     var body: some View {
@@ -28,26 +29,26 @@ struct LoginView: View {
                     .frame(width: 40)
                     .padding(.bottom, .screenWidth * 0.1)
                 
-                Text("Loging")
+                Text("login_title".localized)
                     .font(.customfont(.semibold, fontSize: 26))
                     .foregroundColor(.primaryText)
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, 4)
                 
-                Text("Enter your email and password")
+                Text("login_subtitle".localized)
                     .font(.customfont(.semibold, fontSize: 16))
                     .foregroundColor(.secondaryText)
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, .screenWidth * 0.1)
                 
-                LineTextField(title: "Email",
-                              placeholder: "Enter your email address",
+                LineTextField(title: "login_email_title".localized,
+                              placeholder: "login_email_placeholder".localized,
                               txt: $loginVM.txtEmail,
                               keyboardType: .emailAddress)
                 .padding(.bottom, .screenWidth * 0.07)
                 
-                LineSecureField(title: "Password",
-                                placeholder: "Enter your password",
+                LineSecureField(title: "login_password_title".localized,
+                                placeholder: "login_password_placeholder".localized,
                                 txt: $loginVM.txtPassword,
                                 isShowPassword: $loginVM.isShowPassword)
                 .padding(.bottom, .screenWidth * 0.02)
@@ -55,27 +56,33 @@ struct LoginView: View {
                 Button {
                     
                 } label: {
-                    Text("Forgot password?")
+                    Text("login_forgot_password".localized)
                         .font(.customfont(.medium, fontSize: 14))
                         .foregroundColor(.primaryText)
                 }
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
                 .padding(.bottom, .screenWidth * 0.05)
                 
-                RoundButton(title: "Log in") {
+                RoundButton(title: "login_button".localized) {
+                    loginVM.serviceCallLogin()
                 }
                 .padding(.bottom, .screenWidth * 0.05)
                 
+                
+                
                 HStack {
-                    Text("Don't have an account?")
+                    Text("login_no_account".localized)
                         .font(.customfont(.semibold, fontSize: 14))
                         .foregroundColor(.primaryText)
                     
-                    Text("Signup")
+                    Text("signup_button".localized)
                         .font(.customfont(.semibold, fontSize: 14))
                         .foregroundColor(.primaryApp)
-                   
                 }
+                .onTapGesture {
+                    path.append(AppRoute.signup) // Điều hướng sang SignUpView
+                }
+                
                 
                 Spacer()
                 
@@ -87,7 +94,9 @@ struct LoginView: View {
             VStack {
                 HStack {
                     Button {
-                        mode.wrappedValue.dismiss()
+                        if !path.isEmpty {
+                            path.removeLast() // bỏ màn hình hiện tại khỏi stack
+                        }
                     } label: {
                         Image("back")
                             .resizable()
@@ -103,6 +112,10 @@ struct LoginView: View {
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
         }
+        .alert(isPresented: $loginVM.showError) {
+            
+            Alert(title: Text(Globs.AppName), message: Text(loginVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
+        }
         .background(Color.white)
         .navigationTitle("")
         .navigationBarBackButtonHidden(true)
@@ -113,5 +126,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView()
+    LoginView(path: .constant(NavigationPath()))
 }

@@ -10,6 +10,8 @@ import CountryPicker
 
 struct SignInView: View {
     
+    @Binding var path: NavigationPath
+    
     @State var txtMobile: String = ""
     @State var isShowPicker: Bool = false
     @State var countryObj: Country?
@@ -36,7 +38,7 @@ struct SignInView: View {
             ScrollView {
                 
                 VStack(alignment: .leading) {
-                    Text("Get your groceries\nwith nectar")
+                    Text("sign_in_title".localized)
                         .font(.customfont(.semibold, fontSize: 26))
                         .foregroundColor(.primaryText)
                         .padding(.bottom, 25)
@@ -60,15 +62,38 @@ struct SignInView: View {
                             
                         }
                         
-                        TextField("Enter mobile", text: $txtMobile)
+                        TextField("sign_in_placeholder_mobile".localized, text: $txtMobile)
                             .frame(minWidth: 0, maxWidth: .infinity)
                         
                     }
                     
+                    Text("sign_in_continue_email_login".localized)
+                        .font(.customfont(.semibold, fontSize: 18))
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 60, maxHeight: 60)
+                        .background(Color(hex: "4A66AC"))
+                        .cornerRadius(20)
+                        .padding(.top, 8)
+                        .onTapGesture {
+                            path.append(AppRoute.login)
+                        }
+                    
+                    Text("sign_in_continue_email_signup".localized)
+                        .font(.customfont(.semibold, fontSize: 18))
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 60, maxHeight: 60)
+                        .background(Color.primaryApp)
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            path.append(AppRoute.signup)
+                        }
+                    
                     Divider()
                         .padding(.bottom, 25)
                     
-                    Text("Or connect with social medial")
+                    Text("sign_in_social_title".localized)
                         .font(.customfont(.semibold, fontSize: 14))
                         .foregroundColor(.textTitle)
                         .multilineTextAlignment(.center)
@@ -84,7 +109,7 @@ struct SignInView: View {
                             .scaledToFit()
                             .frame(width: 20, height: 20)
                         
-                        Text("Continue with Google")
+                        Text("sign_in_continue_google".localized)
                             .font(.customfont(.semibold, fontSize: 18))
                             .foregroundColor(.white)
                             .multilineTextAlignment(.center)
@@ -104,7 +129,7 @@ struct SignInView: View {
                             .scaledToFit()
                             .frame(width: 20, height: 20)
                         
-                        Text("Continue with Facebook")
+                        Text("sign_in_continue_facebook".localized)
                             .font(.customfont(.semibold, fontSize: 18))
                             .foregroundColor(.white)
                             .multilineTextAlignment(.center)
@@ -117,7 +142,7 @@ struct SignInView: View {
                 }
                 .padding(.horizontal, 20)
                 .frame(width: .screenWidth, alignment: .leading)
-                .padding(.top, .topInsets + .screenWidth)
+                .padding(.top, .topInsets + .screenWidth * 0.6)
                 
             }
             
@@ -138,5 +163,6 @@ struct SignInView: View {
 }
 
 #Preview {
-    SignInView()
+    SignInView(path: .constant(NavigationPath()))
 }
+
