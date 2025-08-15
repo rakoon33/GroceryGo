@@ -14,7 +14,7 @@ enum HTTPMethod: String {
 final class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
-
+    
     private func completeOnMain<T, E: Error>(
         _ result: Result<T, E>,
         completion: @escaping (Result<T, E>) -> Void
@@ -126,15 +126,16 @@ final class NetworkManager {
             if let error = error as? URLError {
                 let networkError: NetworkErrorType
                 switch error.code {
-                case .notConnectedToInternet, .networkConnectionLost:
+                case .notConnectedToInternet:
+                    networkError = .noInternet
+                case .networkConnectionLost:
                     networkError = .networkLost
                 case .timedOut:
                     networkError = .timeout
                 default:
-                    networkError = .serverError(
+                    networkError = .unknown(
                         code: error.errorCode,
-                        message: error.localizedDescription,
-                        data: nil
+                        message: error.localizedDescription
                     )
                 }
                 self.completeOnMain(.failure(networkError), completion: completion)
@@ -151,31 +152,14 @@ final class NetworkManager {
             if let httpResponse = response as? HTTPURLResponse {
                 let statusCode = httpResponse.statusCode
                 if statusCode >= 400 {
-                    // Thử parse JSON để lấy message từ server
+                    // Parse message từ JSON nếu có
                     var serverMessage = HTTPURLResponse.localizedString(forStatusCode: statusCode)
-                    var jsonData: Any? = nil
-                    
-                    if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                        jsonData = json
-                        if let msg = json[KKey.message] as? String {
-                            serverMessage = msg
-                        }
+                    if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                       let msg = json[KKey.message] as? String {
+                        serverMessage = msg
                     }
                     
-                    let errorType: NetworkErrorType
-                    switch statusCode {
-                    case NetworkErrorCode.unauthorized:
-                        errorType = .unauthorized
-                    case NetworkErrorCode.forbidden:
-                        errorType = .forbidden
-                    case NetworkErrorCode.notFound:
-                        errorType = .notFound
-                    case NetworkErrorCode.verificationExpired:
-                        errorType = .verificationExpired
-                    default:
-                        errorType = .serverError(code: statusCode, message: serverMessage, data: jsonData)
-                    }
-                    
+                    let errorType = NetworkErrorType(code: statusCode, message: serverMessage)
                     self.completeOnMain(.failure(errorType), completion: completion)
                     return
                 }
@@ -184,14 +168,28 @@ final class NetworkManager {
             // 4. Parse JSON thành dictionary
             do {
                 if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                    self.completeOnMain(.success(json), completion: completion)
+                    
+                    // Check JSON nêu có be có trả về code không
+                    if let serverCode = json[KKey.code] as? Int ??
+                        Int(json[KKey.code] as? String ?? "") {
+                        if serverCode == APISuccessCode.success {
+                            // Thành công → trả kết quả luôn
+                            self.completeOnMain(.success(json), completion: completion)
+                        } else {
+                            // Lỗi → map sang NetworkErrorType
+                            let message = json[KKey.message] as? String ?? ""
+                            let errorType = NetworkErrorType(code: serverCode, message: message)
+                            self.completeOnMain(.failure(errorType), completion: completion)
+                        }
+                        return
+                    }
                 } else {
                     self.completeOnMain(.failure(.decodingError), completion: completion)
                 }
             } catch {
                 self.completeOnMain(.failure(.decodingError), completion: completion)
             }
-
+            
             
         }.resume()
     }

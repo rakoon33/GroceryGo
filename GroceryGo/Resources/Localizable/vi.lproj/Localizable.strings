@@ -72,3 +72,4 @@
 "not_found" = "Không tìm thấy tài nguyên.";
 "server_error" = "Đã xảy ra lỗi máy chủ.";
 "verification_expired" = "Xác thực đã hết hạn.";
+"no_internet" = "Không có kết nối internet. Vui lòng kiểm tra cài đặt mạng của bạn.";

@@ -15,7 +15,7 @@ struct UserModel: Identifiable, Equatable, Codable {
     var mobile: String
     var mobileCode: String
     var authToken: String
-//    var createdDate: Date
+    var createdDate: Date
     
     enum CodingKeys: String, CodingKey {
         // MAP với bên BE
@@ -26,7 +26,7 @@ struct UserModel: Identifiable, Equatable, Codable {
         case mobile = "mobile"
         case mobileCode = "mobile_code"
         case authToken = "auth_token"
-//        case createdDate = "created_date"
+        case createdDate = "created_date"
     }
     
     // So sánh dựa trên id (Dùng Equatable là ok r nhưng muốn tự định nghĩa thì viết hàm này)
