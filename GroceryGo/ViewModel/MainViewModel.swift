@@ -18,7 +18,7 @@ class MainViewModel: ObservableObject {
     @Published var showError = false
     @Published var errorMessage: String = ""
     @Published var isUserLogin: Bool = false
-    @Published var userObj: UserModel = UserModel()
+    @Published var userObj: UserModel = UserModel(id: 0, username: "", name: "", email: "", mobile: "", mobileCode: "", authToken: "", createdDate: Date())
     
     init() {
         //        #if DEBUG
@@ -26,7 +26,9 @@ class MainViewModel: ObservableObject {
         //        txtEmail = "test@gmail.com"
         //        txtPassword = "123456"
         //        #endif
+        
     }
+    
     
     
     //MARK: ServiceCall
@@ -49,14 +51,12 @@ class MainViewModel: ObservableObject {
             
             if let response = responseObject {
                 let serverCode = (response[KKey.code] as? Int) ??
-                                         Int(response[KKey.code] as? String ?? "")
+                Int(response[KKey.code] as? String ?? "")
                 
                 if serverCode == APISuccessCode.success {
                     
                     self.setUserData(userData: response)
                     
-                    self.errorMessage = response[KKey.message] as? String ?? "success_message".localized
-                    self.showError = true
                 } else {
                     self.errorMessage = response[KKey.message] as? String ?? "fail_message".localized
                     self.showError = true
@@ -88,18 +88,16 @@ class MainViewModel: ObservableObject {
             self.showError = true
             return
         }
-   
+        
         ServiceCall.post(parameter: ["username": txtUsername, "email": txtEmail, "password": txtPassword, "dervice_token": ""] ,path: Globs.SV_SIGN_UP) { responseObject in
             if let response = responseObject {
                 let serverCode = (response[KKey.code] as? Int) ??
-                                         Int(response[KKey.code] as? String ?? "")
+                Int(response[KKey.code] as? String ?? "")
                 
                 if serverCode == APISuccessCode.success {
                     
                     self.setUserData(userData: response)
                     
-                    self.errorMessage = response[KKey.message] as? String ?? "success_message".localized
-                    self.showError = true
                 } else {
                     self.errorMessage = response[KKey.message] as? String ?? "fail_message".localized
                     self.showError = true
@@ -120,17 +118,17 @@ class MainViewModel: ObservableObject {
             if let payloadData = try? JSONSerialization.data(withJSONObject: payload) {
                 UserDefaults.standard.set(payloadData, forKey: Globs.userPayload)
             }
-
+            
             // 2. Decode thành model
             if let payloadData = try? JSONSerialization.data(withJSONObject: payload) {
                 let user = try? JSONDecoder().decode(UserModel.self, from: payloadData)
                 // dùng user
             }
-
+            
             // 3. Đánh dấu đã login
             UserDefaults.standard.set(true, forKey: Globs.userLogin)
+            self.isUserLogin = true
         }
-
         
         self.txtEmail = ""
         self.txtUsername = ""

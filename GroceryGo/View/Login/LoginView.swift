@@ -11,7 +11,7 @@ struct LoginView: View {
     
     @Binding var path: NavigationPath
 //    @Environment(\.presentationMode) var mode: Binding<PresentationMode> nếu xài navigationView
-    @StateObject var loginVM = MainViewModel.shared;
+    @StateObject var loginVM = MainViewModel.shared
     
     var body: some View {
         ZStack {
@@ -65,6 +65,7 @@ struct LoginView: View {
                 
                 RoundButton(title: "login_button".localized) {
                     loginVM.serviceCallLogin()
+                    path.append(AppRoute.mainTab)
                 }
                 .padding(.bottom, .screenWidth * 0.05)
                 
