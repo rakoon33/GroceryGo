@@ -64,11 +64,14 @@ struct LoginView: View {
                 .padding(.bottom, .screenWidth * 0.05)
                 
                 RoundButton(title: "login_button".localized) {
-                    loginVM.serviceCallLogin()
-                    path.append(AppRoute.mainTab)
+                    loginVM.login()
                 }
                 .padding(.bottom, .screenWidth * 0.05)
-                
+                .onChange(of: loginVM.isUserLogin) { isLogin in
+                    if isLogin {
+                        path.append(AppRoute.mainTab)
+                    }
+                }
                 
                 
                 HStack {
