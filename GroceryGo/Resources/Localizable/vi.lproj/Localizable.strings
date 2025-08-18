@@ -6,9 +6,16 @@
   
 */
 
-// MARK: - Login/Signin/SignUp
+// MARK: - Common
+"ok_button" = "OK";
+"cancel_button" = "Hủy";
+"back_button" = "Quay lại";
+"next_button" = "Tiếp theo";
+"login_button" = "Đăng nhập";
+"signup_button" = "Đăng ký";
+"continue_button" = "Tiếp tục";
 
-/* View */
+// MARK: - Login
 "login_title" = "Đăng nhập";
 "login_subtitle" = "Nhập email và mật khẩu của bạn";
 "login_email_title" = "Email";
@@ -16,13 +23,9 @@
 "login_password_title" = "Mật khẩu";
 "login_password_placeholder" = "Nhập mật khẩu";
 "login_forgot_password" = "Quên mật khẩu?";
-"login_button" = "Đăng nhập";
-"signup_button" = "Đăng ký";
 "login_no_account" = "Chưa có tài khoản?";
-"ok_button" = "Ok";
 
-// MARK: - SignInView
-/* View */
+// MARK: - SignIn
 "sign_in_title" = "Nhận hàng tạp hóa của bạn\nvới GroceryGo";
 "sign_in_placeholder_mobile" = "Nhập số điện thoại";
 "sign_in_continue_email_login" = "Tiếp tục với Email Đăng nhập";
@@ -31,7 +34,7 @@
 "sign_in_continue_google" = "Tiếp tục với Google";
 "sign_in_continue_facebook" = "Tiếp tục với Facebook";
 
-// MARK: - SignUpView
+// MARK: - SignUp
 "signup_title" = "Đăng ký";
 "signup_subtitle" = "Nhập thông tin của bạn để tiếp tục";
 "signup_email_title" = "Email";
@@ -44,23 +47,23 @@
 "signup_terms_title" = "Điều khoản dịch vụ";
 "signup_and" = "và";
 "signup_privacy_title" = "Chính sách bảo mật.";
-"signup_button" = "Đăng ký";
 "signup_already_have" = "Đã có tài khoản?";
 "signup_signin" = "Đăng nhập";
 
-// MARK: - WelcomeView
+// MARK: - Welcome
 "welcome_title" = "Chào mừng\ntới cửa hàng của chúng tôi";
 "welcome_subtitle" = "Giao hàng tạp hóa nhanh chóng, tiện lợi.";
 "welcome_get_started" = "Bắt đầu";
 
-// MARK: - MainModel
-"error_invalid_email" = "Vui lòng nhập địa chỉ email hợp lệ";
-"error_invalid_password" = "Vui lòng nhập mật khẩu hợp lệ";
-"error_invalid_username" = "Vui lòng nhập tên người dùng hợp lệ";
+// MARK: - Messages
 "success_message" = "Thành công";
 "fail_message" = "Thất bại";
 
-// MARK: -  Error messages
+// MARK: - Errors
+"error_invalid_email" = "Vui lòng nhập địa chỉ email hợp lệ";
+"error_invalid_password" = "Vui lòng nhập mật khẩu hợp lệ";
+"error_invalid_username" = "Vui lòng nhập tên người dùng hợp lệ";
+
 "invalid_URL" = "URL không hợp lệ.";
 "no_data" = "Không nhận được dữ liệu.";
 "decoding_failed" = "Không thể giải mã dữ liệu.";

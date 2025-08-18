@@ -30,7 +30,7 @@ final class AuthService: AuthServiceProtocol {
         completion: @escaping (Result<UserModel, NetworkErrorType>) -> Void
     ) {
         ServiceCall.post(
-            parameter: ["email": email, "password": password, "device_token": ""],
+            parameter: ["email": email, "password": password, "dervice_token": ""],
             path: Globs.SV_LOGIN
         ) { responseObject in
             guard let response = responseObject,
@@ -38,18 +38,31 @@ final class AuthService: AuthServiceProtocol {
                                    Int(response[KKey.code] as? String ?? ""),
                   serverCode == APISuccessCode.success,
                   let payload = response[KKey.payload],
-                  let payloadData = try? JSONSerialization.data(withJSONObject: payload),
-                  let user = try? JSONDecoder().decode(UserModel.self, from: payloadData)
+                  let payloadData = try? JSONSerialization.data(withJSONObject: payload)
             else {
-                completion(.failure(.unknown(code: -1, message: "Login failed")))
+                completion(.failure(.unknown(code: -1, message: "fail_message")))
                 return
             }
-            completion(.success(user))
-            
+
+            do {
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .formatted({
+                    let f = DateFormatter()
+                    f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                    f.locale = Locale(identifier: "en_US_POSIX")
+                    return f
+                }())
+                let user = try decoder.decode(UserModel.self, from: payloadData)
+                completion(.success(user))
+            } catch {
+                completion(.failure(.decodingError))
+            }
+
         } failure: { netError in
             completion(.failure(netError))
         }
     }
+
     
     func signUp(
         username: String,
@@ -58,7 +71,12 @@ final class AuthService: AuthServiceProtocol {
         completion: @escaping (Result<UserModel, NetworkErrorType>) -> Void
     ) {
         ServiceCall.post(
-            parameter: ["username": username, "email": email, "password": password, "device_token": ""],
+            parameter: [
+                "email": email,
+                "password": password,
+                "username": username,
+                "dervice_token": ""
+            ],
             path: Globs.SV_SIGN_UP
         ) { responseObject in
             guard let response = responseObject,
@@ -66,16 +84,29 @@ final class AuthService: AuthServiceProtocol {
                                    Int(response[KKey.code] as? String ?? ""),
                   serverCode == APISuccessCode.success,
                   let payload = response[KKey.payload],
-                  let payloadData = try? JSONSerialization.data(withJSONObject: payload),
-                  let user = try? JSONDecoder().decode(UserModel.self, from: payloadData)
+                  let payloadData = try? JSONSerialization.data(withJSONObject: payload)
             else {
-                completion(.failure(.unknown(code: -1, message: "Signup failed")))
+                completion(.failure(.unknown(code: -1, message: "fail_message")))
                 return
             }
-            completion(.success(user))
-            
+
+            do {
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .formatted({
+                    let f = DateFormatter()
+                    f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                    f.locale = Locale(identifier: "en_US_POSIX")
+                    return f
+                }())
+                let user = try decoder.decode(UserModel.self, from: payloadData)
+                completion(.success(user))
+            } catch {
+                completion(.failure(.decodingError))
+            }
+
         } failure: { netError in
             completion(.failure(netError))
         }
     }
+
 }

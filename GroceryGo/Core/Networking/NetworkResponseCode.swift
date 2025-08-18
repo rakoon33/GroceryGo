@@ -136,11 +136,11 @@ enum NetworkErrorType: Error {
         case .unknown(_, let message):
             // Nếu không biết code => dùng message BE
             return message.isEmpty
-                ? NSLocalizedString(localizationKey, comment: "")
+                ? localizationKey.localized
                 : message
         default:
-            // Code đã biết => luôn dùng localizable
-            return NSLocalizedString(localizationKey, comment: "")
+            // Code đã biết => luôn dùng localizable (theo app language)
+            return localizationKey.localized
         }
     }
 }

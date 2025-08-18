@@ -12,7 +12,7 @@ struct GroceryGoApp: App {
     
     init() {
             // Ép app dùng Tiếng Việt/Anh
-            UserDefaults.standard.set(["en"], forKey: "AppleLanguages")
+            UserDefaults.standard.set(["vn"], forKey: "AppleLanguages")
             UserDefaults.standard.synchronize()
         }
     

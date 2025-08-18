@@ -36,8 +36,9 @@ class MainViewModel: ObservableObject {
     func login() {
         guard validateLoginInputs() else { return }
         
-        authService.login(email: txtEmail, password: txtPassword) { result in
+        authService.login(email: txtEmail, password: txtPassword) { [weak self] result in
             DispatchQueue.main.async {
+                guard let self = self else { return }
                 switch result {
                 case .success(let user):
                     self.setUserData(user: user)
@@ -52,8 +53,9 @@ class MainViewModel: ObservableObject {
     func signUp() {
         guard validateSignUpInputs() else { return }
         
-        authService.signUp(username: txtUsername, email: txtEmail, password: txtPassword) { result in
+        authService.signUp(username: txtUsername, email: txtEmail, password: txtPassword) { [weak self] result in
             DispatchQueue.main.async {
+                guard let self = self else { return }
                 switch result {
                 case .success(let user):
                     self.setUserData(user: user)

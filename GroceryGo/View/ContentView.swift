@@ -46,6 +46,7 @@ struct ContentView: View {
                     if !newValue {
                         // Khi logout → về login
                         path.removeLast(path.count)
+                        path.append(AppRoute.signin)
                         path.append(AppRoute.login)
                     }
                 }

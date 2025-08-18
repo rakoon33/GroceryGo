@@ -8,10 +8,11 @@
 import Foundation
 
 extension Date {
-    func displayDate(format: String, addMinTime:  Int = 0) -> String {
-        let dataFormat = DateFormatter()
-        dataFormat.dateFormat = format
-        let date = self.addingTimeInterval(TimeInterval(60 * addMinTime))
-        return dataFormat.string(from: date)
+    func displayDate(format: String, addMinTime: Int = 0, locale: Locale = .current) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        formatter.locale = locale
+        let adjustedDate = self.addingTimeInterval(TimeInterval(60 * addMinTime))
+        return formatter.string(from: adjustedDate)
     }
 }
