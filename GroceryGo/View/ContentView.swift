@@ -40,26 +40,28 @@ struct ContentView: View {
                     }
                 }
                 .onAppear {
-                    navigateOnLaunch()
-                }
-                .onChange(of: mainVM.isUserLogin) { newValue in
-                    if !newValue {
-                        // Khi logout → về login
-                        path.removeLast(path.count)
+                    
+                    path.removeLast(path.count)
+                    
+                    if !hasSeenWelcome {
+                        path.append(AppRoute.welcome)
+                    } else if !mainVM.isUserLogin {
                         path.append(AppRoute.signin)
-                        path.append(AppRoute.login)
+                    } else {
+                        path.append(AppRoute.mainTab)
                     }
                 }
-        }
-    }
-    
-    private func navigateOnLaunch() {
-        if !hasSeenWelcome {
-            path.append(AppRoute.welcome)
-        } else if !mainVM.isUserLogin {
-            path.append(AppRoute.signin)
-        } else {
-            path.append(AppRoute.mainTab)
+                .onChange(of: mainVM.isUserLogin) { newValue in
+
+                    if newValue {
+                        // Login thành công → đi thẳng MainTab
+                        path.append(AppRoute.mainTab)
+                    } else {
+                        path.removeLast(path.count) // reset path
+                        // Logout → về Login
+                        path.append(AppRoute.signin)
+                    }
+                }
         }
     }
 }

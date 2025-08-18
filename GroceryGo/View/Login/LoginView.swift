@@ -67,11 +67,7 @@ struct LoginView: View {
                     loginVM.login()
                 }
                 .padding(.bottom, .screenWidth * 0.05)
-                .onChange(of: loginVM.isUserLogin) { isLogin in
-                    if isLogin {
-                        path.append(AppRoute.mainTab)
-                    }
-                }
+
                 
                 
                 HStack {
@@ -112,9 +108,13 @@ struct LoginView: View {
                 }
                 
                 Spacer()
+                
+                
             }
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
+            
+            SpinnerView(isLoading: $loginVM.isLoading)
         }
         .alert(isPresented: $loginVM.showError) {
             

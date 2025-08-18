@@ -102,7 +102,7 @@ struct SignUpView: View {
                             .foregroundColor(.primaryApp)
                     }
                     .onTapGesture {
-                        path.append(AppRoute.signin) // Điều hướng sang SignInView
+                        path = NavigationPath([AppRoute.signin]) // Điều hướng sang SignInView
                     }
                     
                     
@@ -137,6 +137,7 @@ struct SignUpView: View {
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
             
+            SpinnerView(isLoading: $mainVM.isLoading)
             
         }
         .alert(isPresented: $mainVM.showError, content: {

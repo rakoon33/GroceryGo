@@ -98,6 +98,7 @@ final class AuthService: AuthServiceProtocol {
                     f.locale = Locale(identifier: "en_US_POSIX")
                     return f
                 }())
+                
                 let user = try decoder.decode(UserModel.self, from: payloadData)
                 completion(.success(user))
             } catch {
