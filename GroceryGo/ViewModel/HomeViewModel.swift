@@ -7,12 +7,11 @@
 
 import SwiftUI
 
-struct HomeViewModel: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+final class HomeViewModel: ObservableObject {
+  
+    static var shared: HomeViewModel = HomeViewModel()
+    
+    @Published var selectedTab: MainTab = .shop
+    
 }
 
-#Preview {
-    HomeViewModel()
-}
