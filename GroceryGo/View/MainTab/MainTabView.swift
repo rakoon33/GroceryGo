@@ -40,7 +40,6 @@ struct MainTabView: View {
                 ExploreView()
                     .tag(MainTab.account)
             }
-            
             .onAppear {
                 UIScrollView.appearance().isScrollEnabled = false
             }
@@ -48,24 +47,38 @@ struct MainTabView: View {
             .onChange(of: homeVM.selectedTab) { newValue in
                 debugPrint("tab:", newValue)
             }
-            
-            
+    
             HStack {
                 
                 TabButton(title: "Shop", icon: "store_tab", isSelected: homeVM.selectedTab == .shop) {
-                    withAnimation { homeVM.selectedTab = .shop }
+                    DispatchQueue.main.async {
+                        withAnimation { homeVM.selectedTab = .shop }
+                    }
+                    
+                    
                 }
                 TabButton(title: "Explore", icon: "explore_tab", isSelected: homeVM.selectedTab == .explore) {
-                    withAnimation { homeVM.selectedTab = .explore }
+
+                    DispatchQueue.main.async {
+                        withAnimation { homeVM.selectedTab = .explore }
+                    }
                 }
                 TabButton(title: "Cart", icon: "cart_tab", isSelected: homeVM.selectedTab == .cart) {
-                    withAnimation { homeVM.selectedTab = .cart }
+
+                    DispatchQueue.main.async {
+                        withAnimation { homeVM.selectedTab = .cart }
+                    }
                 }
                 TabButton(title: "Favorite", icon: "fav_tab", isSelected: homeVM.selectedTab == .favorite) {
-                    withAnimation { homeVM.selectedTab = .favorite }
+                    DispatchQueue.main.async {
+                        withAnimation { homeVM.selectedTab = .favorite }
+                    }
                 }
                 TabButton(title: "Account", icon: "account_tab", isSelected: homeVM.selectedTab == .account) {
-                    withAnimation { homeVM.selectedTab = .account }
+                    
+                    DispatchQueue.main.async {
+                        withAnimation { homeVM.selectedTab = .account }
+                    }
                 }
                 
             }
