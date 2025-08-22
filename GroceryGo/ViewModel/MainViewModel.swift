@@ -21,21 +21,10 @@ class MainViewModel: ObservableObject {
     @Published var showError = false
     @Published var errorMessage: String = ""
     @Published var isUserLogin: Bool = false
-    @Published var userObj: UserModel = UserModel(
-        id: 0, username: "", name: "", email: "",
-        mobile: "", mobileCode: "", authToken: "",
-        createdDate: Date()
-    )
+    @Published var userObj: UserModel = UserModel()
     
     // MARK: - Init
     init(authService: AuthServiceProtocol = AuthService()) {
-        
-        
-        #if DEBUG
-        self.txtEmail = "test@gmail.com"
-        self.txtPassword = "123456"
-        self.txtUsername = "TestUser"
-        #endif
         
         self.authService = authService
         
@@ -46,7 +35,16 @@ class MainViewModel: ObservableObject {
         if let data = Utils.UDValue(key: Globs.userPayload) as? Data,
            let user = try? JSONDecoder().decode(UserModel.self, from: data) {
             self.userObj = user
+            
         }
+        
+        #if DEBUG
+        self.txtEmail = "test@gmail.com"
+        self.txtPassword = "123456"
+        self.txtUsername = "TestUser"
+
+        self.userObj.authToken = "4ASNNezDB0wORlFYVApf"
+        #endif
     }
 
     // MARK: - Public API

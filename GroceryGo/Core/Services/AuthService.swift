@@ -55,7 +55,7 @@ final class AuthService: AuthServiceProtocol {
                 let user = try decoder.decode(UserModel.self, from: payloadData)
                 completion(.success(user))
             } catch {
-                completion(.failure(.decodingError))
+                completion(.failure(.decodingError(message: error.localizedDescription)))
             }
 
         } failure: { netError in
@@ -92,17 +92,12 @@ final class AuthService: AuthServiceProtocol {
 
             do {
                 let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .formatted({
-                    let f = DateFormatter()
-                    f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-                    f.locale = Locale(identifier: "en_US_POSIX")
-                    return f
-                }())
-                
                 let user = try decoder.decode(UserModel.self, from: payloadData)
                 completion(.success(user))
+            } catch let decodingError as DecodingError {
+                completion(.failure(.decodingError(message: decodingError.detailedMessage)))
             } catch {
-                completion(.failure(.decodingError))
+                completion(.failure(.unknown(code: -1, message: "fail_message")))
             }
 
         } failure: { netError in

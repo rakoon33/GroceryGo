@@ -11,16 +11,19 @@ import SwiftUI
 struct GroceryGoApp: App {
     
     init() {
-
-            Utils.UDSET(data: true, key: Globs.userLogin)
+            // Ép app dùng Tiếng Việt/Anh
+            UserDefaults.standard.set(["vn"], forKey: "AppleLanguages")
+            UserDefaults.standard.synchronize()
+        
+        Utils.UDSET(data: false, key: Globs.userLogin)
+            
         }
     
     var body: some Scene {
         WindowGroup {
-            MainTabView(path:  .constant(NavigationPath()))
+            ContentView()
         }
     }
 }
 
 
-    
