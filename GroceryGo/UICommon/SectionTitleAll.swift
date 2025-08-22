@@ -8,11 +8,27 @@
 import SwiftUI
 
 struct SectionTitleAll: View {
+    @State var title: String = "Title"
+    @State var titleAll: String = "View All"
+    
+    var didTap: (()->())?
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            Text(title)
+                .font(.customfont(.semibold, fontSize: 24))
+                .foregroundStyle(.primaryText)
+            
+            Spacer()
+            
+            Text(titleAll)
+                .font(.customfont(.semibold, fontSize: 16))
+                .foregroundStyle(.primaryApp)
+        }
+        .frame(height: 40)
     }
 }
 
 #Preview {
     SectionTitleAll()
+        .padding(20)
 }
