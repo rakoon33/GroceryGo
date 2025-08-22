@@ -13,11 +13,12 @@ enum AppRoute: Hashable {
     case signup
     case signin
     case mainTab
+    case productDetail(ProductModel)
 }
 
 struct ContentView: View {
     @State private var path = NavigationPath()
-    @State private var hasSeenWelcome = UserDefaults.standard.bool(forKey: "hasSeenWelcome")
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome: Bool = false
     @StateObject var mainVM = MainViewModel.shared
     
     var body: some View {
@@ -37,7 +38,10 @@ struct ContentView: View {
                         SignInView(path: $path)
                     case .mainTab:
                         MainTabView(path: $path)
+                    case .productDetail(let product):
+                        ProductDetailView(path: $path, detailVM: ProductDetailViewModel(prodObj: product))
                     }
+                    
                 }
                 .onAppear {
                     
@@ -55,9 +59,10 @@ struct ContentView: View {
 
                     if newValue {
                         // Login thành công → đi thẳng MainTab
+                        path = NavigationPath()
                         path.append(AppRoute.mainTab)
                     } else {
-                        path.removeLast(path.count) // reset path
+                        path = NavigationPath()
                         // Logout → về Login
                         path.append(AppRoute.signin)
                     }
