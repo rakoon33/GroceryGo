@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+final class AuthManager {
+    static let shared = AuthManager()
+    private init() {}
+    
+    var token: String {
+        // đọc từ UserDefaults / Keychain / MainVM tùy ý
+        return MainViewModel.shared.userObj.authToken
+    }
+}
