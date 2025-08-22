@@ -85,6 +85,7 @@ final class NetworkManager {
         method: HTTPMethod,
         path: String,
         parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
         headers: [String: String] = [:],
         completion: @escaping (Result<[String: Any], NetworkErrorType>) -> Void
     ) {
@@ -115,6 +116,15 @@ final class NetworkManager {
             var request = URLRequest(url: url)
             request.httpMethod = method.rawValue
             headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
+            
+            if isTokenRequired {
+                let token = AuthManager.shared.token
+                if token.isEmpty {
+                    self.completeOnMain(.failure(.unauthorized), completion: completion)
+                    return
+                }
+                request.setValue(token, forHTTPHeaderField: APIHeader.tokenHeader)
+            }
             
             if method != .GET, let parameters = parameters {
                 let formBody = parameters.map {
@@ -174,28 +184,32 @@ final class NetworkManager {
                 
                 // 4. Parse JSON into dictionary
                 do {
-                    if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                        
-                        // Check JSON if be has ("code")
-                        if let serverCode = json[KKey.code] as? Int ??
-                            Int(json[KKey.code] as? String ?? "") {
-                            if serverCode == APISuccessCode.success {
-                                // success
-                                self.completeOnMain(.success(json), completion: completion)
-                            } else {
-                                // error → map into NetworkErrorType
-                                let message = json[KKey.message] as? String ?? ""
-                                let errorType = NetworkErrorType(code: serverCode, message: message)
-                                self.completeOnMain(.failure(errorType), completion: completion)
-                            }
-                            return
+                    let jsonObj = try JSONSerialization.jsonObject(with: data)
+
+                    // Chỉ chấp nhận dictionary
+                    guard let json = jsonObj as? [String: Any] else {
+                        let message = "Expected JSON dictionary but got \(type(of: jsonObj))"
+                        self.completeOnMain(.failure(.decodingError(message: message)), completion: completion)
+                        return
+                    }
+
+                    // Check server code
+                    if let serverCode = json[KKey.code] as? Int ?? Int(json[KKey.code] as? String ?? "") {
+                        if serverCode == APISuccessCode.success {
+                            self.completeOnMain(.success(json), completion: completion)
+                        } else {
+                            let message = json[KKey.message] as? String ?? "Unknown server error"
+                            self.completeOnMain(.failure(.unknown(code: serverCode, message: message)), completion: completion)
                         }
                     } else {
-                        self.completeOnMain(.failure(.decodingError), completion: completion)
+                        self.completeOnMain(.failure(.decodingError(message: "Missing 'code' in server response")), completion: completion)
                     }
+
                 } catch {
-                    self.completeOnMain(.failure(.decodingError), completion: completion)
+                    // Nếu JSONSerialization throw
+                    self.completeOnMain(.failure(.decodingError(message: error.localizedDescription)), completion: completion)
                 }
+
                 
                 
             }.resume()

@@ -10,11 +10,12 @@ import SwiftUI
 final class ServiceCall {
     class func post(
         parameter: [String: Any],
+        isTokenRequired: Bool = false,
         path: String,
         withSuccess: @escaping ([String: Any]?) -> (),
         failure: @escaping (NetworkErrorType) -> ()
     ) {
-        NetworkManager.shared.request(method: .POST, path: path, parameters: parameter) { result in
+        NetworkManager.shared.request(method: .POST, path: path, parameters: parameter, isTokenRequired: isTokenRequired) { result in
             switch result {
             case .success(let json):
                 withSuccess(json)
@@ -26,11 +27,12 @@ final class ServiceCall {
 
     class func put(
         parameter: [String: Any],
+        isTokenRequired: Bool = false,
         path: String,
         withSuccess: @escaping ([String: Any]?) -> (),
         failure: @escaping (NetworkErrorType) -> ()
     ) {
-        NetworkManager.shared.request(method: .PUT, path: path, parameters: parameter) { result in
+        NetworkManager.shared.request(method: .PUT, path: path, parameters: parameter, isTokenRequired: isTokenRequired) { result in
             switch result {
             case .success(let json):
                 withSuccess(json)
@@ -41,11 +43,12 @@ final class ServiceCall {
     }
 
     class func delete(
+        isTokenRequired: Bool = false,
         path: String,
         withSuccess: @escaping ([String: Any]?) -> (),
         failure: @escaping (NetworkErrorType) -> ()
     ) {
-        NetworkManager.shared.request(method: .DELETE, path: path, parameters: nil) { result in
+        NetworkManager.shared.request(method: .DELETE, path: path, parameters: nil, isTokenRequired: isTokenRequired) { result in
             switch result {
             case .success(let json):
                 withSuccess(json)
@@ -56,11 +59,12 @@ final class ServiceCall {
     }
 
     class func get(
+        isTokenRequired: Bool = false,
         path: String,
         withSuccess: @escaping ([String: Any]?) -> (),
         failure: @escaping (NetworkErrorType) -> ()
     ) {
-        NetworkManager.shared.request(method: .GET, path: path, parameters: nil) { result in
+        NetworkManager.shared.request(method: .GET, path: path, parameters: nil, isTokenRequired: isTokenRequired) { result in
             switch result {
             case .success(let json):
                 withSuccess(json)

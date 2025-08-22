@@ -40,7 +40,7 @@ enum NetworkErrorType: Error {
     // Client-side
     case invalidURL
     case noData
-    case decodingError
+    case decodingError(message: String? = nil)
     case encodingError
     case timeout
     case noInternet
@@ -65,7 +65,8 @@ enum NetworkErrorType: Error {
         // Client
         case NetworkErrorCode.Client.invalidURL: self = .invalidURL
         case NetworkErrorCode.Client.noData: self = .noData
-        case NetworkErrorCode.Client.decodingError: self = .decodingError
+        case NetworkErrorCode.Client.decodingError:
+                self = .decodingError(message: message)
         case NetworkErrorCode.Client.encodingError: self = .encodingError
         case NetworkErrorCode.Client.timeout: self = .timeout
         case NetworkErrorCode.Client.noInternet: self = .noInternet
@@ -133,13 +134,11 @@ enum NetworkErrorType: Error {
     // MARK: - Message
     var errorMessage: String {
         switch self {
-        case .unknown(_, let message):
-            // Nếu không biết code => dùng message BE
-            return message.isEmpty
-                ? localizationKey.localized
-                : message
+        case .decodingError(let msg):
+            return "decoding_failed".localized + (msg?.isEmpty == false ? " – \(msg!)" : "")
+        case .unknown(_, let msg):
+            return msg.isEmpty ? localizationKey.localized : msg
         default:
-            // Code đã biết => luôn dùng localizable (theo app language)
             return localizationKey.localized
         }
     }
