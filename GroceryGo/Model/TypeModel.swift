@@ -26,6 +26,13 @@ struct TypeModel: Codable, Identifiable, Equatable {
         case colorHex = "color"
     }
     
+    init(id: Int = 0, name: String = "", image: String = "", colorHex: String = "#FFFFFF") {
+           self.id = id
+           self.name = name
+           self.image = image
+           self.colorHex = colorHex
+       }
+    
     static func == (lhs: TypeModel, rhs: TypeModel) -> Bool {
         lhs.id == rhs.id
     }
