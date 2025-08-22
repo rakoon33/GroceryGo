@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct ProductModel: Codable, Identifiable, Equatable {
+struct ProductModel: Codable, Identifiable, Equatable, Hashable {
     let id: Int
     let catId: Int
     let brandId: Int
