@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @Binding var path: NavigationPath
     @StateObject var homeVM = HomeViewModel.shared
     
     var body: some View {
@@ -49,32 +50,44 @@ struct HomeView: View {
                     
                 }
                 .padding(.horizontal, 20)
-   
+                
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 15) {
                         ForEach(homeVM.offerArr, id: \.id) { pObj in
-                            ProductCell(pObj: pObj) {
-                                
-                            }
+                            ProductCell(
+                                pObj: pObj,
+                                didTapProduct: {
+                                    path.append(AppRoute.productDetail(pObj))
+                                },
+                                didAddCart: {
+                                    // add to cart
+                                }
+                            )
                         }
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 4)
                 }
-
+                
                 
                 SectionTitleAll(title: "Best selling", titleAll: "See all") {
                     
                 }
                 .padding(.horizontal, 20)
-    
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 15) {
                         ForEach(homeVM.bestArr, id: \.id) { pObj in
-                            ProductCell(pObj: pObj) {
-                                
-                            }
+                            ProductCell(
+                                pObj: pObj,
+                                didTapProduct: {
+                                    path.append(AppRoute.productDetail(pObj))
+                                },
+                                didAddCart: {
+                                    // add to cart
+                                }
+                            )
                         }
                     }
                     .padding(.horizontal, 20)
@@ -85,11 +98,12 @@ struct HomeView: View {
                     
                 }
                 .padding(.horizontal, 20)
-
+                
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 15) {
-                        ForEach(0...5, id: \.self) { index in
-                            CategoryCell(color: Color(hex: "F8A44C")) {
+                        
+                        ForEach(homeVM.typeArr, id: \.id) { tObj in
+                            CategoryCell(tObj: tObj) {
                                 
                             }
                         }
@@ -99,30 +113,39 @@ struct HomeView: View {
                 }
                 .padding(.bottom, 8)
                 
-//                ScrollView(.horizontal, showsIndicators: false) {
-//                    LazyHStack(spacing: 15) {
-//                        ForEach(0...5, id: \.self) { index in
-//                            ProductCell() {
-//                                
-//                            }
-//                        }
-//                    }
-//                    .padding(.horizontal, 20)
-//                    .padding(.vertical, 4)
-//                }
-//                .padding(.bottom, 15)
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(spacing: 15) {
+                        ForEach(homeVM.listArr, id: \.id) { pObj in
+                            ProductCell(
+                                pObj: pObj,
+                                didTapProduct: {
+                                    path.append(AppRoute.productDetail(pObj))
+                                },
+                                didAddCart: {
+                                    // add to cart
+                                }
+                            )
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 4)
+                }
+                .padding(.bottom, 15)
             }
+            
+            SpinnerView(isLoading: $homeVM.isLoading)
+            
         }
         .ignoresSafeArea()
         .alert(isPresented: $homeVM.showError) {
             
             Alert(title: Text(Globs.AppName), message: Text(homeVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
         }
-            
+        
     }
     
 }
 
 #Preview {
-    HomeView()
+    HomeView(path: .constant(NavigationPath()))
 }

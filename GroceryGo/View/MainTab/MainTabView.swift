@@ -25,7 +25,7 @@ struct MainTabView: View {
         VStack {
             
             TabView(selection: $homeVM.selectedTab) {
-                HomeView()
+                HomeView(path: $path)
                     .tag(MainTab.shop)
                 
                 ExploreView()

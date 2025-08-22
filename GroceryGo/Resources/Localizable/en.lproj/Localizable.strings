@@ -55,6 +55,11 @@
 "welcome_subtitle" = "Fast grocery delivery at your convenience.";
 "welcome_get_started" = "Get Started";
 
+// MARK: - ProductDetailView
+"product_detail_title" = "Product Detail";
+"product_detail_nutritions" = "Nutritions";
+"product_detail_review" = "Review";
+
 // MARK: - Messages
 "success_message" = "Success";
 "fail_message" = "Fail";

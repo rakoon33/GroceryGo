@@ -22,11 +22,9 @@ struct SpinnerView: View {
                     .progressViewStyle(CircularProgressViewStyle(tint: .darkGray))
                     .scaleEffect(1.4, anchor: .center)
                     .padding()
-                    .background(Color.white)
-                    .cornerRadius(16)
-                    .shadow(radius: 10)
+              
             }
-            .transition(.opacity) // hiệu ứng mờ dần
+            .transition(.opacity) 
             .animation(.easeInOut, value: isLoading)
         }
     }

@@ -29,6 +29,10 @@ final class HomeViewModel: ObservableObject {
         
         self.homeService = homeService
         
+        fetchData()
+    }
+    
+    func fetchData() {
         isLoading = true
         homeService.fetchHomeData() { [weak self] result in
             DispatchQueue.main.async {
@@ -47,7 +51,6 @@ final class HomeViewModel: ObservableObject {
                 }
             }
         }
-        
     }
 }
 

@@ -46,10 +46,26 @@
             filePath = "GroceryGo/View/Home/HomeView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
             landmarkName = "body"
             landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "93F95C23-A79E-448B-9A0A-A2848020C797"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../var/folders/7b/3nkflks155zcsgg9p85gvnn40000gn/T/swift-generated-sources/@__swiftmacro_9GroceryGo0028ProductDetailViewswift_IxAFhfMX56_0_33_69863C63C7BC31C4ADFBDDF58F291CBELl7PreviewfMf_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1"
+            endingLineNumber = "1"
+            landmarkName = "$s9GroceryGo0028ProductDetailViewswift_IxAFhfMX56_0_33_69863C63C7BC31C4ADFBDDF58F291CBELl7PreviewfMf_15PreviewRegistryfMu_"
+            landmarkType = "37">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -55,6 +55,11 @@
 "welcome_subtitle" = "Giao hàng tạp hóa nhanh chóng, tiện lợi.";
 "welcome_get_started" = "Bắt đầu";
 
+// MARK: - ProductDetailView
+"product_detail_title" = "Chi tiết sản phẩm";
+"product_detail_nutritions" = "Dinh dưỡng";
+"product_detail_review" = "Đánh giá";
+
 // MARK: - Messages
 "success_message" = "Thành công";
 "fail_message" = "Thất bại";

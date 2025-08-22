@@ -43,7 +43,7 @@ class MainViewModel: ObservableObject {
         self.txtPassword = "123456"
         self.txtUsername = "TestUser"
 
-        self.userObj.authToken = "4ASNNezDB0wORlFYVApf"
+        self.userObj.authToken = "prBNvKYRG8lXz2KqzBgv"
         #endif
     }
 
