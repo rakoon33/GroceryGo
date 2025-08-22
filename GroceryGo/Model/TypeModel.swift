@@ -6,3 +6,27 @@
 //
 
 import Foundation
+import SwiftUI
+
+
+struct TypeModel: Codable, Identifiable, Equatable {
+    let id: Int
+    let name: String
+    let image: String
+    let colorHex: String
+    
+    var color: Color {
+        Color(hex: colorHex)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "type_id"
+        case name = "type_name"
+        case image
+        case colorHex = "color"
+    }
+    
+    static func == (lhs: TypeModel, rhs: TypeModel) -> Bool {
+        lhs.id == rhs.id
+    }
+}
