@@ -143,9 +143,7 @@ struct SignUpView: View {
         .alert(isPresented: $mainVM.showError, content: {
             Alert(title: Text(Globs.AppName), message: Text(mainVM.errorMessage), dismissButton: .default(Text("OK")))
         })
-        .navigationTitle("")
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
         
         

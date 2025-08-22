@@ -120,10 +120,8 @@ struct LoginView: View {
             
             Alert(title: Text(Globs.AppName), message: Text(loginVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
         }
-        .background(Color.white)
-        .navigationTitle("")
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        .background(.systemBackground)
+        .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
         
     }

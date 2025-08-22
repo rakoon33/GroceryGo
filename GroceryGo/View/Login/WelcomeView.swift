@@ -50,10 +50,7 @@ struct WelcomeView: View {
             }
             .padding(.horizontal, 20)
         }
-        .navigationTitle("")
-        .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden)
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
     }
     
