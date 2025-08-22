@@ -7,38 +7,66 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @State private var path = NavigationPath()
-    @State private var hasSeenWelcome: Bool = UserDefaults.standard.bool(forKey: "hasSeenWelcome")
-    
-    var body: some View {
-        NavigationStack(path: $path) {
-            Group {
-                if hasSeenWelcome {
-                    SignInView(path: $path)
-                } else {
-                    WelcomeView(path: $path) {
-                        UserDefaults.standard.set(true, forKey: "hasSeenWelcome")
-                        hasSeenWelcome = true
-                    }
-                }
-            }
-            .navigationDestination(for: AppRoute.self) { route in
-                switch route {
-                case .login:
-                    LoginView(path: $path)
-                case .signup:
-                    SignUpView(path: $path)
-                case .signin:
-                    SignInView(path: $path)
-                }
-            }
-        }
-    }
-}
-
 enum AppRoute: Hashable {
+    case welcome
     case login
     case signup
     case signin
+    case mainTab
+    case productDetail(ProductModel)
+}
+
+struct ContentView: View {
+    @State private var path = NavigationPath()
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome: Bool = false
+    @StateObject var mainVM = MainViewModel.shared
+    
+    var body: some View {
+        NavigationStack(path: $path) {
+            // Root view trống (Splash)
+            Color.clear
+                .ignoresSafeArea()
+                .navigationDestination(for: AppRoute.self) { route in
+                    switch route {
+                    case .welcome:
+                        WelcomeView(path: $path)
+                    case .login:
+                        LoginView(path: $path)
+                    case .signup:
+                        SignUpView(path: $path)
+                    case .signin:
+                        SignInView(path: $path)
+                    case .mainTab:
+                        MainTabView(path: $path)
+                    case .productDetail(let product):
+                        ProductDetailView(path: $path, detailVM: ProductDetailViewModel(prodObj: product))
+                    }
+                    
+                }
+                .onAppear {
+                    
+                    path.removeLast(path.count)
+                    
+                    if !hasSeenWelcome {
+                        path.append(AppRoute.welcome)
+                    } else if !mainVM.isUserLogin {
+                        path.append(AppRoute.signin)
+                    } else {
+                        path.append(AppRoute.mainTab)
+                    }
+                }
+                .onChange(of: mainVM.isUserLogin) { newValue in
+
+                    if newValue {
+                        // Login thành công → đi thẳng MainTab
+                        path = NavigationPath()
+                        path.append(AppRoute.mainTab)
+                    } else {
+                        path = NavigationPath()
+                        // Logout → về Login
+                        path.append(AppRoute.signin)
+                    }
+                }
+        }
+    }
 }

@@ -86,7 +86,7 @@ struct SignUpView: View {
                     .padding(.bottom, .screenWidth * 0.02)
                     
                     RoundButton(title: "signup_button".localized) {
-                        mainVM.serviceCallSignUp()
+                        mainVM.signUp()
                     }
                     .padding(.bottom, .screenWidth * 0.05)
                     
@@ -102,7 +102,7 @@ struct SignUpView: View {
                             .foregroundColor(.primaryApp)
                     }
                     .onTapGesture {
-                        path.append(AppRoute.signin) // Điều hướng sang SignInView
+                        path = NavigationPath([AppRoute.signin]) // Điều hướng sang SignInView
                     }
                     
                     
@@ -137,14 +137,13 @@ struct SignUpView: View {
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
             
+            SpinnerView(isLoading: $mainVM.isLoading)
             
         }
         .alert(isPresented: $mainVM.showError, content: {
             Alert(title: Text(Globs.AppName), message: Text(mainVM.errorMessage), dismissButton: .default(Text("OK")))
         })
-        .navigationTitle("")
-        .navigationBarHidden(true)
-        .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
         
         

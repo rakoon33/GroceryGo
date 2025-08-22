@@ -4,109 +4,128 @@
 //
 //  Created by Phạm Văn Nam on 18/6/25.
 //
-
 import SwiftUI
 
 class MainViewModel: ObservableObject {
-    static var shared: MainViewModel = MainViewModel()
+    static let shared = MainViewModel()
     
+    // MARK: - Dependencies
+    private let authService: AuthServiceProtocol
+    
+    // MARK: - Published state
     @Published var txtUsername: String = ""
     @Published var txtEmail: String = ""
     @Published var txtPassword: String = ""
     @Published var isShowPassword: Bool = false
-    
+    @Published var isLoading: Bool = false
     @Published var showError = false
     @Published var errorMessage: String = ""
+    @Published var isUserLogin: Bool = false
+    @Published var userObj: UserModel = UserModel()
     
-    init() {
-        //        #if DEBUG
-        //        txtUsername = "user4"
-        //        txtEmail = "test@gmail.com"
-        //        txtPassword = "123456"
-        //        #endif
-    }
-    
-    
-    //MARK: ServiceCall
-    
-    func serviceCallLogin() {
+    // MARK: - Init
+    init(authService: AuthServiceProtocol = AuthService()) {
         
-        if(txtEmail.isEmpty || !txtEmail.isValidEmail) {
-            self.errorMessage = "error_invalid_email".localized
-            self.showError = true
-            return
-        }
+        self.authService = authService
         
-        if(txtPassword.isEmpty) {
-            self.errorMessage = "error_invalid_password".localized
-            self.showError = true
-            return
-        }
+        // Load login state từ UserDefaults qua Utils
+        self.isUserLogin = Utils.UDValueBool(key: Globs.userLogin)
         
-        ServiceCall.post(parameter: ["email": txtEmail, "password": txtPassword, "dervice_token": ""] ,path: Globs.SV_LOGIN) { responseObject in
+        // Load userObj nếu có
+        if let data = Utils.UDValue(key: Globs.userPayload) as? Data,
+           let user = try? JSONDecoder().decode(UserModel.self, from: data) {
+            self.userObj = user
             
-            if let response = responseObject {
-                if response[KKey.status] as? String ?? "" == "1" {
-                    
-                    self.txtEmail = ""
-                    self.txtPassword = ""
-                    self.isShowPassword = false
-                    self.errorMessage = response[KKey.message] as? String ?? "success_message".localized
-                    self.showError = true
-                } else {
-                    self.errorMessage = response[KKey.message] as? String ?? "fail_message".localized
-                    self.showError = true
-                }
-            }
-            
-        } failure: { netError in
-            self.errorMessage = netError.errorMessage
-            self.showError = true
-        }
-    }
-    
-    func serviceCallSignUp() {
-        
-        if(txtUsername.isEmpty) {
-            self.errorMessage = "error_invalid_username".localized
-            self.showError = true
-            return
         }
         
-        if(txtEmail.isEmpty || !txtEmail.isValidEmail) {
-            self.errorMessage = "error_invalid_email".localized
-            self.showError = true
-            return
-        }
-        
-        if(txtPassword.isEmpty) {
-            self.errorMessage = "error_invalid_password".localized
-            self.showError = true
-            return
-        }
-   
-        ServiceCall.post(parameter: ["username": txtUsername, "email": txtEmail, "password": txtPassword, "dervice_token": ""] ,path: Globs.SV_SIGN_UP) { responseObject in
-            if let response = responseObject {
-                if response[KKey.status] as? String ?? "" == "1" {
-                    
-                    self.txtEmail = ""
-                    self.txtUsername = ""
-                    self.txtPassword = ""
-                    self.isShowPassword = false
-                    self.errorMessage = response[KKey.message] as? String ?? "success_message".localized
-                    self.showError = true
-                } else {
-                    self.errorMessage = response[KKey.message] as? String ?? "fail_message".localized
-                    self.showError = true
-                }
-            }
-            
-        } failure: { netError in
-            print(netError)
-            self.errorMessage = netError.errorMessage
-            self.showError = true
-        }
-    }
-    
-}
+        #if DEBUG
+        self.txtEmail = "test@gmail.com"
+        self.txtPassword = "123456"
+        self.txtUsername = "TestUser"
 
+        self.userObj.authToken = "prBNvKYRG8lXz2KqzBgv"
+        #endif
+    }
+
+    // MARK: - Public API
+    func login() {
+        guard validateLoginInputs() else { return }
+        isLoading = true
+        authService.login(email: txtEmail, password: txtPassword) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success(let user):
+                    self.setUserData(user: user)
+                    self.isLoading = false
+                case .failure(let error):
+                    self.errorMessage = error.errorMessage
+                    self.showError = true
+                    self.isLoading = false
+                }
+            }
+        }
+    }
+    
+    func signUp() {
+        guard validateSignUpInputs() else { return }
+        isLoading = true
+        authService.signUp(username: txtUsername, email: txtEmail, password: txtPassword) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success(let user):
+                    self.setUserData(user: user)
+                    self.isLoading = false
+                case .failure(let error):
+                    self.errorMessage = error.errorMessage
+                    self.showError = true
+                    self.isLoading = false
+                }
+            }
+        }
+    }
+    
+    // MARK: - Validation
+    private func validateLoginInputs() -> Bool {
+        if txtEmail.isEmpty || !txtEmail.isValidEmail {
+            errorMessage = "error_invalid_email".localized
+            showError = true
+            return false
+        }
+        if txtPassword.isEmpty {
+            errorMessage = "error_invalid_password".localized
+            showError = true
+            return false
+        }
+        return true
+    }
+    
+    private func validateSignUpInputs() -> Bool {
+        if txtUsername.isEmpty {
+            errorMessage = "error_invalid_username".localized
+            showError = true
+            return false
+        }
+        return validateLoginInputs()
+    }
+    
+    // MARK: - Save user
+    private func setUserData(user: UserModel) {
+        // 1. Encode & save to UserDefaults
+        if let userData = try? JSONEncoder().encode(user) {
+            Utils.UDSET(data: userData, key: Globs.userPayload)
+        }
+        
+        // 2. Update state
+        self.userObj = user
+        Utils.UDSET(data: true, key: Globs.userLogin)
+        self.isUserLogin = true
+        
+        // 3. Reset input
+        self.txtEmail = ""
+        self.txtUsername = ""
+        self.txtPassword = ""
+        self.isShowPassword = false
+    }
+}

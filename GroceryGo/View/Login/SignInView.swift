@@ -155,9 +155,7 @@ struct SignInView: View {
             self.countryObj = Country(phoneCode: "84", isoCode: "VN")
         }
         .navigationTitle("")
-        .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden)
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
     }
 }

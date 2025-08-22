@@ -11,7 +11,7 @@ struct LoginView: View {
     
     @Binding var path: NavigationPath
 //    @Environment(\.presentationMode) var mode: Binding<PresentationMode> nếu xài navigationView
-    @StateObject var loginVM = MainViewModel.shared;
+    @StateObject var loginVM = MainViewModel.shared
     
     var body: some View {
         ZStack {
@@ -64,10 +64,10 @@ struct LoginView: View {
                 .padding(.bottom, .screenWidth * 0.05)
                 
                 RoundButton(title: "login_button".localized) {
-                    loginVM.serviceCallLogin()
+                    loginVM.login()
                 }
                 .padding(.bottom, .screenWidth * 0.05)
-                
+
                 
                 
                 HStack {
@@ -108,18 +108,20 @@ struct LoginView: View {
                 }
                 
                 Spacer()
+                
+                
             }
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
+            
+            SpinnerView(isLoading: $loginVM.isLoading)
         }
         .alert(isPresented: $loginVM.showError) {
             
             Alert(title: Text(Globs.AppName), message: Text(loginVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
         }
-        .background(Color.white)
-        .navigationTitle("")
-        .navigationBarBackButtonHidden(true)
-        .navigationBarHidden(true)
+        .background(.systemBackground)
+        .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
         
     }

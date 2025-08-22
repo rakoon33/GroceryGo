@@ -10,7 +10,6 @@ import SwiftUI
 struct WelcomeView: View {
     
     @Binding var path: NavigationPath
-    var onFinish: () -> Void
     
     var body: some View {
         
@@ -40,25 +39,23 @@ struct WelcomeView: View {
                     .multilineTextAlignment(.center)
                     .padding(.bottom, 30)
                 
-        
-                    RoundButton(title: "welcome_get_started".localized) {
-                        onFinish()
-                    }
+                
+                RoundButton(title: "welcome_get_started".localized) {
+                    UserDefaults.standard.set(true, forKey: "hasSeenWelcome")
+                    path.append(AppRoute.signin)
+                }
                 
                 Spacer()
                     .frame(height: 60)
             }
             .padding(.horizontal, 20)
         }
-        .navigationTitle("")
-        .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden)
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
     }
     
 }
 
 #Preview {
-    WelcomeView(path: .constant(NavigationPath()), onFinish: {})
+    WelcomeView(path: .constant(NavigationPath()))
 }

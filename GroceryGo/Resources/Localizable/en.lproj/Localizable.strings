@@ -6,10 +6,16 @@
   
 */
 
-// MARK: - Login/Signin/SignUp
+// MARK: - Common
+"ok_button" = "OK";
+"cancel_button" = "Cancel";
+"back_button" = "Back";
+"next_button" = "Next";
+"login_button" = "Log in";
+"signup_button" = "Sign Up";
+"continue_button" = "Continue";
 
-/* View */
-
+// MARK: - Login
 "login_title" = "Login";
 "login_subtitle" = "Enter your email and password";
 "login_email_title" = "Email";
@@ -17,13 +23,9 @@
 "login_password_title" = "Password";
 "login_password_placeholder" = "Enter your password";
 "login_forgot_password" = "Forgot password?";
-"login_button" = "Log in";
-"signup_button" = "Sign Up";
 "login_no_account" = "Don't have an account?";
-"ok_button" = "Ok";
 
-// MARK: - SignInView
-/* View */
+// MARK: - SignIn
 "sign_in_title" = "Get your groceries\nwith GroceryGo";
 "sign_in_placeholder_mobile" = "Enter mobile";
 "sign_in_continue_email_login" = "Continue with Email Sign In";
@@ -32,7 +34,7 @@
 "sign_in_continue_google" = "Continue with Google";
 "sign_in_continue_facebook" = "Continue with Facebook";
 
-// MARK: - SignUpView
+// MARK: - SignUp
 "signup_title" = "Sign Up";
 "signup_subtitle" = "Enter your credentials to continue";
 "signup_email_title" = "Email";
@@ -45,24 +47,28 @@
 "signup_terms_title" = "Terms of services";
 "signup_and" = "and";
 "signup_privacy_title" = "Privacy Policy.";
-"signup_button" = "Sign Up";
 "signup_already_have" = "Already have an account?";
 "signup_signin" = "Sign In";
 
-// MARK: - WelcomeView
+// MARK: - Welcome
 "welcome_title" = "Welcome\nto our shop";
 "welcome_subtitle" = "Fast grocery delivery at your convenience.";
 "welcome_get_started" = "Get Started";
 
-// MARK: - MainModel
-"error_invalid_email" = "Please enter valid email address";
-"error_invalid_password" = "Please enter valid password";
-"error_invalid_username" = "Please enter valid username";
+// MARK: - ProductDetailView
+"product_detail_title" = "Product Detail";
+"product_detail_nutritions" = "Nutritions";
+"product_detail_review" = "Review";
+
+// MARK: - Messages
 "success_message" = "Success";
 "fail_message" = "Fail";
 
+// MARK: - Errors
+"error_invalid_email" = "Please enter valid email address";
+"error_invalid_password" = "Please enter valid password";
+"error_invalid_username" = "Please enter valid username";
 
-// MARK: -  Error messages
 "invalid_URL" = "Invalid URL.";
 "no_data" = "No data received.";
 "decoding_failed" = "Failed to decode data.";
@@ -74,3 +80,4 @@
 "not_found" = "Resource not found.";
 "server_error" = "Server error occurred.";
 "verification_expired" = "Verification expired.";
+"no_internet" = "No internet connection. Please check your network settings.";

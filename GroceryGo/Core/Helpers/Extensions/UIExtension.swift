@@ -81,29 +81,31 @@ extension CGFloat {
 
 extension Color {
     
-    static var primaryApp: Color {
-        return Color(hex: "53B175")
-    }
+    // đã đặt trong color set
+//    static var primaryApp: Color {
+//        return Color(hex: "53B175")
+//    }
+//    
+//    static var primaryText: Color {
+//        return Color(hex: "030303")
+//    }
+//    
+//    static var secondaryText: Color {
+//        return Color(hex: "828282")
+//    }
+//    
+//    static var textTitle: Color {
+//        return Color(hex: "7C7C7C")
+//    }
+//    
+//    static var placeholder: Color {
+//        return Color(hex: "B1B1B1")
+//    }
+//    
+//    static var darkGray: Color {
+//        return Color(hex: "4C4F4D")
+//    }
     
-    static var primaryText: Color {
-        return Color(hex: "030303")
-    }
-    
-    static var secondaryText: Color {
-        return Color(hex: "828282")
-    }
-    
-    static var textTitle: Color {
-        return Color(hex: "7C7C7C")
-    }
-    
-    static var placeholder: Color {
-        return Color(hex: "B1B1B1")
-    }
-    
-    static var darkGray: Color {
-        return Color(hex: "4C4F4D")
-    }
     
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: .alphanumerics.inverted)
@@ -145,5 +147,23 @@ struct ShowButton: ViewModifier {
                     .foregroundColor(.textTitle)
             }
         }
+    }
+}
+
+extension View {
+    func cornerRadius(_ radius: CGFloat, corner: UIRectCorner) -> some View {
+        clipShape(RoundCorner(radius: radius, corners: corner))
+    }
+}
+
+
+struct RoundCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+    
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect ,byRoundingCorners: corners ,cornerRadii: CGSize(width: radius, height: radius))
+        
+        return Path(path.cgPath)
     }
 }
