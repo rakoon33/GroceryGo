@@ -25,6 +25,7 @@ struct ContentView: View {
         NavigationStack(path: $path) {
             // Root view trống (Splash)
             Color.clear
+                .toolbar(.hidden, for: .navigationBar)
                 .ignoresSafeArea()
                 .navigationDestination(for: AppRoute.self) { route in
                     switch route {
@@ -45,14 +46,15 @@ struct ContentView: View {
                 }
                 .onAppear {
                     
-                    path.removeLast(path.count)
+                    path = NavigationPath()
                     
                     if !hasSeenWelcome {
                         path.append(AppRoute.welcome)
                     } else if !mainVM.isUserLogin {
                         path.append(AppRoute.signin)
                     } else {
-                        path.append(AppRoute.mainTab)
+                        path.append(AppRoute.mainTab
+    )
                     }
                 }
                 .onChange(of: mainVM.isUserLogin) { newValue in
@@ -68,5 +70,6 @@ struct ContentView: View {
                     }
                 }
         }
+
     }
 }

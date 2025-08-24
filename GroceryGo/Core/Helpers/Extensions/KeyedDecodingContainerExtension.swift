@@ -44,24 +44,35 @@ extension KeyedDecodingContainer {
         if let str = try? decode(String.self, forKey: key) {
             return str
         }
-        
-        throw DecodingError.dataCorruptedError(
-            forKey: key,
-            in: self,
-            debugDescription: "Expected String value"
-        )
-    }
-    
-    func decodeDate(forKey key: K, format: String = "yyyy-MM-dd'T'HH:mm:ss.SSSZ") throws -> Date {
-        let str = try decode(String.self, forKey: key)
-        if let date = str.stringDateToDate(format: format) {
-            return date
+        if let intVal = try? decode(Int.self, forKey: key) {
+            return String(intVal)
+        }
+        if let dblVal = try? decode(Double.self, forKey: key) {
+            return String(dblVal)
         }
         
         throw DecodingError.dataCorruptedError(
             forKey: key,
             in: self,
-            debugDescription: "Date string does not match format \(format)"
+            debugDescription: "Expected String, Int, or Double convertible to String"
+        )
+    }
+    
+    func decodeDate(forKey key: K, formats: [String] = [
+        "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+        "yyyy-MM-dd'T'HH:mm:ssZ",
+        "yyyy-MM-dd HH:mm:ss"
+    ]) throws -> Date {
+        let str = try decode(String.self, forKey: key)
+        for format in formats {
+            if let date = str.stringDateToDate(format: format) {
+                return date
+            }
+        }
+        throw DecodingError.dataCorruptedError(
+            forKey: key,
+            in: self,
+            debugDescription: "Date string does not match expected formats: \(formats)"
         )
     }
 }

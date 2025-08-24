@@ -22,7 +22,7 @@ struct TypeModel: Codable, Identifiable, Equatable {
     enum CodingKeys: String, CodingKey {
         case id = "type_id"
         case name = "type_name"
-        case image
+        case image = "image"
         case colorHex = "color"
     }
     

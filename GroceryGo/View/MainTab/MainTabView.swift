@@ -34,16 +34,13 @@ struct MainTabView: View {
                 ExploreView()
                     .tag(MainTab.cart)
                 
-                ExploreView()
+                FavouriteView(path: $path)
                     .tag(MainTab.favorite)
                 
                 ExploreView()
                     .tag(MainTab.account)
             }
-            .onAppear {
-                UIScrollView.appearance().isScrollEnabled = false
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
+
             .onChange(of: homeVM.selectedTab) { newValue in
                 debugPrint("tab:", newValue)
             }

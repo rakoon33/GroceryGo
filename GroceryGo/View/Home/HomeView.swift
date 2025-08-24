@@ -137,10 +137,14 @@ struct HomeView: View {
             
         }
         .ignoresSafeArea()
+        .onAppear {
+            homeVM.fetchData()
+        }
+        .toolbar(.hidden, for: .navigationBar)
         .alert(isPresented: $homeVM.showError) {
             
             Alert(title: Text(Globs.AppName), message: Text(homeVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
-        }
+        }  
         
     }
     

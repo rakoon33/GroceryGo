@@ -58,28 +58,28 @@ struct ProductModel: Codable, Identifiable, Equatable, Hashable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        id       = try container.decodeInt(forKey: .id)
-        catId    = try container.decodeInt(forKey: .catId)
-        brandId  = try container.decodeInt(forKey: .brandId)
-        typeId   = try container.decodeInt(forKey: .typeId)
-        
-        name     = try container.decodeString(forKey: .name)
-        detail   = try container.decodeString(forKey: .detail)
-        unitName = try container.decodeString(forKey: .unitName)
-        unitValue = try container.decodeString(forKey: .unitValue)
-        nutritionWeight = try container.decodeString(forKey: .nutritionWeight)
-        
-        offerPrice = try? container.decodeDouble(forKey: .offerPrice) // optional
-        startDate  = try? container.decodeDate(forKey: .startDate)
-        endDate    = try? container.decodeDate(forKey: .endDate)
-        price      = try container.decodeDouble(forKey: .price)
-        
-        image     = try container.decodeString(forKey: .image)
-        catName   = try container.decodeString(forKey: .catName)
-        typeName  = try container.decodeString(forKey: .typeName)
-        isFav     = (try container.decodeInt(forKey: .isFav)) == 1
-        avgRating = try container.decodeDouble(forKey: .avgRating)
+        id              = try container.decodeInt(forKey: .id)
+        catId           = try container.decodeInt(forKey: .catId)
+        brandId         = try container.decodeInt(forKey: .brandId)
+        typeId          = try container.decodeInt(forKey: .typeId)
+
+        name            = try container.decodeString(forKey: .name)
+        detail          = (try? container.decodeString(forKey: .detail)) ?? ""
+        unitName        = (try? container.decodeString(forKey: .unitName)) ?? ""
+        unitValue       = (try? container.decodeString(forKey: .unitValue)) ?? ""
+        nutritionWeight = (try? container.decodeString(forKey: .nutritionWeight)) ?? ""
+
+        offerPrice      = try? container.decodeDouble(forKey: .offerPrice)
+        startDate       = try? container.decodeDate(forKey: .startDate)
+        endDate         = try? container.decodeDate(forKey: .endDate)
+        price           = try container.decodeDouble(forKey: .price)
+
+        image           = (try? container.decodeString(forKey: .image)) ?? ""
+        catName         = (try? container.decodeString(forKey: .catName)) ?? ""
+        typeName        = (try? container.decodeString(forKey: .typeName)) ?? ""
+        isFav           = (try? container.decodeInt(forKey: .isFav)) == 1
+        avgRating       = (try? container.decodeDouble(forKey: .avgRating)) ?? 0.0
+
     }
 
     

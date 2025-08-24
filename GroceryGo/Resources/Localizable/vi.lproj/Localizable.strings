@@ -60,6 +60,9 @@
 "product_detail_nutritions" = "Dinh dưỡng";
 "product_detail_review" = "Đánh giá";
 
+// MARK: - FavouriteView
+"product_detail_favorites" = "Yêu thích";
+
 // MARK: - Messages
 "success_message" = "Thành công";
 "fail_message" = "Thất bại";
