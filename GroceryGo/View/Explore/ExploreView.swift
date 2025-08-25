@@ -8,9 +8,57 @@
 import SwiftUI
 
 struct ExploreView: View {
+    
+    @State var txtSearch: String = ""
+    @StateObject var exploreVM = ExploreViewModel.shared
+    
+    var columns = [
+        GridItem(.flexible(), spacing: 15),
+        GridItem(.flexible(), spacing: 15)
+    ]
+    
     var body: some View {
-        Text("Hello, Exprole view!")
+        ZStack {
+            VStack {
+                HStack {
+                    Spacer()
+                    
+                    Text("find_products".localized)
+                        .font(.customfont(.bold, fontSize: 20))
+                        .frame(height: 46)
+                    
+                    Spacer()
+                }
+                .padding(.top, .topInsets)
+                .background(Color.white)
+                
+                SearchTextField(placeholder: "Search store", txt: $txtSearch)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 4)
+                
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 20) {
+                        ForEach(exploreVM.listArr, id: \.id) {
+                            cObj in
+                            ExploreCategoryCell(cObj: cObj)
+                                .aspectRatio(0.95, contentMode: .fill)
+                        }
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    .padding(.bottom, .bottomInsets + 60)
+                }
+                
+                Spacer()
+            }
+        }
+        .onAppear {
+            exploreVM.fetchExploreData()
+        }
+        .ignoresSafeArea()
+        .toolbar(.hidden, for: .navigationBar)
     }
+    
 }
 
 #Preview {

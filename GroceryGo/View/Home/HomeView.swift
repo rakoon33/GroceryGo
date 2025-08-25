@@ -132,19 +132,21 @@ struct HomeView: View {
                 }
                 .padding(.bottom, 15)
             }
+            .padding(.bottom, .bottomInsets + 60)
             
             SpinnerView(isLoading: $homeVM.isLoading)
             
         }
-        .ignoresSafeArea()
         .onAppear {
             homeVM.fetchData()
         }
+        .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)
         .alert(isPresented: $homeVM.showError) {
             
             Alert(title: Text(Globs.AppName), message: Text(homeVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
-        }  
+        }
+        
         
     }
     

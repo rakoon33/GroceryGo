@@ -62,6 +62,11 @@
 
 // MARK: - FavouriteView
 "product_detail_favorites" = "Favorites";
+"add_all_to_cart" = "Add all to cart";
+
+// MARK: - ExploreView
+"find_products" = "Find Products";
+
 
 // MARK: - Messages
 "success_message" = "Success";

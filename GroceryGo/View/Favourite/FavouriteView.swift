@@ -45,7 +45,12 @@ struct FavouriteView: View {
                 .shadow(color: Color.black.opacity(0.2), radius: 2)
                 
                 Spacer()
+                
+                RoundButton(title: "add_all_to_cart".localized)
+                    .padding(20)
+                    .padding(.bottom, .bottomInsets + 80)
             }
+            
         }
         .onAppear {
             favVM.fetchFavouriteList()

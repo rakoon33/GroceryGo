@@ -44,7 +44,9 @@ struct FavouriteRow: View {
                         .renderingMode(.template)
                         .resizable()
                         .scaledToFit()
+                        .foregroundColor(Color.secondaryText)
                         .frame(width: 15, height: 15)
+                    
                 }
                 Divider()
             }

@@ -225,8 +225,6 @@ struct ProductDetailView: View {
                         }
                     }
                     
-                    Divider()
-                    
                     Button {
                         
                     } label: {
