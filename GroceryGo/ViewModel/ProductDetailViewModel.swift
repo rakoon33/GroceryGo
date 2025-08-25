@@ -33,6 +33,14 @@ final class ProductDetailViewModel: ObservableObject {
         isShowNutrition.toggle()
     }
     
+    func toggleFavourite() {
+        // Cập nhật ngay cho UI mượt
+        isFav.toggle()
+        
+        // Gọi FavouriteViewModel để sync danh sách
+        FavouriteViewModel.shared.addOrRemoveFavourite(prodId: pObj.id)
+    }
+    
     func addSubQTY(isAdd: Bool = true) {
         if(isAdd) {
             qty += 1

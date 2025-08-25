@@ -42,9 +42,9 @@ struct ProductDetailView: View {
                             .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                         
                         Button {
-                            detailVM.isFav = !detailVM.isFav
+                            detailVM.toggleFavourite()
                         } label: {
-                            Image(detailVM.isFav ? "favorite" : "fav")
+                            Image(detailVM.isFav ? "favorite" : "not_fav")
                                 .renderingMode(.template)
                                 .resizable()
                                 .scaledToFit()
@@ -96,7 +96,7 @@ struct ProductDetailView: View {
                         Text("$\(detailVM.pObj.offerPrice ?? detailVM.pObj.price * Double(detailVM.qty), specifier: "%.2f")")
                             .font(.customfont(.bold, fontSize: 28))
                             .foregroundColor(.primaryText)
-                 
+                        
                     }
                     .padding(.vertical, 8)
                     
@@ -123,7 +123,7 @@ struct ProductDetailView: View {
                                 .scaledToFit()
                                 .frame(width: 15, height: 15)
                                 .padding(15)
-                                
+                            
                         }
                         .foregroundColor(Color.secondaryText)
                     }
@@ -154,7 +154,7 @@ struct ProductDetailView: View {
                             .padding(8)
                             .background(Color.placeholder.opacity(0.5))
                             .cornerRadius(5)
-                            
+                        
                         
                         Button {
                             withAnimation() {
@@ -167,7 +167,7 @@ struct ProductDetailView: View {
                                 .scaledToFit()
                                 .frame(width: 15, height: 15)
                                 .padding(15)
-                                
+                            
                         }
                         .foregroundColor(Color.secondaryText)
                     }
@@ -204,7 +204,7 @@ struct ProductDetailView: View {
                         .font(.customfont(.semibold, fontSize: 16))
                         .foregroundColor(.primaryText)
                         .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-                
+                    
                     HStack(spacing: 2) {
                         
                         
@@ -225,10 +225,8 @@ struct ProductDetailView: View {
                         }
                     }
                     
-                    Divider()
-                    
                     Button {
-                       
+                        
                     } label: {
                         Image("next")
                             .renderingMode(.template)
@@ -236,7 +234,7 @@ struct ProductDetailView: View {
                             .scaledToFit()
                             .frame(width: 15, height: 15)
                             .padding(15)
-                            
+                        
                     }
                     .foregroundColor(Color.secondaryText)
                 }
@@ -279,7 +277,7 @@ struct ProductDetailView: View {
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
             
-            
+            SpinnerView(isLoading: $detailVM.isLoading)
             
         }
         .background(.systemBackground)

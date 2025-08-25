@@ -60,6 +60,13 @@
 "product_detail_nutritions" = "Dinh dưỡng";
 "product_detail_review" = "Đánh giá";
 
+// MARK: - FavouriteView
+"product_detail_favorites" = "Yêu thích";
+"add_all_to_cart" = "Thêm tất cả vào giỏ hàng";
+
+// MARK: - ExploreView
+"find_products" = "Tìm sản phẩm";
+
 // MARK: - Messages
 "success_message" = "Thành công";
 "fail_message" = "Thất bại";

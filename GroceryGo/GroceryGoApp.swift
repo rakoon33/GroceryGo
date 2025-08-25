@@ -10,6 +10,10 @@ import SwiftUI
 @main
 struct GroceryGoApp: App {
     
+    init() {
+        UITabBar.appearance().isHidden = true
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

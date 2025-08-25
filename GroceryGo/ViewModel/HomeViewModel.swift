@@ -28,8 +28,7 @@ final class HomeViewModel: ObservableObject {
     init(homeService: HomeServiceProtocol = HomeService()) {
         
         self.homeService = homeService
-        
-        fetchData()
+
     }
     
     func fetchData() {

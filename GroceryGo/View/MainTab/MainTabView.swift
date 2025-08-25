@@ -22,73 +22,65 @@ struct MainTabView: View {
     
     
     var body: some View {
-        VStack {
+        ZStack {
             
-            TabView(selection: $homeVM.selectedTab) {
+            switch homeVM.selectedTab {
+            case .shop:
                 HomeView(path: $path)
-                    .tag(MainTab.shop)
-                
+            case .explore:
                 ExploreView()
-                    .tag(MainTab.explore)
-                
+            case .cart:
                 ExploreView()
-                    .tag(MainTab.cart)
-                
-                ExploreView()
-                    .tag(MainTab.favorite)
-                
-                ExploreView()
-                    .tag(MainTab.account)
-            }
-            .onAppear {
-                UIScrollView.appearance().isScrollEnabled = false
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .onChange(of: homeVM.selectedTab) { newValue in
-                debugPrint("tab:", newValue)
+            case .favorite:
+                FavouriteView(path: $path)
+            case .account:
+                ExploreView() //
             }
             
-            
-            HStack {
+            VStack {
                 
-                TabButton(title: "Shop", icon: "store_tab", isSelected: homeVM.selectedTab == .shop) {
-                    
-                    withAnimation { homeVM.selectedTab = .shop }
-                    
-                }
-                TabButton(title: "Explore", icon: "explore_tab", isSelected: homeVM.selectedTab == .explore) {
-                    
-                    withAnimation { homeVM.selectedTab = .explore }
-                }
-                TabButton(title: "Cart", icon: "cart_tab", isSelected: homeVM.selectedTab == .cart) {
-                    
-                    withAnimation { homeVM.selectedTab = .cart }
-                    
-                }
-                TabButton(title: "Favorite", icon: "fav_tab", isSelected: homeVM.selectedTab == .favorite) {
-                    
-                    withAnimation { homeVM.selectedTab = .favorite }
-                    
-                }
-                TabButton(title: "Account", icon: "account_tab", isSelected: homeVM.selectedTab == .account) {
-                    
-                    withAnimation { homeVM.selectedTab = .account }
-                    
-                }
+                Spacer()
                 
+                HStack {
+                    
+                    TabButton(title: "Shop", icon: "store_tab", isSelected: homeVM.selectedTab == .shop) {
+                        
+                        withAnimation { homeVM.selectedTab = .shop }
+                        
+                    }
+                    TabButton(title: "Explore", icon: "explore_tab", isSelected: homeVM.selectedTab == .explore) {
+                        
+                        withAnimation { homeVM.selectedTab = .explore }
+                    }
+                    TabButton(title: "Cart", icon: "cart_tab", isSelected: homeVM.selectedTab == .cart) {
+                        
+                        withAnimation { homeVM.selectedTab = .cart }
+                        
+                    }
+                    TabButton(title: "Favorite", icon: "fav_tab", isSelected: homeVM.selectedTab == .favorite) {
+                        
+                        withAnimation { homeVM.selectedTab = .favorite }
+                        
+                    }
+                    TabButton(title: "Account", icon: "account_tab", isSelected: homeVM.selectedTab == .account) {
+                        
+                        withAnimation { homeVM.selectedTab = .account }
+                        
+                    }
+                    
+                }
+                .padding(.top, 10)
+                .padding(.bottom, .bottomInsets)
+                .padding(.horizontal, 10)
+                .background(Color.white)
+                .cornerRadius(15)
+                .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: -2)
             }
-            
-            .padding(.top, 10)
-            .padding(.bottom, .bottomInsets)
-            .padding(.horizontal, 10)
-            .background(Color.white)
-            .cornerRadius(15)
-            .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: -2)
             
             
         }
         .toolbar(.hidden, for: .navigationBar)
-        .ignoresSafeArea(.all, edges: .bottom)
+        .ignoresSafeArea()
         
     }
 }

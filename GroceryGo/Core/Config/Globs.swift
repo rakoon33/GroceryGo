@@ -19,6 +19,11 @@ struct Globs {
     static let SV_SIGN_UP = BASE_URL + "sign_up"
     static let SV_HOME = BASE_URL + "home"
     static let SV_PRODUCT_DETAIL = BASE_URL + "product_detail"
+    static let SV_ADD_REMOVE_FAVOURITE = BASE_URL + "add_remove_favorite"
+    static let SV_FAVOURITE_LIST = BASE_URL + "favorite_list"
+    
+    static let SV_EXPLORE_LIST = BASE_URL + "explore_category_list"
+    static let SV_EXPLORE_ITEM_LIST = BASE_URL + "explore_category_items_list"
 }
 
 struct KKey {

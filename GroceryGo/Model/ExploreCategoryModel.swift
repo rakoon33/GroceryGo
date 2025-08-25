@@ -1,14 +1,15 @@
 //
-//  TypeModel.swift
+//  ExploreCategoryViewModel.swift
 //  GroceryGo
 //
-//  Created by Phạm Văn Nam on 21/8/25.
+//  Created by Phạm Văn Nam on 25/8/25.
 //
 
 import Foundation
 import SwiftUI
 
-struct TypeModel: Codable, Identifiable, Equatable {
+
+struct ExploreCategoryModel: Codable, Identifiable, Equatable {
     let id: Int
     let name: String
     let image: String
@@ -19,8 +20,8 @@ struct TypeModel: Codable, Identifiable, Equatable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case id = "type_id"
-        case name = "type_name"
+        case id = "cat_id"
+        case name = "cat_name"
         case image = "image"
         case colorHex = "color"
     }
@@ -32,7 +33,7 @@ struct TypeModel: Codable, Identifiable, Equatable {
            self.colorHex = colorHex
        }
     
-    static func == (lhs: TypeModel, rhs: TypeModel) -> Bool {
+    static func == (lhs: ExploreCategoryModel, rhs: ExploreCategoryModel) -> Bool {
         lhs.id == rhs.id
     }
 }
