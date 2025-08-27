@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ExploreView: View {
     
+    @Binding var path: NavigationPath
     @State var txtSearch: String = ""
     @StateObject var exploreVM = ExploreViewModel.shared
     
@@ -41,6 +42,9 @@ struct ExploreView: View {
                         ForEach(exploreVM.listArr, id: \.id) {
                             cObj in
                             ExploreCategoryCell(cObj: cObj)
+                            {
+                               
+                            }
                                 .aspectRatio(0.95, contentMode: .fill)
                         }
                     }
@@ -51,9 +55,15 @@ struct ExploreView: View {
                 
                 Spacer()
             }
+            
+            SpinnerView(isLoading: $exploreVM.isLoading)
         }
         .onAppear {
             exploreVM.fetchExploreData()
+        }
+        .alert(isPresented: $exploreVM.showError) {
+            
+            Alert(title: Text(Globs.AppName), message: Text(exploreVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)
@@ -62,5 +72,5 @@ struct ExploreView: View {
 }
 
 #Preview {
-    ExploreView()
+    ExploreView(path: .constant(NavigationPath()))
 }

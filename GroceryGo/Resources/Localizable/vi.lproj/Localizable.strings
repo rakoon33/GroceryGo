@@ -14,6 +14,20 @@
 "login_button" = "Đăng nhập";
 "signup_button" = "Đăng ký";
 "continue_button" = "Tiếp tục";
+"select_language" = "Chọn ngôn ngữ";
+
+"exclusive_offer" = "Ưu đãi độc quyền";
+"best_selling" = "Bán chạy nhất";
+"groceries" = "Hàng tạp hóa";
+"see_all" = "Xem tất cả";
+"search_store" = "Search store";
+
+// MARK: - Maintab
+"tab_shop" = "Cửa hàng";
+"tab_explore" = "Khám phá";
+"tab_cart" = "Giỏ hàng";
+"tab_favorite" = "Yêu thích";
+"tab_account" = "Tài khoản";
 
 // MARK: - Login
 "login_title" = "Đăng nhập";
@@ -88,3 +102,4 @@
 "server_error" = "Đã xảy ra lỗi máy chủ.";
 "verification_expired" = "Xác thực đã hết hạn.";
 "no_internet" = "Không có kết nối internet. Vui lòng kiểm tra cài đặt mạng của bạn.";
+

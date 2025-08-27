@@ -22,20 +22,41 @@ struct HomeView: View {
                         .scaledToFit()
                         .frame(width: 25)
                     
-                    HStack {
-                        Image("location")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 16, height: 16)
-                        
-                        Text("Viet Nam, HCM")
-                            .font(.customfont(.semibold, fontSize: 18))
-                            .foregroundStyle(.darkGray)
-                    }
+                    Text(Globs.AppName)
+                        .font(.customfont(.semibold, fontSize: 18))
+                        .foregroundStyle(.primaryApp)
+                        .padding(.bottom, 10)
                     
-                    SearchTextField(placeholder: "Search store", txt: $homeVM.txtSearch)
+//                    HStack {
+//                        
+//                        HStack {
+//                            Image("location")
+//                                .resizable()
+//                                .scaledToFit()
+//                                .frame(width: 16, height: 16)
+//                            
+//                            Text("Viet Nam, HCM")
+//                                .font(.customfont(.semibold, fontSize: 18))
+//                                .foregroundStyle(.darkGray)
+//                        }
+//                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+//                        
+//                        Image(systemName: "globe")
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(width: 16, height: 16)
+//                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
+//                    }
+//                    .padding(.horizontal ,20)
+//                    
+                    
+                    HomeTopBar()
+                    
+                    SearchTextField(placeholder: "search_store", txt: $homeVM.txtSearch)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
+                    
+
                 }
                 .padding(.top, .topInsets)
                 
@@ -46,7 +67,7 @@ struct HomeView: View {
                     .frame(height: 115)
                     .padding(.horizontal, 20)
                 
-                SectionTitleAll(title: "Exclusive offer", titleAll: "See all") {
+                SectionTitleAll(title: "exclusive_offer".localized, titleAll: "see_all".localized) {
                     
                 }
                 .padding(.horizontal, 20)
@@ -71,7 +92,7 @@ struct HomeView: View {
                 }
                 
                 
-                SectionTitleAll(title: "Best selling", titleAll: "See all") {
+                SectionTitleAll(title: "best_selling".localized, titleAll: "see_all".localized) {
                     
                 }
                 .padding(.horizontal, 20)
@@ -94,7 +115,7 @@ struct HomeView: View {
                     .padding(.vertical, 4)
                 }
                 
-                SectionTitleAll(title: "Groceries", titleAll: "See all") {
+                SectionTitleAll(title: "groceries".localized, titleAll: "see_all".localized) {
                     
                 }
                 .padding(.horizontal, 20)

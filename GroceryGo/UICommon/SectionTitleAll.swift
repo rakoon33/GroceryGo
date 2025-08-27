@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SectionTitleAll: View {
-    @State var title: String = "Title"
-    @State var titleAll: String = "View All"
+    var title: String = "Title"
+    var titleAll: String = "View All"
     
     var didTap: (()->())?
     var body: some View {

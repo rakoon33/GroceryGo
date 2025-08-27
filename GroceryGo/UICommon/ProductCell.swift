@@ -11,10 +11,10 @@ import SDWebImageSwiftUI
 struct ProductCell: View {
     
     @State var pObj: ProductModel
-    
+    @State var width: Double = 180.0
     var didTapProduct: (() -> Void)?
     var didAddCart: (() -> Void)?
-    
+
     var body: some View {
 
         Button {
@@ -71,7 +71,7 @@ struct ProductCell: View {
                 }
             }
             .padding(15)
-            .frame(width: 180, height: 230)
+            .frame(width: width, height: 230)
             .overlay {
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(Color.placeholder.opacity(0.5), lineWidth: 1)

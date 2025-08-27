@@ -51,6 +51,8 @@ struct FavouriteView: View {
                     .padding(.bottom, .bottomInsets + 80)
             }
             
+            SpinnerView(isLoading: $favVM.isLoading)
+            
         }
         .onAppear {
             favVM.fetchFavouriteList()

@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 
-struct ExploreCategoryModel: Codable, Identifiable, Equatable {
+struct CategoryModel: Codable, Identifiable, Equatable {
     let id: Int
     let name: String
     let image: String
@@ -31,9 +31,9 @@ struct ExploreCategoryModel: Codable, Identifiable, Equatable {
            self.name = name
            self.image = image
            self.colorHex = colorHex
-       }
+    }
     
-    static func == (lhs: ExploreCategoryModel, rhs: ExploreCategoryModel) -> Bool {
+    static func == (lhs: CategoryModel, rhs: CategoryModel) -> Bool {
         lhs.id == rhs.id
     }
 }

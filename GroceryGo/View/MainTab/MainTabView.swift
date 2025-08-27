@@ -28,13 +28,13 @@ struct MainTabView: View {
             case .shop:
                 HomeView(path: $path)
             case .explore:
-                ExploreView()
+                ExploreView(path: $path)
             case .cart:
-                ExploreView()
+                ExploreView(path: $path)
             case .favorite:
                 FavouriteView(path: $path)
             case .account:
-                ExploreView() //
+                ExploreView(path: $path) //
             }
             
             VStack {
@@ -43,26 +43,26 @@ struct MainTabView: View {
                 
                 HStack {
                     
-                    TabButton(title: "Shop", icon: "store_tab", isSelected: homeVM.selectedTab == .shop) {
+                    TabButton(title: "tab_shop".localized, icon: "store_tab", isSelected: homeVM.selectedTab == .shop) {
                         
                         withAnimation { homeVM.selectedTab = .shop }
                         
                     }
-                    TabButton(title: "Explore", icon: "explore_tab", isSelected: homeVM.selectedTab == .explore) {
+                    TabButton(title: "tab_explore".localized, icon: "explore_tab", isSelected: homeVM.selectedTab == .explore) {
                         
                         withAnimation { homeVM.selectedTab = .explore }
                     }
-                    TabButton(title: "Cart", icon: "cart_tab", isSelected: homeVM.selectedTab == .cart) {
+                    TabButton(title: "tab_cart".localized, icon: "cart_tab", isSelected: homeVM.selectedTab == .cart) {
                         
                         withAnimation { homeVM.selectedTab = .cart }
                         
                     }
-                    TabButton(title: "Favorite", icon: "fav_tab", isSelected: homeVM.selectedTab == .favorite) {
+                    TabButton(title: "tab_favorite".localized, icon: "fav_tab", isSelected: homeVM.selectedTab == .favorite) {
                         
                         withAnimation { homeVM.selectedTab = .favorite }
                         
                     }
-                    TabButton(title: "Account", icon: "account_tab", isSelected: homeVM.selectedTab == .account) {
+                    TabButton(title: "tab_account".localized, icon: "account_tab", isSelected: homeVM.selectedTab == .account) {
                         
                         withAnimation { homeVM.selectedTab = .account }
                         

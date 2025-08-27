@@ -12,7 +12,7 @@ final class ExploreViewModel: ObservableObject {
   
     static var shared: ExploreViewModel = ExploreViewModel()
     
-    private let exploreService: ExploreServiceProtocol
+    private let categoryService: CategoryServiceProtocol
     
     @Published var selectedTab: MainTab = .shop
     @Published var txtSearch: String = ""
@@ -21,17 +21,17 @@ final class ExploreViewModel: ObservableObject {
     @Published var showError = false
     @Published var errorMessage: String = ""
     
-    @Published var listArr: [ExploreCategoryModel] = []
+    @Published var listArr: [CategoryModel] = []
 
-    init(exploreService: ExploreServiceProtocol = ExploreService()) {
+    init(categoryService: CategoryServiceProtocol = CategoryService()) {
         
-        self.exploreService = exploreService
+        self.categoryService = categoryService
 
     }
     
     func fetchExploreData() {
         isLoading = true
-        exploreService.fetchExploreList() { [weak self] result in
+        categoryService.fetchExploreList() { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 switch result {
