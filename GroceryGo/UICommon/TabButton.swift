@@ -9,6 +9,8 @@ import SwiftUI
 
 struct TabButton: View {
     
+    @EnvironmentObject var localization: LocalizationManager
+    
     @State var title: String = "Title"
     @State var icon: String = "store_tab"
     
@@ -27,7 +29,7 @@ struct TabButton: View {
                     .scaledToFit()
                     .frame(width: 25, height: 25)
                 
-                Text(title)
+                Text(title.localized)
                     .font(.customfont(.semibold, fontSize: 14))
    
                 Rectangle()

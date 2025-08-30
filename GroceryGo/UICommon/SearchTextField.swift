@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SearchTextField: View {
     
+    @EnvironmentObject var localization: LocalizationManager
+    
     @State var placeholder: String = "Placeholder"
     @Binding var txt: String
 
@@ -19,7 +21,7 @@ struct SearchTextField: View {
                 .scaledToFit()
                 .frame(width: 20, height: 20)
             
-            TextField(placeholder, text: $txt)
+            TextField(placeholder.localized, text: $txt)
                 .font(.customfont(.regular, fontSize: 17))
                 .autocapitalization(.none)
                 .disableAutocorrection(true)

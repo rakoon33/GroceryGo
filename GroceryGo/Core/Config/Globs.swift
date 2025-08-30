@@ -35,3 +35,17 @@ struct KKey {
 struct APIHeader {
     static let tokenHeader = "access_token"
 }
+
+
+//
+//struct APIResponse<T: Decodable>: Decodable {
+//    let code: Int
+//    let message: String?
+//    let payload: T?
+//    
+//    enum CodingKeys: String, CodingKey {
+//        case code = "status"   // map "status" từ server → code
+//        case message
+//        case payload
+//    }
+//}

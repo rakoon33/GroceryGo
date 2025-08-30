@@ -8,19 +8,23 @@
 import SwiftUI
 
 struct SectionTitleAll: View {
-    var title: String = "Title"
-    var titleAll: String = "View All"
+    
+    @EnvironmentObject var localization: LocalizationManager
+    
+    @State var title: String = "Title"
+    @State var titleAll: String = "View All"
+    
     
     var didTap: (()->())?
     var body: some View {
         HStack {
-            Text(title)
+            Text(title.localized)
                 .font(.customfont(.semibold, fontSize: 24))
                 .foregroundStyle(.primaryText)
             
             Spacer()
             
-            Text(titleAll)
+            Text(titleAll.localized)
                 .font(.customfont(.semibold, fontSize: 16))
                 .foregroundStyle(.primaryApp)
         }

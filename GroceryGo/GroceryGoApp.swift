@@ -10,6 +10,8 @@ import SwiftUI
 @main
 struct GroceryGoApp: App {
     
+    @StateObject private var localization = LocalizationManager.shared
+    
     init() {
         UITabBar.appearance().isHidden = true
     }
@@ -17,6 +19,7 @@ struct GroceryGoApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(localization)
         }
     }
 }

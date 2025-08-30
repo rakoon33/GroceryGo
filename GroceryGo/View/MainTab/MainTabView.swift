@@ -43,26 +43,26 @@ struct MainTabView: View {
                 
                 HStack {
                     
-                    TabButton(title: "tab_shop".localized, icon: "store_tab", isSelected: homeVM.selectedTab == .shop) {
+                    TabButton(title: "tab_shop", icon: "store_tab", isSelected: homeVM.selectedTab == .shop) {
                         
                         withAnimation { homeVM.selectedTab = .shop }
                         
                     }
-                    TabButton(title: "tab_explore".localized, icon: "explore_tab", isSelected: homeVM.selectedTab == .explore) {
+                    TabButton(title: "tab_explore", icon: "explore_tab", isSelected: homeVM.selectedTab == .explore) {
                         
                         withAnimation { homeVM.selectedTab = .explore }
                     }
-                    TabButton(title: "tab_cart".localized, icon: "cart_tab", isSelected: homeVM.selectedTab == .cart) {
+                    TabButton(title: "tab_cart", icon: "cart_tab", isSelected: homeVM.selectedTab == .cart) {
                         
                         withAnimation { homeVM.selectedTab = .cart }
                         
                     }
-                    TabButton(title: "tab_favorite".localized, icon: "fav_tab", isSelected: homeVM.selectedTab == .favorite) {
+                    TabButton(title: "tab_favorite", icon: "fav_tab", isSelected: homeVM.selectedTab == .favorite) {
                         
                         withAnimation { homeVM.selectedTab = .favorite }
                         
                     }
-                    TabButton(title: "tab_account".localized, icon: "account_tab", isSelected: homeVM.selectedTab == .account) {
+                    TabButton(title: "tab_account", icon: "account_tab", isSelected: homeVM.selectedTab == .account) {
                         
                         withAnimation { homeVM.selectedTab = .account }
                         

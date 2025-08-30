@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct LanguageSelectionView: View {
-    @StateObject private var localization = LocalizationManager.shared
+    @EnvironmentObject var localization: LocalizationManager
     @Environment(\.dismiss) var dismiss
     
     private let languageNames: [String: String] = [

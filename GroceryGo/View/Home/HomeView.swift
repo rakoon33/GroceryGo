@@ -67,7 +67,7 @@ struct HomeView: View {
                     .frame(height: 115)
                     .padding(.horizontal, 20)
                 
-                SectionTitleAll(title: "exclusive_offer".localized, titleAll: "see_all".localized) {
+                SectionTitleAll(title: "exclusive_offer", titleAll: "see_all") {
                     
                 }
                 .padding(.horizontal, 20)
@@ -92,7 +92,7 @@ struct HomeView: View {
                 }
                 
                 
-                SectionTitleAll(title: "best_selling".localized, titleAll: "see_all".localized) {
+                SectionTitleAll(title: "best_selling", titleAll: "see_all") {
                     
                 }
                 .padding(.horizontal, 20)
@@ -115,7 +115,7 @@ struct HomeView: View {
                     .padding(.vertical, 4)
                 }
                 
-                SectionTitleAll(title: "groceries".localized, titleAll: "see_all".localized) {
+                SectionTitleAll(title: "groceries", titleAll: "see_all") {
                     
                 }
                 .padding(.horizontal, 20)
