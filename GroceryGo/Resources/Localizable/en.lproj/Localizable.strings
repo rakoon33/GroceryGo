@@ -14,6 +14,21 @@
 "login_button" = "Log in";
 "signup_button" = "Sign Up";
 "continue_button" = "Continue";
+"select_language" = "Select Language";
+
+"exclusive_offer" = "Exclusive offer";
+"best_selling" = "Best selling";
+"groceries" = "Groceries";
+"see_all" = "See all";
+"search_store" = "Search store";
+
+// MARK: - Maintab
+"tab_shop" = "Shop";
+"tab_explore" = "Explore";
+"tab_cart" = "Cart";
+"tab_favorite" = "Favorite";
+"tab_account" = "Account";
+
 
 // MARK: - Login
 "login_title" = "Login";
@@ -89,3 +104,4 @@
 "server_error" = "Server error occurred.";
 "verification_expired" = "Verification expired.";
 "no_internet" = "No internet connection. Please check your network settings.";
+
