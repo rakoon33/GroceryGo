@@ -4,13 +4,16 @@
 //
 //  Created by Phạm Văn Nam on 18/6/25.
 //
+
 import SwiftUI
 
+@MainActor
 class MainViewModel: ObservableObject {
     static let shared = MainViewModel()
     
     // MARK: - Dependencies
     private let authService: AuthServiceProtocol
+    private let session: SessionManager
     
     // MARK: - Published state
     @Published var txtUsername: String = ""
@@ -20,72 +23,72 @@ class MainViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var showError = false
     @Published var errorMessage: String = ""
-    @Published var isUserLogin: Bool = false
-    @Published var userObj: UserModel = UserModel()
+    
+    // Expose từ Session
+    @Published private(set) var isUserLogin: Bool = false
+    @Published private(set) var userObj: UserModel = UserModel()
     
     // MARK: - Init
-    init(authService: AuthServiceProtocol = AuthService()) {
-        
+    init(authService: AuthServiceProtocol = AuthService(),
+         session: SessionManager = .shared) {
         self.authService = authService
+        self.session = session
         
-        // Load login state từ UserDefaults qua Utils
-        self.isUserLogin = Utils.UDValueBool(key: Globs.userLogin)
-        
-        // Load userObj nếu có
-        if let data = Utils.UDValue(key: Globs.userPayload) as? Data,
-           let user = try? JSONDecoder().decode(UserModel.self, from: data) {
+        if let user = session.user {
             self.userObj = user
-            
+            self.isUserLogin = true
         }
         
         #if DEBUG
         self.txtEmail = "test@gmail.com"
         self.txtPassword = "123456"
         self.txtUsername = "TestUser"
-
-        self.userObj.authToken = "WQlwSMeWKyXc6PYa7IBs"
         #endif
     }
 
-    // MARK: - Public API
     func login() {
         guard validateLoginInputs() else { return }
         isLoading = true
-        authService.login(email: txtEmail, password: txtPassword) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                switch result {
-                case .success(let user):
-                    self.setUserData(user: user)
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.errorMessage
-                    self.showError = true
-                    self.isLoading = false
-                }
+        Task {
+            defer { isLoading = false }
+            do {
+                let user = try await authService.login(email: txtEmail, password: txtPassword)
+                session.setUser(user)
+                self.userObj = user
+                self.isUserLogin = true
+                resetForm()
+            } catch {
+                errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
+                showError = true
             }
         }
     }
-    
+
     func signUp() {
         guard validateSignUpInputs() else { return }
         isLoading = true
-        authService.signUp(username: txtUsername, email: txtEmail, password: txtPassword) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                switch result {
-                case .success(let user):
-                    self.setUserData(user: user)
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.errorMessage
-                    self.showError = true
-                    self.isLoading = false
-                }
+        Task {
+            defer { isLoading = false }
+            do {
+                let user = try await authService.signUp(username: txtUsername, email: txtEmail, password: txtPassword)
+                session.setUser(user)
+                self.userObj = user
+                self.isUserLogin = true
+                resetForm()
+            } catch {
+                errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
+                showError = true
             }
         }
     }
     
+    func logout() {
+        session.logout()
+        self.userObj = UserModel()
+        self.isUserLogin = false
+        resetForm()
+    }
+
     // MARK: - Validation
     private func validateLoginInputs() -> Bool {
         if txtEmail.isEmpty || !txtEmail.isValidEmail {
@@ -110,19 +113,8 @@ class MainViewModel: ObservableObject {
         return validateLoginInputs()
     }
     
-    // MARK: - Save user
-    private func setUserData(user: UserModel) {
-        // 1. Encode & save to UserDefaults
-        if let userData = try? JSONEncoder().encode(user) {
-            Utils.UDSET(data: userData, key: Globs.userPayload)
-        }
-        
-        // 2. Update state
-        self.userObj = user
-        Utils.UDSET(data: true, key: Globs.userLogin)
-        self.isUserLogin = true
-        
-        // 3. Reset input
+    // MARK: - Helpers
+    private func resetForm() {
         self.txtEmail = ""
         self.txtUsername = ""
         self.txtPassword = ""

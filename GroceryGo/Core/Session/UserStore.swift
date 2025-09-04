@@ -1,3 +1,11 @@
+//
+//  UserStore.swift
+//  GroceryGo
+//
+//  Created by Phạm Văn Nam on 3/9/25.
+//
+
+
 import Foundation
 
 protocol UserStore {

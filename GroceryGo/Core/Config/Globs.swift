@@ -26,26 +26,39 @@ struct Globs {
     static let SV_EXPLORE_ITEM_LIST = BASE_URL + "explore_category_items_list"
 }
 
-struct KKey {
-    static let code = "status"
-    static let message = "message"
-    static let payload = "payload"
-}
-
 struct APIHeader {
     static let tokenHeader = "access_token"
 }
 
+struct AuthToken: Codable {
+    let accessToken: String
+    let refreshToken: String
+    let expiresAt: Date
+}
 
-//
-//struct APIResponse<T: Decodable>: Decodable {
-//    let code: Int
-//    let message: String?
-//    let payload: T?
-//    
-//    enum CodingKeys: String, CodingKey {
-//        case code = "status"   // map "status" từ server → code
-//        case message
-//        case payload
-//    }
-//}
+struct EmptyPayload: Decodable {}
+
+struct APIResponse<T: Decodable>: Decodable {
+    let code: Int
+    let message: String?
+    let payload: T?
+    
+    enum CodingKeys: String, CodingKey {
+        case code = "status" // map "status" từ server → code
+        case message
+        case payload
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        // dùng extension decodeInt
+        self.code = try container.decodeInt(forKey: .code)
+        
+        // decode message an toàn
+        self.message = try? container.decode(String.self, forKey: .message)
+        
+        // decode payload an toàn
+        self.payload = try? container.decode(T.self, forKey: .payload)
+    }
+}

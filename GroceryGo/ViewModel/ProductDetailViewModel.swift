@@ -5,9 +5,9 @@
 //  Created by Phạm Văn Nam on 22/8/25.
 //
 
-
 import SwiftUI
 
+@MainActor
 final class ProductDetailViewModel: ObservableObject {
 
     private let productService: ProductServiceProtocol
@@ -25,6 +25,7 @@ final class ProductDetailViewModel: ObservableObject {
     @Published var isShowNutrition: Bool = false
     @Published var qty: Int = 1
     
+    // MARK: - UI actions
     func showDetail() {
         isShowDetail.toggle()
     }
@@ -34,58 +35,42 @@ final class ProductDetailViewModel: ObservableObject {
     }
     
     func toggleFavourite() {
-        // Cập nhật ngay cho UI mượt
+        // update UI ngay
         isFav.toggle()
-        
-        // Gọi FavouriteViewModel để sync danh sách
         FavouriteViewModel.shared.addOrRemoveFavourite(prodId: pObj.id)
     }
     
     func addSubQTY(isAdd: Bool = true) {
-        if(isAdd) {
-            qty += 1
-            if(qty > 99) {
-                qty = 99
-            }
+        if isAdd {
+            qty = min(qty + 1, 99)
         } else {
-            qty -= 1
-            if(qty < 1) {
-                qty = 1
-            }
+            qty = max(qty - 1, 1)
         }
     }
     
+    // MARK: - Init
     init(prodObj: ProductModel, productService: ProductService = ProductService()) {
-        
         self.productService = productService
         self.pObj = prodObj
-        self.isFav = pObj.isFav
+        self.isFav = prodObj.isFav
         
-        
-        fetchProductDetail()
+        Task { [weak self] in
+            await self?.fetchProductDetail()
+        }
     }
     
-    
-    func fetchProductDetail() {
+    // MARK: - Fetch detail
+    func fetchProductDetail() async {
         isLoading = true
-
-        productService.fetchProductDetail(prod_id: self.pObj.id) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let data):
-                    self.pObj = data.product
-                    self.nutritionArr = data.nutritions
-                    self.imageArr = data.images
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.errorMessage
-                    self.showError = true
-                    self.isLoading = false
-                }
-            }
+        defer { isLoading = false }
+        do {
+            let data = try await productService.fetchProductDetail(prodId: pObj.id)
+            pObj = data.product
+            nutritionArr = data.nutritions
+            imageArr = data.images
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
         }
     }
 }
-

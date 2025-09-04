@@ -1,36 +1,48 @@
-@MainActor
+//
+//  SessionManager.swift
+//  GroceryGo
+//
+//  Created by Phạm Văn Nam on 30/8/25.
+//
+
+import SwiftUI
+
 final class SessionManager: ObservableObject {
-    @Published private(set) var currentUser: UserModel?
-    private let tokenStore: TokenStore
+    static let shared = SessionManager()
     
-    init(tokenStore: TokenStore) {
+    @Published private(set) var user: UserModel?
+    
+    private var tokenStore: TokenStore
+    private var userStore: UserStore
+     
+    var token: String {
+        tokenStore.token ?? ""
+    }
+    
+    private init(
+        tokenStore: TokenStore = KeychainTokenStore(),
+        userStore: UserStore = DefaultUserStore()
+    ) {
         self.tokenStore = tokenStore
-        if let data = Utils.UDValue(key: Globs.userPayload) as? Data,
-           let user = try? JSONDecoder().decode(UserModel.self, from: data) {
-            self.currentUser = user
-        }
+        self.userStore = userStore
+        self.user = userStore.currentUser
     }
     
     func setUser(_ user: UserModel) {
-        if let data = try? JSONEncoder().encode(user) {
-            Utils.UDSET(data: data, key: Globs.userPayload)
-        }
+        self.user = user
+        self.tokenStore.token = user.authToken
+        self.userStore.currentUser = user
         Utils.UDSET(data: true, key: Globs.userLogin)
-        
-        tokenStore.token = user.authToken
-        currentUser = user
     }
     
     func logout() {
-        Utils.UDRemove(key: Globs.userPayload)
+        self.user = nil
+        tokenStore.clear()
+        userStore.clear()
         Utils.UDRemove(key: Globs.userLogin)
-        
-        tokenStore.token = nil
-        tokenStore.refreshToken = nil
-        currentUser = nil
     }
     
     var isLoggedIn: Bool {
-        currentUser != nil
+        user != nil && !(tokenStore.token ?? "").isEmpty
     }
 }

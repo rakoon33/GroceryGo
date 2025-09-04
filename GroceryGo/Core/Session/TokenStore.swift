@@ -1,3 +1,11 @@
+//
+//  TokenStore.swift
+//  GroceryGo
+//
+//  Created by Phạm Văn Nam on 3/9/25.
+//
+
+
 import Foundation
 
 protocol TokenStore {
@@ -6,9 +14,6 @@ protocol TokenStore {
 }
 
 final class KeychainTokenStore: TokenStore {
-    static let shared = KeychainTokenStore()
-    private init() {}
-    
     private let tokenKey = "authToken"
     
     var token: String? {

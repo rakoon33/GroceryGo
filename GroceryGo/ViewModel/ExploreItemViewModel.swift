@@ -7,11 +7,12 @@
 
 import SwiftUI
 
+@MainActor
 final class ExploreItemViewModel: ObservableObject {
 
     private let categoryService: CategoryServiceProtocol
     
-    @Published var cObj: CategoryModel = CategoryModel()
+    @Published var cObj: CategoryModel
     @Published var isLoading: Bool = false
     @Published var showError = false
     @Published var errorMessage: String = ""
@@ -23,34 +24,27 @@ final class ExploreItemViewModel: ObservableObject {
     @Published var isShowNutrition: Bool = false
     @Published var qty: Int = 1
     
-    
     init(cObj: CategoryModel, categoryService: CategoryServiceProtocol = CategoryService()) {
-        
         self.categoryService = categoryService
         self.cObj = cObj
-        
         fetchExploreItem()
     }
     
-    
     func fetchExploreItem() {
-        isLoading = true
-
-        categoryService.fetchExploreCategoryItem(catId: self.cObj.id) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let data):
-                    self.listArr = data
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.errorMessage
-                    self.showError = true
-                    self.isLoading = false
-                }
+        Task {
+            isLoading = true
+            do {
+                listArr = try await categoryService.fetchExploreCategoryItem(catId: cObj.id)
+                isLoading = false
+            } catch let error as NetworkErrorType {
+                errorMessage = error.errorMessage
+                showError = true
+                isLoading = false
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
+                isLoading = false
             }
         }
     }
 }
-

@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@MainActor
 final class ExploreViewModel: ObservableObject {
   
     static var shared: ExploreViewModel = ExploreViewModel()
@@ -24,27 +25,23 @@ final class ExploreViewModel: ObservableObject {
     @Published var listArr: [CategoryModel] = []
 
     init(categoryService: CategoryServiceProtocol = CategoryService()) {
-        
         self.categoryService = categoryService
-
     }
     
     func fetchExploreData() {
-        isLoading = true
-        categoryService.fetchExploreList() { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    self.listArr = data
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.errorMessage
-                    self.showError = true
-                    self.isLoading = false
-                }
+        Task { [weak self] in
+            guard let self else { return }
+            isLoading = true
+            defer { isLoading = false }
+            do {
+                listArr = try await categoryService.fetchExploreList()
+            } catch let error as NetworkErrorType {
+                errorMessage = error.errorMessage
+                showError = true
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
             }
         }
     }
 }
-

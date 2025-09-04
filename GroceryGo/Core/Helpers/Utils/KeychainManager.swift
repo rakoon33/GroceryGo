@@ -9,13 +9,12 @@
 import Foundation
 import Security
 
-// MARK: - Keychain Manager (Singleton, reusable)
 final class KeychainManager {
     static let shared = KeychainManager()
     private init() {}
 
-    // Save any Data
-    func save(_ data: Data, for key: String) {
+    func save(_ value: String, for key: String) {
+        let data = Data(value.utf8)
         delete(key) // xoá trước nếu đã có
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -25,8 +24,7 @@ final class KeychainManager {
         SecItemAdd(query as CFDictionary, nil)
     }
 
-    // Read as Data
-    func read(_ key: String) -> Data? {
+    func read(_ key: String) -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrAccount as String: key,
@@ -37,13 +35,14 @@ final class KeychainManager {
         var dataTypeRef: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
 
-        if status == errSecSuccess {
-            return dataTypeRef as? Data
+        if status == errSecSuccess,
+           let data = dataTypeRef as? Data,
+           let str = String(data: data, encoding: .utf8) {
+            return str
         }
         return nil
     }
 
-    // Delete
     func delete(_ key: String) {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,

@@ -19,7 +19,7 @@ enum AppRoute: Hashable {
 struct ContentView: View {
     @State private var path = NavigationPath()
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome: Bool = false
-    @StateObject var mainVM = MainViewModel.shared
+    @StateObject private var session = SessionManager.shared
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -40,36 +40,39 @@ struct ContentView: View {
                     case .mainTab:
                         MainTabView(path: $path)
                     case .productDetail(let product):
-                        ProductDetailView(path: $path, detailVM: ProductDetailViewModel(prodObj: product))
+                        ProductDetailView(
+                            path: $path,
+                            detailVM: ProductDetailViewModel(prodObj: product)
+                        )
                     }
-                    
                 }
                 .onAppear {
                     
                     path = NavigationPath()
                     
                     if !hasSeenWelcome {
+                        // Người dùng chưa vào app lần nào → Welcome
                         path.append(AppRoute.welcome)
-                    } else if !mainVM.isUserLogin {
+                    } else if !session.isLoggedIn {
+                        // Chưa login → SignIn
                         path.append(AppRoute.signin)
                     } else {
-                        path.append(AppRoute.mainTab
-    )
+                        // Đã login → MainTab
+                        path.append(AppRoute.mainTab)
                     }
                 }
-                .onChange(of: mainVM.isUserLogin) { newValue in
-
+                .onChange(of: session.isLoggedIn) { newValue in
+                    
                     if newValue {
                         // Login thành công → đi thẳng MainTab
                         path = NavigationPath()
                         path.append(AppRoute.mainTab)
                     } else {
                         path = NavigationPath()
-                        // Logout → về Login
+                        // Logout hoặc token hết hạn → về SignIn
                         path.append(AppRoute.signin)
                     }
                 }
         }
-
     }
 }

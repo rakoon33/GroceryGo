@@ -6,71 +6,76 @@
 //
 
 import SwiftUI
+import Foundation
 
 final class ServiceCall {
-    class func post(
-        parameter: [String: Any],
-        isTokenRequired: Bool = false,
+    
+    // MARK: - Convenience wrappers
+    class func get<T: Decodable>(
         path: String,
-        withSuccess: @escaping ([String: Any]?) -> (),
-        failure: @escaping (NetworkErrorType) -> ()
-    ) {
-        NetworkManager.shared.request(method: .POST, path: path, parameters: parameter, isTokenRequired: isTokenRequired) { result in
-            switch result {
-            case .success(let json):
-                withSuccess(json)
-            case .failure(let error):
-                failure(error)
-            }
-        }
+        parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
+        headers: [String: String] = [:],
+        responseType: T.Type
+    ) async throws -> T {
+        try await NetworkManager.shared.request(
+            method: .GET,
+            path: path,
+            parameters: parameters,
+            isTokenRequired: isTokenRequired,
+            headers: headers,
+            responseType: responseType
+        )
     }
-
-    class func put(
-        parameter: [String: Any],
-        isTokenRequired: Bool = false,
+    
+    class func post<T: Decodable>(
         path: String,
-        withSuccess: @escaping ([String: Any]?) -> (),
-        failure: @escaping (NetworkErrorType) -> ()
-    ) {
-        NetworkManager.shared.request(method: .PUT, path: path, parameters: parameter, isTokenRequired: isTokenRequired) { result in
-            switch result {
-            case .success(let json):
-                withSuccess(json)
-            case .failure(let error):
-                failure(error)
-            }
-        }
+        parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
+        headers: [String: String] = [:],
+        responseType: T.Type
+    ) async throws -> T {
+        try await NetworkManager.shared.request(
+            method: .POST,
+            path: path,
+            parameters: parameters,
+            isTokenRequired: isTokenRequired,
+            headers: headers,
+            responseType: responseType
+        )
     }
-
-    class func delete(
-        isTokenRequired: Bool = false,
+    
+    class func put<T: Decodable>(
         path: String,
-        withSuccess: @escaping ([String: Any]?) -> (),
-        failure: @escaping (NetworkErrorType) -> ()
-    ) {
-        NetworkManager.shared.request(method: .DELETE, path: path, parameters: nil, isTokenRequired: isTokenRequired) { result in
-            switch result {
-            case .success(let json):
-                withSuccess(json)
-            case .failure(let error):
-                failure(error)
-            }
-        }
+        parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
+        headers: [String: String] = [:],
+        responseType: T.Type
+    ) async throws -> T {
+        try await NetworkManager.shared.request(
+            method: .PUT,
+            path: path,
+            parameters: parameters,
+            isTokenRequired: isTokenRequired,
+            headers: headers,
+            responseType: responseType
+        )
     }
-
-    class func get(
-        isTokenRequired: Bool = false,
+    
+    class func delete<T: Decodable>(
         path: String,
-        withSuccess: @escaping ([String: Any]?) -> (),
-        failure: @escaping (NetworkErrorType) -> ()
-    ) {
-        NetworkManager.shared.request(method: .GET, path: path, parameters: nil, isTokenRequired: isTokenRequired) { result in
-            switch result {
-            case .success(let json):
-                withSuccess(json)
-            case .failure(let error):
-                failure(error)
-            }
-        }
+        parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
+        headers: [String: String] = [:],
+        responseType: T.Type
+    ) async throws -> T {
+        try await NetworkManager.shared.request(
+            method: .DELETE,
+            path: path,
+            parameters: parameters,
+            isTokenRequired: isTokenRequired,
+            headers: headers,
+            responseType: responseType
+        )
     }
 }

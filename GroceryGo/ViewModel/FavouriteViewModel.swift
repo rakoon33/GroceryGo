@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 final class FavouriteViewModel: ObservableObject {
   
     static var shared: FavouriteViewModel = FavouriteViewModel()
@@ -19,48 +20,41 @@ final class FavouriteViewModel: ObservableObject {
     
     @Published var listArr: [FavouriteModel] = []
     
-    init(favouriteService: FavouriteService = FavouriteService()) {
-        
+    init(favouriteService: FavouriteServiceProtocol = FavouriteService()) {
         self.favouriteService = favouriteService
-        
     }
     
-    func fetchFavouriteList() {
+    func fetchFavouriteList() async {
         isLoading = true
-        favouriteService.fetchFavouriteList() { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    self.listArr = data
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.errorMessage
-                    self.showError = true
-                    self.isLoading = false
-                }
+        defer { isLoading = false }
+        do {
+            listArr = try await favouriteService.fetchFavouriteList()
+        } catch let error as NetworkErrorType {
+            errorMessage = error.errorMessage
+            showError = true
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+        }
+    }
+
+    func addOrRemoveFavourite(prodId: Int) {
+        Task { [weak self] in
+            guard let self else { return }
+            isLoading = true
+            defer { isLoading = false }
+            do {
+                try await favouriteService.addOrRemoveFavourite(prodId: prodId)
+                await fetchFavouriteList()
+                HomeViewModel.shared.fetchData()
+            } catch let error as NetworkErrorType {
+                errorMessage = error.errorMessage
+                showError = true
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
             }
         }
     }
-    
-    func addOrRemoveFavourite(prodId: Int) {
-            isLoading = true
-            favouriteService.addOrRemoveFavourite(prodId: prodId) { [weak self] result in
-                DispatchQueue.main.async {
-                    guard let self = self else { return }
-                    switch result {
-                    case .success:
-                        // Sau khi toggle thì reload lại danh sách
-                        self.fetchFavouriteList()
-                        HomeViewModel.shared.fetchData()
-                    case .failure(let error):
-                        self.errorMessage = error.errorMessage
-                        self.showError = true
-                    }
-                    self.isLoading = false
-                }
-            }
-        }
-    
-}
 
+}
