@@ -43,9 +43,9 @@ struct ExploreView: View {
                             cObj in
                             ExploreCategoryCell(cObj: cObj)
                             {
-                               
+                                path.append(AppRoute.exploreDetail(cObj) )
                             }
-                                .aspectRatio(0.95, contentMode: .fill)
+                            .aspectRatio(0.95, contentMode: .fill)
                         }
                     }
                     .padding(.horizontal, 20)

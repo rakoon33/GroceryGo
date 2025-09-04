@@ -14,6 +14,7 @@ enum AppRoute: Hashable {
     case signin
     case mainTab
     case productDetail(ProductModel)
+    case exploreDetail(CategoryModel)
 }
 
 struct ContentView: View {
@@ -44,7 +45,14 @@ struct ContentView: View {
                             path: $path,
                             detailVM: ProductDetailViewModel(prodObj: product)
                         )
+                        
+                    case .exploreDetail(let category):
+                        ExploreItemView(
+                            path: $path,
+                            itemsVM: ExploreItemViewModel(cObj: category)
+                        )
                     }
+                    
                 }
                 .onAppear {
                     
