@@ -4,7 +4,6 @@
 //
 //  Created by Phạm Văn Nam on 25/8/25.
 //
-
 import SwiftUI
 
 private let languageNames = [
@@ -15,7 +14,9 @@ private let languageNames = [
 struct HomeTopBar: View {
     @StateObject private var localization = LocalizationManager.shared
     @State private var showLanguageSheet = false
-    @StateObject private var locationManager = LocationManager()
+    
+    @State private var city: String = ""
+    @State private var country: String = ""
     
     var body: some View {
         HStack {
@@ -25,12 +26,11 @@ struct HomeTopBar: View {
                     .scaledToFit()
                     .frame(width: 16, height: 16)
                 
-                Text("\(locationManager.currentCity), \(locationManager.currentCountry)")
+                Text("\(city), \(country)")
                     .font(.customfont(.semibold, fontSize: 16))
                     .foregroundStyle(.darkGray)
-                    .lineLimit(1) // chỉ 1 dòng
-                    .truncationMode(.tail) // cắt cuối nếu quá dài
-
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
             
@@ -43,7 +43,6 @@ struct HomeTopBar: View {
                         .scaledToFit()
                         .frame(width: 16, height: 16)
                     
-                    // hiện mã ngôn ngữ hiện tại (EN / VI)
                     Text(languageNames[localization.currentLanguage] ?? localization.currentLanguage.uppercased())
                         .font(.customfont(.semibold, fontSize: 14))
                         .foregroundStyle(.darkGray)
@@ -57,20 +56,27 @@ struct HomeTopBar: View {
                 .padding(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 18)
-                        .stroke(Color.darkGray, lineWidth: 1) // viền màu xám
+                        .stroke(Color.darkGray, lineWidth: 1)
                 )
             }
             .foregroundStyle(.darkGray)
             .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
-
         }
         .padding(.horizontal, 20)
         .sheet(isPresented: $showLanguageSheet) {
             LanguageSelectionView()
         }
+        .task {
+            do {
+                let result = try await LocationManager.shared.requestCityAndCountryOnce()
+                city = result.city
+                country = result.country
+            } catch {
+                print("Location error: \(error)")
+            }
+        }
     }
 }
-
 
 #Preview {
     HomeTopBar()
