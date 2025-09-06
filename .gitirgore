@@ -76,4 +76,7 @@ fastlane/test_output
 # Secrets
 Secrets.plist
 
-*.xcodeproj/xcuserdata/
+# Xcode user data
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout

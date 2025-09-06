@@ -13,7 +13,7 @@ import UIKit
 class CrashReporter: NSObject, MXMetricManagerSubscriber {
     static let shared = CrashReporter()
     
-    private let webhook = URL(string: "https://discord.com/api/webhooks/1413891464949272738/vx8i6VDYJA6AR-OCoapwMfgedTs6ONyjAwDAVJCfe_viHOIOjJQvGLufATbCY8IbUso9")!
+    private let webhook = URL(string: "https://discord.com/api/webhooks/1413889068512579696/R6OejIIPOqzDf6m7txPeq_1IM1us3pSPDV_IQOKMNS_D3hFWpMgsYxyiA8WZIMkn71yT")!
     
     func start() {
         MXMetricManager.shared.add(self)
