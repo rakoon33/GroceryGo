@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 final class SessionManager: ObservableObject {
     static let shared = SessionManager()
     
@@ -14,7 +15,7 @@ final class SessionManager: ObservableObject {
     
     private var tokenStore: TokenStore
     private var userStore: UserStore
-     
+    
     var token: String {
         tokenStore.token ?? ""
     }
@@ -33,13 +34,20 @@ final class SessionManager: ObservableObject {
         self.tokenStore.token = user.authToken
         self.userStore.currentUser = user
         Utils.UDSET(data: true, key: Globs.userLogin)
+        AppLogger.info("User logged in: \(user.username)", category: .session)
     }
     
     func logout() {
         self.user = nil
-        tokenStore.clear()
+        do {
+            try tokenStore.clear()   // ignore lỗi logout, nhưng vẫn ghi log bên trong
+            AppLogger.info("Token cleared on logout", category: .session)
+        } catch {
+            AppLogger.error("Failed to clear token on logout: \(error.localizedDescription)", category: .session)
+        }
         userStore.clear()
         Utils.UDRemove(key: Globs.userLogin)
+        AppLogger.info("User logged out", category: .session)
     }
     
     var isLoggedIn: Bool {
