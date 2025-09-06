@@ -33,6 +33,7 @@ final class ServiceCall {
         parameters: [String: Any]? = nil,
         isTokenRequired: Bool = false,
         headers: [String: String] = [:],
+        contentType: ContentType = .form,
         responseType: T.Type
     ) async throws -> T {
         try await NetworkManager.shared.request(
@@ -41,6 +42,7 @@ final class ServiceCall {
             parameters: parameters,
             isTokenRequired: isTokenRequired,
             headers: headers,
+            contentType: contentType,
             responseType: responseType
         )
     }
@@ -50,6 +52,7 @@ final class ServiceCall {
         parameters: [String: Any]? = nil,
         isTokenRequired: Bool = false,
         headers: [String: String] = [:],
+        contentType: ContentType = .form,
         responseType: T.Type
     ) async throws -> T {
         try await NetworkManager.shared.request(
@@ -58,6 +61,7 @@ final class ServiceCall {
             parameters: parameters,
             isTokenRequired: isTokenRequired,
             headers: headers,
+            contentType: contentType,
             responseType: responseType
         )
     }
@@ -67,6 +71,7 @@ final class ServiceCall {
         parameters: [String: Any]? = nil,
         isTokenRequired: Bool = false,
         headers: [String: String] = [:],
+        contentType: ContentType = .form,
         responseType: T.Type
     ) async throws -> T {
         try await NetworkManager.shared.request(
@@ -75,6 +80,7 @@ final class ServiceCall {
             parameters: parameters,
             isTokenRequired: isTokenRequired,
             headers: headers,
+            contentType: contentType,
             responseType: responseType
         )
     }

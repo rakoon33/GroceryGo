@@ -22,6 +22,7 @@ final class ProductService: ProductServiceProtocol {
             let images: [ImageModel]
             
             enum CodingKeys: String, CodingKey {
+                case product
                 case nutritionList = "nutrition_list"
                 case images
             }
