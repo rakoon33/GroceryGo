@@ -23,6 +23,9 @@ struct ContentView: View {
     @StateObject private var session = SessionManager.shared
     
     var body: some View {
+        
+        ContentView()
+        
         NavigationStack(path: $path) {
             // Root view trống (Splash)
             Color.clear

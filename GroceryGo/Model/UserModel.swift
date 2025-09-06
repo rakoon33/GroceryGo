@@ -32,7 +32,7 @@ struct UserModel: Identifiable, Equatable, Codable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        id          = try container.decodeInt(forKey: .id)
+        id          = try container.decode(Int.self, forKey: .id)
         username    = try container.decodeString(forKey: .username)
         name        = try container.decodeString(forKey: .name)
         email       = try container.decodeString(forKey: .email)

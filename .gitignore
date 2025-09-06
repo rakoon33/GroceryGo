@@ -74,9 +74,7 @@ fastlane/screenshots
 fastlane/test_output
 
 # Secrets
-Secrets.plist
+GroceryGo/Secrets.plist
 
-# Xcode user data
-xcuserdata/
-*.xcscmblueprint
-*.xccheckout
+#User data
+GroceryGo.xcodeproj/xcuserdata
