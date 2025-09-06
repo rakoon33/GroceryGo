@@ -7,12 +7,18 @@
 
 import Foundation
 
+
 extension Date {
-    func displayDate(format: String, addMinTime: Int = 0, locale: Locale = .current) -> String {
+    private static let displayFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = format
-        formatter.locale = locale
-        let adjustedDate = self.addingTimeInterval(TimeInterval(60 * addMinTime))
-        return formatter.string(from: adjustedDate)
+        formatter.dateFormat = "dd/MM/yyyy HH:mm"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .current
+        return formatter
+    }()
+    
+    func displayDate(offsetMinutes: Int = 0) -> String {
+        let adjustedDate = addingTimeInterval(TimeInterval(offsetMinutes * 60))
+        return Date.displayFormatter.string(from: adjustedDate)
     }
 }

@@ -258,7 +258,7 @@ struct ProductDetailView: View {
                         Image("back")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 25, height: 25)
+                            .frame(width: 20, height: 20)
                     }
                     
                     Spacer()

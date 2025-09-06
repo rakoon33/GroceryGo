@@ -9,61 +9,30 @@ import Foundation
 
 
 protocol FavouriteServiceProtocol {
-    
-    func fetchFavouriteList(
-        completion: @escaping (Result<[FavouriteModel], NetworkErrorType>) -> Void
-    )
-    
-    func addOrRemoveFavourite(
-        prodId: Int,
-        completion: @escaping (Result<Void, NetworkErrorType>) -> Void
-    )
+    func fetchFavouriteList() async throws -> [FavouriteModel]
+    func addOrRemoveFavourite(prodId: Int) async throws
 }
-
 
 final class FavouriteService: FavouriteServiceProtocol {
     
-    func fetchFavouriteList(
-            completion: @escaping (Result<[FavouriteModel], NetworkErrorType>) -> Void
-        ) {
-            ServiceCall.post(
-                parameter: [:], // nếu API không cần param thì để trống
-                isTokenRequired: true,
-                path: Globs.SV_FAVOURITE_LIST
-            ) { response in
-                guard let response = response,
-                      let serverCode = (response[KKey.code] as? Int) ??
-                                       Int(response[KKey.code] as? String ?? ""),
-                      serverCode == APISuccessCode.success,
-                      let payload = response[KKey.payload] as? [[String: Any]] else {
-                    completion(.failure(.unknown(code: -1, message: "fail_message")))
-                    return
-                }
-                
-                do {
-                    let data = try JSONSerialization.data(withJSONObject: payload)
-                    let favourites = try JSONDecoder().decode([FavouriteModel].self, from: data)
-                    completion(.success(favourites))
-                } catch let decodingError as DecodingError {
-                    completion(.failure(.decodingError(message: decodingError.detailedMessage)))
-                } catch {
-                    completion(.failure(.unknown(code: -1, message: error.localizedDescription)))
-                }
-            } failure: { netError in
-                completion(.failure(netError))
-            }
-        }
-        
-    func addOrRemoveFavourite(
-        prodId: Int,
-        completion: @escaping (Result<Void, NetworkErrorType>) -> Void
-    ) {
+    func fetchFavouriteList() async throws -> [FavouriteModel] {
+        try await ServiceCall.post(
+            path: Globs.SV_FAVOURITE_LIST,
+            parameters: [:],
+            isTokenRequired: true,
+            responseType: [FavouriteModel].self
+        )
+    }
+    
+    func addOrRemoveFavourite(prodId: Int) async throws {
         let params = ["prod_id": prodId]
         
-        ServiceCall.post(parameter: params, isTokenRequired: true, path: Globs.SV_ADD_REMOVE_FAVOURITE) { _ in
-            completion(.success(()))
-        } failure: { error in
-            completion(.failure(error))
-        }
+        // Vì API không trả payload cụ thể, chỉ cần gọi thành công là xong
+        let _: EmptyPayload = try await ServiceCall.post(
+            path: Globs.SV_ADD_REMOVE_FAVOURITE,
+            parameters: params,
+            isTokenRequired: true,
+            responseType: EmptyPayload.self
+        )
     }
 }

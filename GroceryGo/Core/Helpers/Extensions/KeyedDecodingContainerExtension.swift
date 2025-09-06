@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Nên có flag bật/tắt strict mode.
 extension KeyedDecodingContainer {
     func decodeInt(forKey key: K) throws -> Int {
         if let intVal = try? decode(Int.self, forKey: key) {

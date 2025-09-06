@@ -7,50 +7,48 @@
 
 import SwiftUI
 
+@MainActor
 final class ExploreItemViewModel: ObservableObject {
-
+    
     private let categoryService: CategoryServiceProtocol
     
-    @Published var cObj: CategoryModel = CategoryModel()
+    @Published var cObj: CategoryModel
     @Published var isLoading: Bool = false
     @Published var showError = false
     @Published var errorMessage: String = ""
-
+    
     @Published var listArr: [ProductModel] = []
-
+    
     @Published var isFav: Bool = false
     @Published var isShowDetail: Bool = false
     @Published var isShowNutrition: Bool = false
     @Published var qty: Int = 1
     
-    
     init(cObj: CategoryModel, categoryService: CategoryServiceProtocol = CategoryService()) {
-        
         self.categoryService = categoryService
         self.cObj = cObj
-        
+        AppLogger.info("Init ExploreItemViewModel with category=\(cObj.name)", category: .ui)
         fetchExploreItem()
     }
     
-    
     func fetchExploreItem() {
-        isLoading = true
-
-        categoryService.fetchExploreCategoryItem(catId: self.cObj.id) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let data):
-                    self.listArr = data
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.errorMessage
-                    self.showError = true
-                    self.isLoading = false
-                }
+        Task {
+            isLoading = true
+            AppLogger.debug("Fetching explore items for catId=\(cObj.id)", category: .network)
+            defer { isLoading = false }
+            
+            do {
+                listArr = try await categoryService.fetchExploreCategoryItem(catId: cObj.id)
+                AppLogger.info("Fetched \(listArr.count) items for category=\(cObj.name)", category: .network)
+            } catch let error as NetworkErrorType {
+                errorMessage = error.errorMessage
+                showError = true
+                AppLogger.error("NetworkErrorType while fetching items: \(error.errorMessage)", category: .network)
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
+                AppLogger.error("Unexpected error while fetching items: \(error.localizedDescription)", category: .network)
             }
         }
     }
 }
-

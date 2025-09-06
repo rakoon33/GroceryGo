@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 final class FavouriteViewModel: ObservableObject {
   
     static var shared: FavouriteViewModel = FavouriteViewModel()
@@ -19,48 +20,52 @@ final class FavouriteViewModel: ObservableObject {
     
     @Published var listArr: [FavouriteModel] = []
     
-    init(favouriteService: FavouriteService = FavouriteService()) {
-        
+    init(favouriteService: FavouriteServiceProtocol = FavouriteService()) {
         self.favouriteService = favouriteService
-        
+        AppLogger.info("FavouriteViewModel initialized", category: .ui)
     }
     
-    func fetchFavouriteList() {
+    func fetchFavouriteList() async {
         isLoading = true
-        favouriteService.fetchFavouriteList() { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    self.listArr = data
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.errorMessage
-                    self.showError = true
-                    self.isLoading = false
-                }
+        AppLogger.debug("Fetching favourite list...", category: .network)
+        defer { isLoading = false }
+        
+        do {
+            listArr = try await favouriteService.fetchFavouriteList()
+            AppLogger.info("Fetched \(listArr.count) favourite items", category: .network)
+        } catch let error as NetworkErrorType {
+            errorMessage = error.errorMessage
+            showError = true
+            AppLogger.error("Network error in fetchFavouriteList: \(error.errorMessage)", category: .network)
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+            AppLogger.error("Unexpected error in fetchFavouriteList: \(error.localizedDescription)", category: .network)
+        }
+    }
+
+    func addOrRemoveFavourite(prodId: Int) {
+        Task { [weak self] in
+            guard let self else { return }
+            isLoading = true
+            AppLogger.debug("Toggling favourite for prodId=\(prodId)", category: .network)
+            defer { isLoading = false }
+            
+            do {
+                try await favouriteService.addOrRemoveFavourite(prodId: prodId)
+                AppLogger.info("Toggled favourite success for prodId=\(prodId)", category: .network)
+                
+                await fetchFavouriteList()
+                HomeViewModel.shared.fetchData()
+            } catch let error as NetworkErrorType {
+                errorMessage = error.errorMessage
+                showError = true
+                AppLogger.error("Network error in addOrRemoveFavourite: \(error.errorMessage)", category: .network)
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
+                AppLogger.error("Unexpected error in addOrRemoveFavourite: \(error.localizedDescription)", category: .network)
             }
         }
     }
-    
-    func addOrRemoveFavourite(prodId: Int) {
-            isLoading = true
-            favouriteService.addOrRemoveFavourite(prodId: prodId) { [weak self] result in
-                DispatchQueue.main.async {
-                    guard let self = self else { return }
-                    switch result {
-                    case .success:
-                        // Sau khi toggle thì reload lại danh sách
-                        self.fetchFavouriteList()
-                        HomeViewModel.shared.fetchData()
-                    case .failure(let error):
-                        self.errorMessage = error.errorMessage
-                        self.showError = true
-                    }
-                    self.isLoading = false
-                }
-            }
-        }
-    
 }
-

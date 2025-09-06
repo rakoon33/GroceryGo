@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+@MainActor
 final class ExploreViewModel: ObservableObject {
   
     static var shared: ExploreViewModel = ExploreViewModel()
@@ -24,27 +25,29 @@ final class ExploreViewModel: ObservableObject {
     @Published var listArr: [CategoryModel] = []
 
     init(categoryService: CategoryServiceProtocol = CategoryService()) {
-        
         self.categoryService = categoryService
-
+        AppLogger.info("ExploreViewModel initialized", category: .ui)
     }
     
     func fetchExploreData() {
-        isLoading = true
-        categoryService.fetchExploreList() { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                switch result {
-                case .success(let data):
-                    self.listArr = data
-                    self.isLoading = false
-                case .failure(let error):
-                    self.errorMessage = error.errorMessage
-                    self.showError = true
-                    self.isLoading = false
-                }
+        Task { [weak self] in
+            guard let self else { return }
+            isLoading = true
+            AppLogger.debug("Fetching explore category list", category: .network)
+            defer { isLoading = false }
+            
+            do {
+                listArr = try await categoryService.fetchExploreList()
+                AppLogger.info("Fetched \(listArr.count) categories", category: .network)
+            } catch let error as NetworkErrorType {
+                errorMessage = error.errorMessage
+                showError = true
+                AppLogger.error("NetworkErrorType while fetching categories: \(error.errorMessage)", category: .network)
+            } catch {
+                errorMessage = error.localizedDescription
+                showError = true
+                AppLogger.error("Unexpected error while fetching categories: \(error.localizedDescription)", category: .network)
             }
         }
     }
 }
-

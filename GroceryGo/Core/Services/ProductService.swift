@@ -9,56 +9,45 @@ import Foundation
 
 
 protocol ProductServiceProtocol {
-    func fetchProductDetail(
-        prod_id: Int,
-        completion: @escaping (Result<(product: ProductModel, nutritions: [NutritionModel], images: [ImageModel]) , NetworkErrorType>) -> Void
-    )
+    func fetchProductDetail(prodId: Int) async throws -> (product: ProductModel, nutritions: [NutritionModel], images: [ImageModel])
 }
 
 final class ProductService: ProductServiceProtocol {
-    func fetchProductDetail(
-        prod_id: Int,
-        completion: @escaping (Result<(product: ProductModel, nutritions: [NutritionModel], images: [ImageModel]), NetworkErrorType>) -> Void
-    ) {
-        ServiceCall.post(
-            parameter: ["prod_id": prod_id,],
-            isTokenRequired: true,
-            path: Globs.SV_PRODUCT_DETAIL
-        ) { json in
-            guard let response = json else {
-                completion(.failure(.noData))
-                return
+    
+    func fetchProductDetail(prodId: Int) async throws -> (product: ProductModel, nutritions: [NutritionModel], images: [ImageModel]) {
+        
+        struct ProductDetailPayload: Codable {
+            let product: ProductModel
+            let nutritionList: [NutritionModel]
+            let images: [ImageModel]
+            
+            enum CodingKeys: String, CodingKey {
+                case product
+                case nutritionList = "nutrition_list"
+                case images
             }
             
-            do {
-                guard let payload = response[KKey.payload] as? [String: Any] else {
-                    completion(.failure(.unknown(code: -1, message: "fail_message")))
-                    return
-                }
+            init(from decoder: Decoder) throws {
+                // 1. Decode product bằng luôn ProductModel (toàn bộ payload)
+                self.product = try ProductModel(from: decoder)
                 
-                let decoder = JSONDecoder()
-                
-                // 1. Decode product
-                let productData = try JSONSerialization.data(withJSONObject: payload)
-                let product = try decoder.decode(ProductModel.self, from: productData)
-                
-                // 2. Decode nutritions
-                let nutritionsData = try JSONSerialization.data(withJSONObject: payload["nutrition_list"] ?? [])
-                let nutritions = try decoder.decode([NutritionModel].self, from: nutritionsData)
-                
-                // 3. Decode images
-                let imagesData = try JSONSerialization.data(withJSONObject: payload["images"] ?? [])
-                let images = try decoder.decode([ImageModel].self, from: imagesData)
-                
-                completion(.success((product: product, nutritions: nutritions, images: images)))
-                
-            } catch let decodingError as DecodingError {
-                completion(.failure(.decodingError(message: decodingError.detailedMessage)))
-            } catch {
-                completion(.failure(.unknown(code: -1, message: "fail_message")))
+                // 2. Decode nutrition_list + images
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.nutritionList = try container.decodeIfPresent([NutritionModel].self, forKey: .nutritionList) ?? []
+                self.images = try container.decodeIfPresent([ImageModel].self, forKey: .images) ?? []
             }
-        } failure: { error in
-            completion(.failure(error))
         }
+
+        
+        let payload: ProductDetailPayload = try await ServiceCall.post(
+            path: Globs.SV_PRODUCT_DETAIL,
+            parameters: ["prod_id": prodId],
+            isTokenRequired: true,
+            responseType: ProductDetailPayload.self
+        )
+        
+        return (product: payload.product,
+                nutritions: payload.nutritionList,
+                images: payload.images)
     }
 }

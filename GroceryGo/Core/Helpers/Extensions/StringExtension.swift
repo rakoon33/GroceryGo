@@ -8,12 +8,15 @@
 import Foundation
 
 extension String {
-
+    
     var isValidEmail: Bool {
-        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
-        return emailTest.evaluate(with: self)
-    }
+            let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+            let range = NSRange(location: 0, length: utf16.count)
+            let matches = detector?.matches(in: self, options: [], range: range) ?? []
+            return matches.contains { match in
+                match.url?.scheme == "mailto" && match.range.length == range.length
+            }
+        }
     
     func stringDateToDate(format: String = "yyyy-MM-dd'T'HH:mm:ss.SSSZ") -> Date? {
         let dataFormat = DateFormatter()

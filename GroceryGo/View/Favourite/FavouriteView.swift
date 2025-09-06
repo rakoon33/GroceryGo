@@ -55,7 +55,9 @@ struct FavouriteView: View {
             
         }
         .onAppear {
-            favVM.fetchFavouriteList()
+            Task {
+                await favVM.fetchFavouriteList()
+            }
         }
         .toolbar(.hidden, for: .navigationBar)
         .alert(isPresented: $favVM.showError) {
