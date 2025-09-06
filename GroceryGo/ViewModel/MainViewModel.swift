@@ -29,10 +29,9 @@ class MainViewModel: ObservableObject {
     @Published private(set) var userObj: UserModel = UserModel()
     
     // MARK: - Init
-    init(authService: AuthServiceProtocol = AuthService(),
-         session: SessionManager = .shared) {
+    init(authService: AuthServiceProtocol = AuthService()) {
         self.authService = authService
-        self.session = session
+        self.session = SessionManager.shared
         
         if let user = session.user {
             self.userObj = user
@@ -49,6 +48,7 @@ class MainViewModel: ObservableObject {
     func login() {
         guard validateLoginInputs() else { return }
         isLoading = true
+        AppLogger.debug("Attempting login for email=\(txtEmail)", category: .session)
         Task {
             defer { isLoading = false }
             do {
@@ -57,9 +57,11 @@ class MainViewModel: ObservableObject {
                 self.userObj = user
                 self.isUserLogin = true
                 resetForm()
+                AppLogger.info("Login success: \(user.username)", category: .session)
             } catch {
                 errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
                 showError = true
+                AppLogger.error("Login failed: \(errorMessage)", category: .session)
             }
         }
     }
@@ -67,6 +69,7 @@ class MainViewModel: ObservableObject {
     func signUp() {
         guard validateSignUpInputs() else { return }
         isLoading = true
+        AppLogger.debug("Attempting signup for username=\(txtUsername), email=\(txtEmail)", category: .session)
         Task {
             defer { isLoading = false }
             do {
@@ -75,18 +78,21 @@ class MainViewModel: ObservableObject {
                 self.userObj = user
                 self.isUserLogin = true
                 resetForm()
+                AppLogger.info("Signup success: \(user.username)", category: .session)
             } catch {
                 errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
                 showError = true
+                AppLogger.error("Signup failed: \(errorMessage)", category: .session)
             }
         }
     }
-    
+
     func logout() {
         session.logout()
         self.userObj = UserModel()
         self.isUserLogin = false
         resetForm()
+        AppLogger.info("User logged out", category: .session)
     }
 
     // MARK: - Validation

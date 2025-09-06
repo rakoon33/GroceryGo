@@ -37,8 +37,10 @@ final class ProductDetailViewModel: ObservableObject {
     func toggleFavourite() {
         // update UI ngay
         isFav.toggle()
+        AppLogger.debug("Toggle favourite for productId=\(pObj.id), now isFav=\(isFav)", category: .ui)
         FavouriteViewModel.shared.addOrRemoveFavourite(prodId: pObj.id)
     }
+
     
     func addSubQTY(isAdd: Bool = true) {
         if isAdd {
@@ -62,15 +64,21 @@ final class ProductDetailViewModel: ObservableObject {
     // MARK: - Fetch detail
     func fetchProductDetail() async {
         isLoading = true
+        AppLogger.debug("Fetching detail for productId=\(pObj.id)", category: .network)
         defer { isLoading = false }
         do {
             let data = try await productService.fetchProductDetail(prodId: pObj.id)
             pObj = data.product
             nutritionArr = data.nutritions
             imageArr = data.images
+        } catch let error as NetworkErrorType {
+            errorMessage = error.errorMessage
+            showError = true
+            AppLogger.error("Failed to fetch product detail: \(errorMessage)", category: .network)
         } catch {
             errorMessage = error.localizedDescription
             showError = true
+            AppLogger.error("Unexpected error fetching product detail: \(errorMessage)", category: .network)
         }
     }
 }
