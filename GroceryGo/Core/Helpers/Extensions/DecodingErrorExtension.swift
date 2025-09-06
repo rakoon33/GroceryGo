@@ -11,13 +11,13 @@ extension DecodingError {
     var detailedMessage: String {
         switch self {
         case .typeMismatch(_, let context):
-            return "Type mismatch at \(context.codingPath.map { $0.stringValue }.joined(separator: "."))"
+            return "Type mismatch at \(context.codingPath.map { $0.stringValue }.joined(separator: ".")): \(context.debugDescription)"
         case .valueNotFound(_, let context):
-            return "Value not found at \(context.codingPath.map { $0.stringValue }.joined(separator: "."))"
+            return "Value not found at \(context.codingPath.map { $0.stringValue }.joined(separator: ".")): \(context.debugDescription)"
         case .keyNotFound(let key, let context):
-            return "Key '\(key.stringValue)' not found at path: \(context.codingPath.map { $0.stringValue }.joined(separator: "."))"
+            return "Key '\(key.stringValue)' not found at \(context.codingPath.map { $0.stringValue }.joined(separator: ".")): \(context.debugDescription)"
         case .dataCorrupted(let context):
-            return "Data corrupted at path: \(context.codingPath.map { $0.stringValue }.joined(separator: "."))"
+            return "Data corrupted at \(context.codingPath.map { $0.stringValue }.joined(separator: ".")): \(context.debugDescription)"
         @unknown default:
             return "Unknown decoding error"
         }
