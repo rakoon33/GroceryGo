@@ -24,8 +24,6 @@ struct ContentView: View {
     
     var body: some View {
         
-        ContentView()
-        
         NavigationStack(path: $path) {
             // Root view trống (Splash)
             Color.clear

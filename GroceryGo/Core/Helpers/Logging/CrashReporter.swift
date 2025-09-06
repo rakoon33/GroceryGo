@@ -10,17 +10,33 @@ import Foundation
 import MetricKit
 import UIKit
 
+/// CrashReporter chịu trách nhiệm lắng nghe crash từ MXMetricManager
+/// và gửi thông tin crash đến webhook (ví dụ Discord).
 class CrashReporter: NSObject, MXMetricManagerSubscriber {
     static let shared = CrashReporter()
+
+    private lazy var webhook: URL? = {
+        guard let urlString = Secrets.value(for: "DISCORD_WEBHOOK"),
+              let url = URL(string: urlString) else {
+            AppLogger.error("Missing/invalid DISCORD_WEBHOOK in Secrets.plist", category: .general)
+            return nil
+        }
+        return url
+    }()
     
-    private let webhook = URL(string: "https://discord.com/api/webhooks/1413889068512579696/R6OejIIPOqzDf6m7txPeq_1IM1us3pSPDV_IQOKMNS_D3hFWpMgsYxyiA8WZIMkn71yT")!
+    private override init() {
+        super.init()
+    }
     
     func start() {
         MXMetricManager.shared.add(self)
-        AppLogger.info("CrashReporter started")
+        AppLogger.info("CrashReporter started", category: .general)
     }
     
     func didReceive(_ payloads: [MXDiagnosticPayload]) {
+        
+        guard webhook != nil else { return } // skip if webhook not configured
+        
         for payload in payloads {
             if let crashes = payload.crashDiagnostics {
                 for crash in crashes {
@@ -53,6 +69,9 @@ class CrashReporter: NSObject, MXMetricManagerSubscriber {
     }
     
     private func sendToDiscord(message: String) {
+        
+        guard let webhook = webhook else { return }
+
         var req = URLRequest(url: webhook)
         req.httpMethod = "POST"
         req.addValue("application/json", forHTTPHeaderField: "Content-Type")

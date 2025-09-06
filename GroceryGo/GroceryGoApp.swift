@@ -22,8 +22,6 @@ struct GroceryGoApp: App {
         
         // Bật CrashReporter
         CrashReporter.shared.start()
-        
-        SessionManager.shared.logout()
 
     }
     
