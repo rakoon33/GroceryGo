@@ -9,58 +9,41 @@ import Foundation
 
 enum HTTPMethod: String { case GET, POST, PUT, DELETE }
 
+enum ContentType: String {
+    case json       = "application/json"
+    case form       = "application/x-www-form-urlencoded"
+    case multipart  = "multipart/form-data"
+}
+
 final class NetworkManager {
-    static let shared = NetworkManager()
-    private init() {}
     
-    // MARK: - Mask sensitive info
-    private func maskSensitiveInfo(_ dictionary: [String: Any]) -> [String: Any] {
-        var masked = dictionary
-        let sensitiveKeys = ["password", "token", "Authorization"]
-        for key in sensitiveKeys where masked.keys.contains(key) {
-            masked[key] = "***"
-        }
-        return masked
+    static let shared = NetworkManager()
+    
+    private let session: URLSession
+    private let config: NetworkConfig
+    
+    private init(config: NetworkConfig = .default) {
+        self.config = config
+        
+        // Tạo bản sao của sessionType để chỉnh sửa
+        // Lý do: .default, .ephemeral, .background là shared instance hệ thống.
+        // Nếu chỉnh trực tiếp sẽ ảnh hưởng tất cả session khác dùng cùng instance.
+        // copy() tạo instance riêng, an toàn để chỉnh timeout, headers, waitsForConnectivit
+        let configuration = config.sessionType.copy() as! URLSessionConfiguration
+        configuration.timeoutIntervalForRequest = config.requestTimeout
+        configuration.timeoutIntervalForResource = config.resourceTimeout
+        configuration.waitsForConnectivity = config.waitsForConnectivity
+        configuration.httpAdditionalHeaders = config.defaultHeaders
+        
+        self.session = URLSession(configuration: configuration)
     }
     
-    // MARK: - Logging
     private func logRequest(_ request: URLRequest, parameters: [String: Any]?) {
-        print("----- [REQUEST] -----")
-        print("URL: \(request.url?.absoluteString ?? "nil")")
-        print("Method: \(request.httpMethod ?? "nil")")
-        print("Headers: \(maskSensitiveInfo(request.allHTTPHeaderFields ?? [:]))")
-        if let parameters = parameters {
-            print("Parameters: \(maskSensitiveInfo(parameters))")
-        }
-        if let body = request.httpBody,
-           let bodyString = String(data: body, encoding: .utf8) {
-            if let jsonData = bodyString.data(using: .utf8),
-               let jsonObj = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] {
-                print("Body: \(maskSensitiveInfo(jsonObj))")
-            } else {
-                print("Body: \(bodyString)")
-            }
-        }
-        print("---------------------")
+        AppLogger.logRequest(request, parameters: parameters)
     }
     
     private func logResponse(data: Data?, response: URLResponse?, error: Error?) {
-        print("----- [RESPONSE] -----")
-        if let httpResponse = response as? HTTPURLResponse {
-            print("Status Code: \(httpResponse.statusCode)")
-            print("Headers: \(maskSensitiveInfo(httpResponse.allHeaderFields as? [String: Any] ?? [:]))")
-        }
-        if let error = error {
-            print("Error: \(error.localizedDescription)")
-        }
-        if let data = data,
-           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-            print("Body: \(maskSensitiveInfo(json))")
-        } else if let data = data,
-                  let bodyString = String(data: data, encoding: .utf8) {
-            print("Body: \(bodyString)")
-        }
-        print("----------------------")
+        AppLogger.logResponse(response, data: data, error: error)
     }
     
     // MARK: - Request (Generic)
@@ -70,6 +53,7 @@ final class NetworkManager {
         parameters: [String: Any]? = nil,
         isTokenRequired: Bool = false,
         headers: [String: String] = [:],
+        contentType: ContentType = .form,
         responseType: T.Type
     ) async throws -> T {
         
@@ -95,34 +79,49 @@ final class NetworkManager {
                 throw NetworkErrorType.unauthorized
             }
             request.setValue(token, forHTTPHeaderField: APIHeader.tokenHeader)
+            
+//            request.setValue("Bearer \(token)", forHTTPHeaderField: APIHeader.tokenHeader)
         }
         
         if method != .GET {
             if let parameters = parameters {
-                let formBody = parameters.map {
-                    "\($0.key)=\("\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
-                }.joined(separator: "&")
-                request.httpBody = formBody.data(using: .utf8)
-            } else {
-                request.httpBody = Data() // POST rỗng, body empty
+                switch contentType {
+                case .form:
+                    let formBody = parameters.map {
+                        "\($0.key)=\("\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+                    }.joined(separator: "&")
+                    request.httpBody = formBody.data(using: .utf8)
+                    
+                case .json:
+                    request.httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: [])
+                    
+                case .multipart:
+                    // Multipart upload: cần implement riêng
+                    break
+                }
             }
-            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            request.setValue(contentType.rawValue, forHTTPHeaderField: "Content-Type")
         }
-        
         
         // Log request
         logRequest(request, parameters: parameters)
         
         // Execute
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await session.data(for: request)
             
             // Log response
             logResponse(data: data, response: response, error: nil)
             
             // Map HTTP errors
             if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
-                // fallback mặc định
+                
+                if http.statusCode == 401 {
+                    // unauthorized, thuong nen refresh_token
+                    await SessionManager.shared.logout()
+                    throw NetworkErrorType.unauthorized
+                }
+                
                 var serverMessage = HTTPURLResponse.localizedString(forStatusCode: http.statusCode)
                 
                 if let decoded = try? JSONDecoder().decode(APIResponse<EmptyPayload>.self, from: data),
@@ -130,14 +129,9 @@ final class NetworkManager {
                     serverMessage = msg
                 }
                 
-
-                if http.statusCode == 401 {// unauthorized, thuong nen refresh_token
-                    await SessionManager.shared.logout()
-                    throw NetworkErrorType.unauthorized
-                }
-                
                 throw NetworkErrorType(code: http.statusCode, message: serverMessage)
             }
+            
             // Decode server wrapper (code + payload)
             let wrapper = try JSONDecoder().decode(APIResponse<T>.self, from: data)
             
