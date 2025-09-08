@@ -11,28 +11,34 @@ import SwiftUI
 enum PopupType {
     case success
     case error
+
+    var defaultTitleKey: LocalizedStringKey {
+        switch self {
+        case .success: return "popup_success_title"   // "Success" | "Thành công"
+        case .error:   return "popup_error_title"     // "Error"   | "Lỗi"
+        }
+    }
+
+    var iconName: String {
+        switch self {
+        case .success: return "checkmark.circle.fill"
+        case .error:   return "xmark.octagon.fill"
+        }
+    }
+
+    var iconColor: Color {
+        switch self {
+        case .success: return .green
+        case .error:   return .red
+        }
+    }
 }
 
 struct StatusPopupView: View {
     let type: PopupType
-    let title: String
-    let message: String
-    let buttonTitle: String
+    let messageKey: LocalizedStringKey
+    let buttonKey: LocalizedStringKey
     var onDismiss: () -> Void
-
-    private var iconName: String {
-        switch type {
-        case .success: return "checkmark.circle.fill"
-        case .error: return "xmark.octagon.fill"
-        }
-    }
-
-    private var iconColor: Color {
-        switch type {
-        case .success: return .green
-        case .error: return .red
-        }
-    }
 
     var body: some View {
         ZStack {
@@ -40,27 +46,24 @@ struct StatusPopupView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 16) {
-                Image(systemName: iconName)
+                Image(systemName: type.iconName)
                     .resizable()
-                    .frame(width: 60, height: 60)
-                    .foregroundColor(iconColor)
+                    .frame(width: 55, height: 55)
+                    .foregroundColor(type.iconColor)
 
-                Text(title)
-                    .font(.title2).bold()
-                    .foregroundColor(.black)
-
-                Text(message)
-                    .font(.body)
+                Text(messageKey)
+                    .font(.customfont(.semibold, fontSize: 14))
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.black)
                     .padding(.horizontal, 20)
 
                 Button(action: onDismiss) {
-                    Text(buttonTitle)
+                    Text(buttonKey)
+                        .font(.customfont(.bold, fontSize: 14))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(iconColor)
+                        .background(type.iconColor)
                         .cornerRadius(8)
                 }
                 .padding(.horizontal, 20)
@@ -71,5 +74,11 @@ struct StatusPopupView: View {
             .shadow(radius: 10)
             .padding(40)
         }
+    }
+}
+
+#Preview {
+    StatusPopupView(type: .success, messageKey: "success_message", buttonKey: "ok_button") {
+        
     }
 }
