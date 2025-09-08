@@ -1,6 +1,15 @@
+//
+//  AccountView.swift
+//  GroceryGo
+//
+//  Created by Phạm Văn Nam on 7/9/25.
+//
+
+
 import SwiftUI
 
 struct AccountView: View {
+    @Binding var path: NavigationPath
     @StateObject private var session = SessionManager.shared
     
     var body: some View {
@@ -33,5 +42,5 @@ struct AccountView: View {
 }
 
 #Preview {
-    AccountView()
+    AccountView(path: .constant(NavigationPath()))
 }
