@@ -38,63 +38,64 @@ class MainViewModel: ObservableObject {
             self.isUserLogin = true
         }
         
-        #if DEBUG
+#if DEBUG
         self.txtEmail = "test@gmail.com"
         self.txtPassword = "123456"
         self.txtUsername = "TestUser"
-        #endif
+#endif
     }
-
-    func login() {
+    
+    func login() async {
         guard validateLoginInputs() else { return }
         isLoading = true
         AppLogger.debug("Attempting login for email=\(txtEmail)", category: .session)
-        Task {
-            defer { isLoading = false }
-            do {
-                let user = try await authService.login(email: txtEmail, password: txtPassword)
-                session.setUser(user)
-                self.userObj = user
-                self.isUserLogin = true
-                resetForm()
-                AppLogger.info("Login success: \(user.username)", category: .session)
-            } catch {
-                errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
-                showError = true
-                AppLogger.error("Login failed: \(errorMessage)", category: .session)
-            }
+        
+        defer { isLoading = false }
+        do {
+            let user = try await authService.login(email: txtEmail, password: txtPassword)
+            session.setUser(user)
+            self.userObj = user
+            self.isUserLogin = true
+            resetForm()
+            AppLogger.info("Login success: \(user.username)", category: .session)
+        } catch let error as NetworkErrorType {
+            
+            errorMessage = error.errorMessage
+            showError = true
+            
+        } catch {
+            errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
+            showError = true
+            AppLogger.error("Login failed: \(errorMessage)", category: .session)
         }
+        
     }
-
-    func signUp() {
+    
+    func signUp() async {
         guard validateSignUpInputs() else { return }
         isLoading = true
         AppLogger.debug("Attempting signup for username=\(txtUsername), email=\(txtEmail)", category: .session)
-        Task {
-            defer { isLoading = false }
-            do {
-                let user = try await authService.signUp(username: txtUsername, email: txtEmail, password: txtPassword)
-                session.setUser(user)
-                self.userObj = user
-                self.isUserLogin = true
-                resetForm()
-                AppLogger.info("Signup success: \(user.username)", category: .session)
-            } catch {
-                errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
-                showError = true
-                AppLogger.error("Signup failed: \(errorMessage)", category: .session)
-            }
+        
+        defer { isLoading = false }
+        do {
+            let user = try await authService.signUp(username: txtUsername, email: txtEmail, password: txtPassword)
+            session.setUser(user)
+            self.userObj = user
+            self.isUserLogin = true
+            resetForm()
+            AppLogger.info("Signup success: \(user.username)", category: .session)
+        } catch let error as NetworkErrorType {
+            errorMessage = error.errorMessage
+            showError = true
+        } catch {
+            errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
+            showError = true
+            AppLogger.error("Signup failed: \(errorMessage)", category: .session)
         }
+        
     }
-
-    func logout() {
-        session.logout()
-        self.userObj = UserModel()
-        self.isUserLogin = false
-        resetForm()
-        AppLogger.info("User logged out", category: .session)
-    }
-
+    
+    
     // MARK: - Validation
     private func validateLoginInputs() -> Bool {
         if txtEmail.isEmpty || !txtEmail.isValidEmail {
@@ -125,5 +126,19 @@ class MainViewModel: ObservableObject {
         self.txtUsername = ""
         self.txtPassword = ""
         self.isShowPassword = false
+    }
+}
+
+extension MainViewModel: Resettable {
+    func reset() {
+        txtUsername = ""
+        txtEmail = ""
+        txtPassword = ""
+        isShowPassword = false
+        isLoading = false
+        showError = false
+        errorMessage = ""
+        isUserLogin = false
+        userObj = UserModel()
     }
 }

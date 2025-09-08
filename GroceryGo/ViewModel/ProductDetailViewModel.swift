@@ -9,7 +9,7 @@ import SwiftUI
 
 @MainActor
 final class ProductDetailViewModel: ObservableObject {
-
+    
     private let productService: ProductServiceProtocol
     
     @Published var pObj: ProductModel = ProductModel()
@@ -19,7 +19,7 @@ final class ProductDetailViewModel: ObservableObject {
     
     @Published var nutritionArr: [NutritionModel] = []
     @Published var imageArr: [ImageModel] = []
-
+    
     @Published var isFav: Bool = false
     @Published var isShowDetail: Bool = false
     @Published var isShowNutrition: Bool = false
@@ -34,13 +34,13 @@ final class ProductDetailViewModel: ObservableObject {
         isShowNutrition.toggle()
     }
     
-    func toggleFavourite() {
+    func toggleFavourite() async {
         // update UI ngay
         isFav.toggle()
         AppLogger.debug("Toggle favourite for productId=\(pObj.id), now isFav=\(isFav)", category: .ui)
-        FavouriteViewModel.shared.addOrRemoveFavourite(prodId: pObj.id)
+        await FavouriteViewModel.shared.addOrRemoveFavourite(prodId: pObj.id)
     }
-
+    
     
     func addSubQTY(isAdd: Bool = true) {
         if isAdd {
@@ -72,9 +72,14 @@ final class ProductDetailViewModel: ObservableObject {
             nutritionArr = data.nutritions
             imageArr = data.images
         } catch let error as NetworkErrorType {
-            errorMessage = error.errorMessage
-            showError = true
-            AppLogger.error("Failed to fetch product detail: \(errorMessage)", category: .network)
+            if case .unauthorized = error {
+                // Đẩy sang SessionManager để logout, không show alert
+                SessionManager.shared.logout()
+                AppLogger.error("Unauthorized in fetchProductDetail: \(error.localizedDescription)", category: .network)
+            } else {
+                errorMessage = error.errorMessage
+                showError = true
+            }
         } catch {
             errorMessage = error.localizedDescription
             showError = true
@@ -82,3 +87,4 @@ final class ProductDetailViewModel: ObservableObject {
         }
     }
 }
+

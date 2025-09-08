@@ -9,7 +9,7 @@ import SwiftUI
 
 @MainActor
 final class FavouriteViewModel: ObservableObject {
-  
+    
     static var shared: FavouriteViewModel = FavouriteViewModel()
     
     private let favouriteService: FavouriteServiceProtocol
@@ -43,29 +43,40 @@ final class FavouriteViewModel: ObservableObject {
             AppLogger.error("Unexpected error in fetchFavouriteList: \(error.localizedDescription)", category: .network)
         }
     }
-
-    func addOrRemoveFavourite(prodId: Int) {
-        Task { [weak self] in
-            guard let self else { return }
-            isLoading = true
-            AppLogger.debug("Toggling favourite for prodId=\(prodId)", category: .network)
-            defer { isLoading = false }
+    
+    func addOrRemoveFavourite(prodId: Int) async {
+        isLoading = true
+        AppLogger.debug("Toggling favourite for prodId=\(prodId)", category: .network)
+        defer { isLoading = false }
+        
+        do {
+            try await favouriteService.addOrRemoveFavourite(prodId: prodId)
+            AppLogger.info("Toggled favourite success for prodId=\(prodId)", category: .network)
             
-            do {
-                try await favouriteService.addOrRemoveFavourite(prodId: prodId)
-                AppLogger.info("Toggled favourite success for prodId=\(prodId)", category: .network)
-                
-                await fetchFavouriteList()
-                HomeViewModel.shared.fetchData()
-            } catch let error as NetworkErrorType {
+            await fetchFavouriteList()
+            await HomeViewModel.shared.fetchData()
+        } catch let error as NetworkErrorType {
+            if case .unauthorized = error {
+                // Đẩy sang SessionManager để logout, không show alert
+                SessionManager.shared.logout()
+                AppLogger.error("Unauthorized in fetchExploreItem: \(error.localizedDescription)", category: .network)
+            } else {
                 errorMessage = error.errorMessage
                 showError = true
-                AppLogger.error("Network error in addOrRemoveFavourite: \(error.errorMessage)", category: .network)
-            } catch {
-                errorMessage = error.localizedDescription
-                showError = true
-                AppLogger.error("Unexpected error in addOrRemoveFavourite: \(error.localizedDescription)", category: .network)
             }
+        } catch {
+            errorMessage = error.localizedDescription
+            showError = true
+            AppLogger.error("Unexpected error in addOrRemoveFavourite: \(error.localizedDescription)", category: .network)
         }
+        
+    }
+}
+
+extension FavouriteViewModel: Resettable {
+    func reset() {
+        listArr = []
+        showError = false
+        errorMessage = ""
     }
 }
