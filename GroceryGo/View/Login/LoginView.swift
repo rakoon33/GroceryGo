@@ -64,7 +64,9 @@ struct LoginView: View {
                 .padding(.bottom, .screenWidth * 0.05)
                 
                 RoundButton(title: "login_button".localized) {
-                    loginVM.login()
+                    Task {
+                        await loginVM.login()
+                    }
                 }
                 .padding(.bottom, .screenWidth * 0.05)
 
@@ -82,7 +84,6 @@ struct LoginView: View {
                 .onTapGesture {
                     path.append(AppRoute.signup) // Điều hướng sang SignUpView
                 }
-                
                 
                 Spacer()
                 

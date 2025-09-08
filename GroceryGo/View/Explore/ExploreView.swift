@@ -58,8 +58,8 @@ struct ExploreView: View {
             
             SpinnerView(isLoading: $exploreVM.isLoading)
         }
-        .onAppear {
-            exploreVM.fetchExploreData()
+        .task {
+            await exploreVM.fetchExploreData()
         }
         .alert(isPresented: $exploreVM.showError) {
             
