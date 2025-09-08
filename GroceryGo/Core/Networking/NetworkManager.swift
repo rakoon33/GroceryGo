@@ -75,6 +75,7 @@ final class NetworkManager {
         
         if isTokenRequired {
             let token = await SessionManager.shared.token
+            
             guard !token.isEmpty else {
                 throw NetworkErrorType.unauthorized
             }
@@ -109,7 +110,7 @@ final class NetworkManager {
         // Execute
         do {
             let (data, response) = try await session.data(for: request)
-            
+
             // Log response
             logResponse(data: data, response: response, error: nil)
             
@@ -117,9 +118,9 @@ final class NetworkManager {
             if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
                 
                 if http.statusCode == 401 {
-                    // unauthorized, thuong nen refresh_token
-                    await SessionManager.shared.logout()
+                    // unauthorized, thuong nen refresh_token nêu refresh vân k đc throw unauthorized
                     throw NetworkErrorType.unauthorized
+                    
                 }
                 
                 var serverMessage = HTTPURLResponse.localizedString(forStatusCode: http.statusCode)
@@ -162,4 +163,75 @@ final class NetworkManager {
             throw error
         }
     }
+    
+    func requestRaw<T: Decodable>( // for api json not the same as APIResponse
+        method: HTTPMethod,
+        path: String,
+        parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
+        headers: [String: String] = [:],
+        contentType: ContentType = .form,
+        responseType: T.Type
+    ) async throws -> T {
+        
+        // Build URL and request
+        var finalURL: URL?
+        if method == .GET, let parameters = parameters {
+            var components = URLComponents(string: path)
+            components?.queryItems = parameters.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
+            finalURL = components?.url
+        } else {
+            finalURL = URL(string: path)
+        }
+        guard let url = finalURL else { throw NetworkErrorType.invalidURL }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = method.rawValue
+        headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
+        
+        if isTokenRequired {
+            
+            let token = await SessionManager.shared.token
+            
+            guard !token.isEmpty else { throw NetworkErrorType.unauthorized }
+            request.setValue(token, forHTTPHeaderField: APIHeader.tokenHeader)
+        }
+        
+        if method != .GET, let parameters = parameters {
+            switch contentType {
+            case .form:
+                let formBody = parameters.map {
+                    "\($0.key)=\("\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+                }.joined(separator: "&")
+                request.httpBody = formBody.data(using: .utf8)
+            case .json:
+                request.httpBody = try? JSONSerialization.data(withJSONObject: parameters, options: [])
+            case .multipart:
+                break
+            }
+            request.setValue(contentType.rawValue, forHTTPHeaderField: "Content-Type")
+        }
+        
+        logRequest(request, parameters: parameters)
+        
+        do {
+            let (data, response) = try await session.data(for: request)
+            logResponse(data: data, response: response, error: nil)
+            
+            if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
+                throw NetworkErrorType(code: http.statusCode, message: HTTPURLResponse.localizedString(forStatusCode: http.statusCode))
+            }
+            
+            // Decode directly into T (custom type)
+            return try JSONDecoder().decode(T.self, from: data)
+            
+        } catch let urlErr as URLError {
+            logResponse(data: nil, response: nil, error: urlErr)
+            throw urlErr
+        } catch {
+            logResponse(data: nil, response: nil, error: error)
+            throw error
+        }
+    }
+
 }

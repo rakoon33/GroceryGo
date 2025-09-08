@@ -144,4 +144,5 @@ enum NetworkErrorType: Error {
             return localizationKey.localized
         }
     }
+    
 }
