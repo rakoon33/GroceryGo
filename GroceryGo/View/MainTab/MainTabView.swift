@@ -20,7 +20,6 @@ struct MainTabView: View {
     @Binding var path: NavigationPath
     @StateObject var homeVM = HomeViewModel.shared
     
-    
     var body: some View {
         
         ZStack {
@@ -31,11 +30,11 @@ struct MainTabView: View {
             case .explore:
                 ExploreView(path: $path)
             case .cart:
-                ExploreView(path: $path)
+                MyCartView(path: $path)
             case .favorite:
                 FavouriteView(path: $path)
             case .account:
-                ExploreView(path: $path) //
+                AccountView(path: $path) //
             }
             
             VStack {
@@ -43,6 +42,7 @@ struct MainTabView: View {
                 Spacer()
                 
                 HStack {
+                    
                     
                     TabButton(title: "tab_shop", icon: "store_tab", isSelected: homeVM.selectedTab == .shop) {
                         
@@ -69,6 +69,7 @@ struct MainTabView: View {
                         
                     }
                     
+                    
                 }
                 .padding(.top, 10)
                 .padding(.bottom, .bottomInsets)
@@ -82,10 +83,8 @@ struct MainTabView: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
-        
     }
 }
-
 
 #Preview {
     MainTabView(path: .constant(NavigationPath()))

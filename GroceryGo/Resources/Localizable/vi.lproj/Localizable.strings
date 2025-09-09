@@ -22,6 +22,19 @@
 "see_all" = "Xem tất cả";
 "search_store" = "Search store";
 
+
+"not_logged_in" = "Chưa đăng nhập";
+"login_required_action" = "Bạn phải đăng nhập để thực hiện hành động này.";
+
+// MARK: - POP UP
+"added_to_cart" = "Đã thêm sản phẩm vào giỏ";
+"add_to_cart_failed" = "Thêm sản phẩm vào giỏ thất bại";
+"cart_updated" = "Cập nhật giỏ hàng thành công";
+"cart_update_failed" = "Cập nhật giỏ hàng thất bại";
+"removed_from_cart" = "Đã xóa khỏi giỏ hàng";
+"remove_from_cart_failed" = "Xóa khỏi giỏ hàng thất bại";
+
+
 // MARK: - Maintab
 "tab_shop" = "Cửa hàng";
 "tab_explore" = "Khám phá";
@@ -73,6 +86,7 @@
 "product_detail_title" = "Chi tiết sản phẩm";
 "product_detail_nutritions" = "Dinh dưỡng";
 "product_detail_review" = "Đánh giá";
+"add_to_basket" = "Thêm vào giỏ hàng";
 
 // MARK: - FavouriteView
 "product_detail_favorites" = "Yêu thích";
@@ -80,6 +94,11 @@
 
 // MARK: - ExploreView
 "find_products" = "Tìm sản phẩm";
+
+// MARK: - CartView
+"my_cart_title" = "Giỏ Hàng";
+"check_out" = "Thanh Toán";
+"cart_empty" = "Giỏ hàng của bạn đang trống";
 
 // MARK: - Messages
 "success_message" = "Thành công";

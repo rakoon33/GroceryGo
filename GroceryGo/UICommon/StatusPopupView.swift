@@ -52,14 +52,14 @@ struct StatusPopupView: View {
                     .foregroundColor(type.iconColor)
 
                 Text(messageKey)
-                    .font(.customfont(.semibold, fontSize: 14))
+                    .font(.customfont(.semibold, fontSize: 18))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.black)
                     .padding(.horizontal, 20)
 
                 Button(action: onDismiss) {
                     Text(buttonKey)
-                        .font(.customfont(.bold, fontSize: 14))
+                        .font(.customfont(.bold, fontSize: 18))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()

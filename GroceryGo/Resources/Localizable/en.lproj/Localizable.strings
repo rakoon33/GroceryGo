@@ -22,6 +22,19 @@
 "see_all" = "See all";
 "search_store" = "Search store";
 
+
+"not_logged_in" = "Not logged in";
+"login_required_action" = "You must login to perform this action.";
+
+
+// MARK: - POP UP
+"added_to_cart" = "Product added to cart";
+"add_to_cart_failed" = "Failed to add product to cart";
+"cart_updated" = "Cart updated successfully";
+"cart_update_failed" = "Failed to update cart";
+"removed_from_cart" = "Removed from cart";
+"remove_from_cart_failed" = "Failed to remove from cart";
+
 // MARK: - Maintab
 "tab_shop" = "Shop";
 "tab_explore" = "Explore";
@@ -74,6 +87,7 @@
 "product_detail_title" = "Product Detail";
 "product_detail_nutritions" = "Nutritions";
 "product_detail_review" = "Review";
+"add_to_basket" = "Add to Basket";
 
 // MARK: - FavouriteView
 "product_detail_favorites" = "Favorites";
@@ -82,6 +96,10 @@
 // MARK: - ExploreView
 "find_products" = "Find Products";
 
+// MARK: - CartView
+"my_cart_title" = "My Cart";
+"check_out" = "Check Out";
+"cart_empty" = "Your cart is empty";
 
 // MARK: - Messages
 "success_message" = "Success";

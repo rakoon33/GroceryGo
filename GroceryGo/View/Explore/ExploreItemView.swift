@@ -11,7 +11,7 @@ struct ExploreItemView: View {
 
     @Binding var path: NavigationPath
     @StateObject var itemsVM = ExploreItemViewModel(cObj: CategoryModel())
-
+    @StateObject var cartVM = CartViewModel.shared
     var column = [
         GridItem(.flexible(), spacing: 15),
         GridItem(.flexible(), spacing: 15)
@@ -59,7 +59,9 @@ struct ExploreItemView: View {
                                     path.append(AppRoute.productDetail(pObj))
                                 },
                                 didAddCart: {
-                                    // add to cart
+                                    Task {
+                                        await cartVM.addProductToCart(prodId: pObj.id, qty: 1)
+                                    }
                                 }
                             )
                         }
@@ -81,6 +83,22 @@ struct ExploreItemView: View {
             
             Alert(title: Text(Globs.AppName), message: Text(itemsVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
         }
+        .overlay {
+            if cartVM.showPopup {
+                StatusPopupView(
+                    type: cartVM.popupType,
+                    messageKey: LocalizedStringKey(cartVM.popupMessageKey),
+                    buttonKey: "ok_button"
+                ) {
+                    withAnimation(.easeInOut) {
+                        cartVM.showPopup = false
+                    }
+                }
+                .transition(.scale(scale: 0.9).combined(with: .opacity))
+                .zIndex(1)
+            }
+        }
+        .animation(.easeInOut, value: cartVM.showPopup) 
     }
 }
 

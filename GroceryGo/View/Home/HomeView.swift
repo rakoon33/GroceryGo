@@ -153,20 +153,33 @@ struct HomeView: View {
         }
         .overlay {
             if cartVM.showPopup {
-                StatusPopupView(
-                    type: cartVM.popupType,
-                    messageKey: LocalizedStringKey(cartVM.popupMessageKey),
-                    buttonKey: "ok_button"
-                ) {
-                    withAnimation(.easeInOut) {
-                        cartVM.showPopup = false
+                ZStack {
+                    // nền đen fade chậm
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.6), value: cartVM.showPopup)
+
+                    // popup scale + fade rất chậm
+                    StatusPopupView(
+                        type: cartVM.popupType,
+                        messageKey: LocalizedStringKey(cartVM.popupMessageKey),
+                        buttonKey: "ok_button"
+                    ) {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            cartVM.showPopup = false
+                        }
                     }
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                    .animation(
+                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
+                        value: cartVM.showPopup
+                    )
                 }
-                .transition(.scale(scale: 0.9).combined(with: .opacity))
                 .zIndex(1)
             }
         }
-        .animation(.easeInOut, value: cartVM.showPopup)
+
     }
     
 }

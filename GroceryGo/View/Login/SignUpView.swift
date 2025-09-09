@@ -86,7 +86,9 @@ struct SignUpView: View {
                     .padding(.bottom, .screenWidth * 0.02)
                     
                     RoundButton(title: "signup_button".localized) {
-                        mainVM.signUp()
+                        Task {
+                            await mainVM.signUp()
+                        }
                     }
                     .padding(.bottom, .screenWidth * 0.05)
                     
