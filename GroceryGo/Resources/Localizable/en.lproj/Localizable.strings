@@ -25,7 +25,16 @@
 
 "not_logged_in" = "Not logged in";
 "login_required_action" = "You must login to perform this action.";
+"logout" = "Log Out";
 
+"orders" = "Orders";
+"my_details" = "My Details";
+"delivery_address" = "Delivery Address";
+"payment_methods" = "Payment Methods";
+"promo_code" = "Promo Code";
+"notifications" = "Notifications";
+"help" = "Help";
+"about" = "About";
 
 // MARK: - POP UP
 "added_to_cart" = "Product added to cart";
@@ -100,6 +109,9 @@
 "my_cart_title" = "My Cart";
 "check_out" = "Check Out";
 "cart_empty" = "Your cart is empty";
+
+// MARK: - DeliveryAdressView
+"delivery_address" = "Delivery Address";
 
 // MARK: - Messages
 "success_message" = "Success";

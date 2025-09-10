@@ -25,6 +25,16 @@
 
 "not_logged_in" = "Chưa đăng nhập";
 "login_required_action" = "Bạn phải đăng nhập để thực hiện hành động này.";
+"logout" = "Đăng xuất";
+
+"orders" = "Đơn hàng";
+"my_details" = "Chi tiết của tôi";
+"delivery_address" = "Địa chỉ giao hàng";
+"payment_methods" = "Phương thức thanh toán";
+"promo_code" = "Mã khuyến mãi";
+"notifications" = "Thông báo";
+"help" = "Trợ giúp";
+"about" = "Giới thiệu";
 
 // MARK: - POP UP
 "added_to_cart" = "Đã thêm sản phẩm vào giỏ";
@@ -99,6 +109,9 @@
 "my_cart_title" = "Giỏ Hàng";
 "check_out" = "Thanh Toán";
 "cart_empty" = "Giỏ hàng của bạn đang trống";
+
+// MARK: - DeliveryAdressView
+"delivery_address" = "Địa chỉ giao hàng";
 
 // MARK: - Messages
 "success_message" = "Thành công";
