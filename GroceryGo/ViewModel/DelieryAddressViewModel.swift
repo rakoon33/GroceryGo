@@ -1,14 +1,14 @@
 //
-//  CartViewModel.swift
+//  DelieryAddressViewModel.swift
 //  GroceryGo
 //
-//  Created by Phạm Văn Nam on 4/9/25.
+//  Created by Phạm Văn Nam on 11/9/25.
 //
 
 import SwiftUI
 
 @MainActor
-final class CartViewModel: ObservableObject {
+final class DelieryAddressViewModel: ObservableObject {
     
     static var shared: CartViewModel = CartViewModel()
     

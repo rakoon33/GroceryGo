@@ -290,38 +290,37 @@ struct ProductDetailView: View {
         .background(.systemBackground)
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
-        .alert(isPresented: $detailVM.showError, content: {
-            Alert(title: Text(Globs.AppName), message: Text(detailVM.errorMessage), dismissButton: .default(Text("OK")))
-        })
         .overlay {
-            if cartVM.showPopup {
+            if cartVM.showPopup || detailVM.showPopup {
                 ZStack {
-                    // nền đen fade chậm
                     Color.black.opacity(0.4)
                         .ignoresSafeArea()
                         .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: cartVM.showPopup)
+                        .animation(.easeInOut(duration: 0.6), value: cartVM.showPopup || detailVM.showPopup)
 
-                    // popup scale + fade rất chậm
                     StatusPopupView(
-                        type: cartVM.popupType,
-                        messageKey: LocalizedStringKey(cartVM.popupMessageKey),
+                        type: cartVM.showPopup ? cartVM.popupType : detailVM.popupType,
+                        messageKey: LocalizedStringKey(cartVM.showPopup ? cartVM.popupMessageKey : detailVM.popupMessageKey),
                         buttonKey: "ok_button"
                     ) {
                         withAnimation(.easeInOut(duration: 0.6)) {
-                            cartVM.showPopup = false
+                            if cartVM.showPopup {
+                                cartVM.showPopup = false
+                            }
+                            if detailVM.showPopup {
+                                detailVM.showPopup = false
+                            }
                         }
                     }
                     .transition(.scale(scale: 0.9).combined(with: .opacity))
                     .animation(
                         .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: cartVM.showPopup
+                        value: cartVM.showPopup || detailVM.showPopup
                     )
                 }
                 .zIndex(1)
             }
         }
-        
     }
     
 }

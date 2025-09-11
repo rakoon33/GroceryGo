@@ -14,8 +14,6 @@ final class ProductDetailViewModel: ObservableObject {
     
     @Published var pObj: ProductModel = ProductModel()
     @Published var isLoading: Bool = false
-    @Published var showError = false
-    @Published var errorMessage: String = ""
     
     @Published var nutritionArr: [NutritionModel] = []
     @Published var imageArr: [ImageModel] = []
@@ -24,6 +22,10 @@ final class ProductDetailViewModel: ObservableObject {
     @Published var isShowDetail: Bool = false
     @Published var isShowNutrition: Bool = false
     @Published var qty: Int = 1
+    
+    @Published var showPopup = false
+    @Published var popupType: PopupType = .success
+    @Published var popupMessageKey: String = ""
     
     // MARK: - UI actions
     func showDetail() {
@@ -35,19 +37,13 @@ final class ProductDetailViewModel: ObservableObject {
     }
     
     func toggleFavourite() async {
-        // update UI ngay
         isFav.toggle()
         AppLogger.debug("Toggle favourite for productId=\(pObj.id), now isFav=\(isFav)", category: .ui)
         await FavouriteViewModel.shared.addOrRemoveFavourite(prodId: pObj.id)
     }
     
-    
     func addSubQTY(isAdd: Bool = true) {
-        if isAdd {
-            qty = min(qty + 1, 99)
-        } else {
-            qty = max(qty - 1, 1)
-        }
+        qty = isAdd ? min(qty + 1, 99) : max(qty - 1, 1)
     }
     
     // MARK: - Init
@@ -66,6 +62,7 @@ final class ProductDetailViewModel: ObservableObject {
         isLoading = true
         AppLogger.debug("Fetching detail for productId=\(pObj.id)", category: .network)
         defer { isLoading = false }
+        
         do {
             let data = try await productService.fetchProductDetail(prodId: pObj.id)
             pObj = data.product
@@ -73,18 +70,33 @@ final class ProductDetailViewModel: ObservableObject {
             imageArr = data.images
         } catch let error as NetworkErrorType {
             if case .unauthorized = error {
-                // Đẩy sang SessionManager để logout, không show alert
                 SessionManager.shared.logout()
                 AppLogger.error("Unauthorized in fetchProductDetail: \(error.localizedDescription)", category: .network)
             } else {
-                errorMessage = error.errorMessage
-                showError = true
+                popupType = .error
+                popupMessageKey = error.errorMessage
+                showPopup = true
             }
         } catch {
-            errorMessage = error.localizedDescription
-            showError = true
-            AppLogger.error("Unexpected error fetching product detail: \(errorMessage)", category: .network)
+            popupType = .error
+            popupMessageKey = error.localizedDescription
+            showPopup = true
+            AppLogger.error("Unexpected error fetching product detail: \(popupMessageKey)", category: .network)
         }
     }
 }
 
+extension ProductDetailViewModel: Resettable {
+    func reset() {
+        pObj = ProductModel()
+        nutritionArr = []
+        imageArr = []
+        isFav = false
+        isShowDetail = false
+        isShowNutrition = false
+        qty = 1
+        showPopup = false
+        popupType = .success
+        popupMessageKey = ""
+    }
+}

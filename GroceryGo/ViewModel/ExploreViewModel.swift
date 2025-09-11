@@ -19,10 +19,12 @@ final class ExploreViewModel: ObservableObject {
     @Published var txtSearch: String = ""
     
     @Published var isLoading: Bool = false
-    @Published var showError = false
-    @Published var errorMessage: String = ""
     
     @Published var listArr: [CategoryModel] = []
+    
+    @Published var showPopup = false
+    @Published var popupType: PopupType = .success
+    @Published var popupMessageKey: String = ""
     
     init(categoryService: CategoryServiceProtocol = CategoryService()) {
         self.categoryService = categoryService
@@ -30,7 +32,6 @@ final class ExploreViewModel: ObservableObject {
     }
     
     func fetchExploreData() async {
-        
         isLoading = true
         AppLogger.debug("Fetching explore category list", category: .network)
         defer { isLoading = false }
@@ -44,15 +45,16 @@ final class ExploreViewModel: ObservableObject {
                 SessionManager.shared.logout()
                 AppLogger.error("Unauthorized in fetchExploreData: \(error.localizedDescription)", category: .network)
             } else {
-                errorMessage = error.errorMessage
-                showError = true
+                popupType = .error
+                popupMessageKey = error.errorMessage
+                showPopup = true
             }
         } catch {
-            errorMessage = error.localizedDescription
-            showError = true
+            popupType = .error
+            popupMessageKey = error.localizedDescription
+            showPopup = true
             AppLogger.error("Unexpected error while fetching categories: \(error.localizedDescription)", category: .network)
         }
-        
     }
 }
 
@@ -60,7 +62,8 @@ extension ExploreViewModel: Resettable {
     func reset() {
         listArr = []
         txtSearch = ""
-        showError = false
-        errorMessage = ""
+        showPopup = false
+        popupType = .success
+        popupMessageKey = ""
     }
 }

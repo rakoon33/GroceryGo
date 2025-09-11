@@ -31,7 +31,8 @@ struct DelieryAddressView: View {
                     } label: {
                         Image("back")
                             .resizable()
-                            .frame(width: 15, height: 15)
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
                     }
                     
                     Spacer()
@@ -41,6 +42,17 @@ struct DelieryAddressView: View {
                         .frame(height: 46)
                     
                     Spacer()
+                    
+                    Button {
+       
+                    } label: {
+                        Image("add_white")
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                    }
+                    .foregroundColor(.primaryText)
                 }
                 .padding(.top, .topInsets)
                 .padding(.horizontal, 20)

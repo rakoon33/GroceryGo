@@ -14,8 +14,6 @@ final class ExploreItemViewModel: ObservableObject {
     
     @Published var cObj: CategoryModel
     @Published var isLoading: Bool = false
-    @Published var showError = false
-    @Published var errorMessage: String = ""
     
     @Published var listArr: [ProductModel] = []
     
@@ -23,6 +21,10 @@ final class ExploreItemViewModel: ObservableObject {
     @Published var isShowDetail: Bool = false
     @Published var isShowNutrition: Bool = false
     @Published var qty: Int = 1
+    
+    @Published var showPopup = false
+    @Published var popupType: PopupType = .success
+    @Published var popupMessageKey: String = ""
     
     init(cObj: CategoryModel, categoryService: CategoryServiceProtocol = CategoryService()) {
         self.categoryService = categoryService
@@ -46,13 +48,15 @@ final class ExploreItemViewModel: ObservableObject {
                     SessionManager.shared.logout()
                     AppLogger.error("Unauthorized in fetchExploreItem: \(error.localizedDescription)", category: .network)
                 } else {
-                    errorMessage = error.errorMessage
-                    showError = true
+                    popupType = .error
+                    popupMessageKey = error.errorMessage
+                    showPopup = true
                     AppLogger.error("Unexpected error in fetchExploreItem: \(error.localizedDescription)", category: .network)
                 }
             } catch {
-                errorMessage = error.localizedDescription
-                showError = true
+                popupType = .error
+                popupMessageKey = error.localizedDescription
+                showPopup = true
                 AppLogger.error("Unexpected error while fetching items: \(error.localizedDescription)", category: .network)
             }
         }

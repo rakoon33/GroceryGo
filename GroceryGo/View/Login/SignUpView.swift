@@ -142,9 +142,32 @@ struct SignUpView: View {
             SpinnerView(isLoading: $mainVM.isLoading)
             
         }
-        .alert(isPresented: $mainVM.showError, content: {
-            Alert(title: Text(Globs.AppName), message: Text(mainVM.errorMessage), dismissButton: .default(Text("OK")))
-        })
+        .overlay {
+            if mainVM.showPopup {
+                ZStack {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.6), value: mainVM.showPopup)
+
+                    StatusPopupView(
+                        type: mainVM.popupType,
+                        messageKey: LocalizedStringKey(mainVM.popupMessageKey),
+                        buttonKey: "ok_button"
+                    ) {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            mainVM.showPopup = false
+                        }
+                    }
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                    .animation(
+                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
+                        value: mainVM.showPopup
+                    )
+                }
+                .zIndex(1)
+            }
+        }
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
         

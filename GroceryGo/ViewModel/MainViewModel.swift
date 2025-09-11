@@ -21,8 +21,10 @@ class MainViewModel: ObservableObject {
     @Published var txtPassword: String = ""
     @Published var isShowPassword: Bool = false
     @Published var isLoading: Bool = false
-    @Published var showError = false
-    @Published var errorMessage: String = ""
+    
+    @Published var showPopup = false
+    @Published var popupType: PopupType = .success
+    @Published var popupMessageKey: String = ""
     
     // Expose từ Session
     @Published private(set) var isUserLogin: Bool = false
@@ -36,7 +38,6 @@ class MainViewModel: ObservableObject {
         if let user = session.user {
             self.userObj = user
             self.isUserLogin = true
-            
         }
         
 #if DEBUG
@@ -65,16 +66,15 @@ class MainViewModel: ObservableObject {
             resetForm()
             AppLogger.info("Login success: \(user.username)", category: .session)
         } catch let error as NetworkErrorType {
-            
-            errorMessage = error.errorMessage
-            showError = true
-            
+            popupType = .error
+            popupMessageKey = error.errorMessage
+            showPopup = true
         } catch {
-            errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
-            showError = true
-            AppLogger.error("Login failed: \(errorMessage)", category: .session)
+            popupType = .error
+            popupMessageKey = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
+            showPopup = true
+            AppLogger.error("Login failed: \(popupMessageKey)", category: .session)
         }
-        
     }
     
     func signUp() async {
@@ -91,27 +91,29 @@ class MainViewModel: ObservableObject {
             resetForm()
             AppLogger.info("Signup success: \(user.username)", category: .session)
         } catch let error as NetworkErrorType {
-            errorMessage = error.errorMessage
-            showError = true
+            popupType = .error
+            popupMessageKey = error.errorMessage
+            showPopup = true
         } catch {
-            errorMessage = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
-            showError = true
-            AppLogger.error("Signup failed: \(errorMessage)", category: .session)
+            popupType = .error
+            popupMessageKey = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
+            showPopup = true
+            AppLogger.error("Signup failed: \(popupMessageKey)", category: .session)
         }
-        
     }
-    
     
     // MARK: - Validation
     private func validateLoginInputs() -> Bool {
         if txtEmail.isEmpty || !txtEmail.isValidEmail {
-            errorMessage = "error_invalid_email".localized
-            showError = true
+            popupType = .error
+            popupMessageKey = "error_invalid_email".localized
+            showPopup = true
             return false
         }
         if txtPassword.isEmpty {
-            errorMessage = "error_invalid_password".localized
-            showError = true
+            popupType = .error
+            popupMessageKey = "error_invalid_password".localized
+            showPopup = true
             return false
         }
         return true
@@ -119,8 +121,9 @@ class MainViewModel: ObservableObject {
     
     private func validateSignUpInputs() -> Bool {
         if txtUsername.isEmpty {
-            errorMessage = "error_invalid_username".localized
-            showError = true
+            popupType = .error
+            popupMessageKey = "error_invalid_username".localized
+            showPopup = true
             return false
         }
         return validateLoginInputs()
@@ -128,10 +131,10 @@ class MainViewModel: ObservableObject {
     
     // MARK: - Helpers
     private func resetForm() {
-        self.txtEmail = ""
-        self.txtUsername = ""
-        self.txtPassword = ""
-        self.isShowPassword = false
+        txtEmail = ""
+        txtUsername = ""
+        txtPassword = ""
+        isShowPassword = false
     }
 }
 
@@ -142,8 +145,9 @@ extension MainViewModel: Resettable {
         txtPassword = ""
         isShowPassword = false
         isLoading = false
-        showError = false
-        errorMessage = ""
+        showPopup = false
+        popupType = .success
+        popupMessageKey = ""
         isUserLogin = false
         userObj = UserModel()
     }

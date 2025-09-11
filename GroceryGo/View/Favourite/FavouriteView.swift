@@ -60,9 +60,31 @@ struct FavouriteView: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
-        .alert(isPresented: $favVM.showError) {
-            
-            Alert(title: Text(Globs.AppName), message: Text(favVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
+        .overlay {
+            if favVM.showPopup {
+                ZStack {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.6), value: favVM.showPopup)
+
+                    StatusPopupView(
+                        type: favVM.popupType,
+                        messageKey: LocalizedStringKey(favVM.popupMessageKey),
+                        buttonKey: "ok_button"
+                    ) {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            favVM.showPopup = false
+                        }
+                    }
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                    .animation(
+                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
+                        value: favVM.showPopup
+                    )
+                }
+                .zIndex(1)
+            }
         }
         .ignoresSafeArea()
     }

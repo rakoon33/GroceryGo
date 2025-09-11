@@ -91,9 +91,6 @@ struct MyCartView: View {
             
             SpinnerView(isLoading: $cartVM.isLoading)
         }
-        .alert(isPresented: $cartVM.showError, content: {
-            Alert(title: Text(Globs.AppName), message: Text(cartVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
-        })
         .navigationTitle("")
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
