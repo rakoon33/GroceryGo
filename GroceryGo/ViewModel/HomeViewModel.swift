@@ -14,7 +14,6 @@ final class HomeViewModel: ObservableObject {
     
     private let homeService: HomeServiceProtocol
     
-    @Published var selectedTab: MainTab = .shop
     @Published var txtSearch: String = ""
     
     @Published var isLoading: Bool = false

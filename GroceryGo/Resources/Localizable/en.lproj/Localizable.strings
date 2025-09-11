@@ -110,9 +110,6 @@
 "check_out" = "Check Out";
 "cart_empty" = "Your cart is empty";
 
-// MARK: - DeliveryAdressView
-"delivery_address" = "Delivery Address";
-
 // MARK: - Messages
 "success_message" = "Success";
 "fail_message" = "Fail";

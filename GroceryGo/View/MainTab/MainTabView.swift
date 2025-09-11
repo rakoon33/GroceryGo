@@ -18,13 +18,13 @@ enum MainTab: Int {
 struct MainTabView: View {
     
     @Binding var path: NavigationPath
-    @StateObject var homeVM = HomeViewModel.shared
+    @EnvironmentObject var tabVM: TabViewModel
     
     var body: some View {
         
         ZStack {
             
-            switch homeVM.selectedTab {
+            switch tabVM.selectedTab {
             case .shop:
                 HomeView(path: $path)
             case .explore:
@@ -44,28 +44,28 @@ struct MainTabView: View {
                 HStack {
                     
                     
-                    TabButton(title: "tab_shop", icon: "store_tab", isSelected: homeVM.selectedTab == .shop) {
+                    TabButton(title: "tab_shop", icon: "store_tab", isSelected: tabVM.selectedTab == .shop) {
                         
-                        withAnimation { homeVM.selectedTab = .shop }
-                        
-                    }
-                    TabButton(title: "tab_explore", icon: "explore_tab", isSelected: homeVM.selectedTab == .explore) {
-                        
-                        withAnimation { homeVM.selectedTab = .explore }
-                    }
-                    TabButton(title: "tab_cart", icon: "cart_tab", isSelected: homeVM.selectedTab == .cart) {
-                        
-                        withAnimation { homeVM.selectedTab = .cart }
+                        withAnimation { tabVM.selectedTab = .shop }
                         
                     }
-                    TabButton(title: "tab_favorite", icon: "fav_tab", isSelected: homeVM.selectedTab == .favorite) {
+                    TabButton(title: "tab_explore", icon: "explore_tab", isSelected: tabVM.selectedTab == .explore) {
                         
-                        withAnimation { homeVM.selectedTab = .favorite }
+                        withAnimation { tabVM.selectedTab = .explore }
+                    }
+                    TabButton(title: "tab_cart", icon: "cart_tab", isSelected: tabVM.selectedTab == .cart) {
+                        
+                        withAnimation { tabVM.selectedTab = .cart }
                         
                     }
-                    TabButton(title: "tab_account", icon: "account_tab", isSelected: homeVM.selectedTab == .account) {
+                    TabButton(title: "tab_favorite", icon: "fav_tab", isSelected: tabVM.selectedTab == .favorite) {
                         
-                        withAnimation { homeVM.selectedTab = .account }
+                        withAnimation { tabVM.selectedTab = .favorite }
+                        
+                    }
+                    TabButton(title: "tab_account", icon: "account_tab", isSelected: tabVM.selectedTab == .account) {
+                        
+                        withAnimation { tabVM.selectedTab = .account }
                         
                     }
                     

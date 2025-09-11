@@ -110,9 +110,6 @@
 "check_out" = "Thanh Toán";
 "cart_empty" = "Giỏ hàng của bạn đang trống";
 
-// MARK: - DeliveryAdressView
-"delivery_address" = "Địa chỉ giao hàng";
-
 // MARK: - Messages
 "success_message" = "Thành công";
 "fail_message" = "Thất bại";

@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct DelieryAddressView: View {
+    
+    @Binding var path: NavigationPath
+    
     var body: some View {
         ZStack {
             
@@ -22,6 +25,15 @@ struct DelieryAddressView: View {
             
             VStack {
                 HStack {
+                    
+                    Button {
+                        path.removeLast()
+                    } label: {
+                        Image("back")
+                            .resizable()
+                            .frame(width: 15, height: 15)
+                    }
+                    
                     Spacer()
                     
                     Text("delivery_address".localized)
@@ -31,17 +43,13 @@ struct DelieryAddressView: View {
                     Spacer()
                 }
                 .padding(.top, .topInsets)
+                .padding(.horizontal, 20)
                 .background(Color.white)
                 .shadow(color: Color.black.opacity(0.2), radius: 2)
                 
                 Spacer()
-                
-                RoundButton(title: "add_all_to_cart".localized)
-                    .padding(20)
-                    .padding(.bottom, .bottomInsets + 80)
-            }
             
-  
+            }
             
         }
         .onAppear {
@@ -55,5 +63,5 @@ struct DelieryAddressView: View {
 }
 
 #Preview {
-    DelieryAddressView()
+    DelieryAddressView(path: .constant(NavigationPath()))
 }

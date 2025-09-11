@@ -12,6 +12,7 @@ import SwiftUI
 struct GroceryGoApp: App {
     
     @StateObject private var localization = LocalizationManager.shared
+    @StateObject private var tabVM = TabViewModel()
     
     init() {
         // Ẩn TabBar hệ thống
@@ -29,6 +30,7 @@ struct GroceryGoApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(localization)
+                .environmentObject(tabVM)
         }
     }
 }
