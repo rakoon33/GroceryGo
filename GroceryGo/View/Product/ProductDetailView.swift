@@ -12,7 +12,8 @@ struct ProductDetailView: View {
     
     @Binding var path: NavigationPath
     @StateObject var detailVM: ProductDetailViewModel = ProductDetailViewModel(prodObj: ProductModel())
-    @StateObject var cartVM: CartViewModel = CartViewModel()
+    @StateObject var favVM = FavouriteViewModel.shared
+    @StateObject var cartVM = CartViewModel.shared
     
     var body: some View {
         ZStack {
@@ -291,16 +292,23 @@ struct ProductDetailView: View {
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
         .overlay {
-            if cartVM.showPopup || detailVM.showPopup {
+            if cartVM.showPopup || detailVM.showPopup || favVM.showPopup {
                 ZStack {
                     Color.black.opacity(0.4)
                         .ignoresSafeArea()
                         .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: cartVM.showPopup || detailVM.showPopup)
+                        .animation(.easeInOut(duration: 0.6),
+                                   value: cartVM.showPopup || detailVM.showPopup || favVM.showPopup)
 
                     StatusPopupView(
-                        type: cartVM.showPopup ? cartVM.popupType : detailVM.popupType,
-                        messageKey: LocalizedStringKey(cartVM.showPopup ? cartVM.popupMessageKey : detailVM.popupMessageKey),
+                        type: cartVM.showPopup ? cartVM.popupType
+                             : detailVM.showPopup ? detailVM.popupType
+                             : favVM.popupType,
+                        messageKey: LocalizedStringKey(
+                            cartVM.showPopup ? cartVM.popupMessageKey
+                            : detailVM.showPopup ? detailVM.popupMessageKey
+                            : favVM.popupMessageKey
+                        ),
                         buttonKey: "ok_button"
                     ) {
                         withAnimation(.easeInOut(duration: 0.6)) {
@@ -310,17 +318,21 @@ struct ProductDetailView: View {
                             if detailVM.showPopup {
                                 detailVM.showPopup = false
                             }
+                            if favVM.showPopup {
+                                favVM.showPopup = false
+                            }
                         }
                     }
                     .transition(.scale(scale: 0.9).combined(with: .opacity))
                     .animation(
                         .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: cartVM.showPopup || detailVM.showPopup
+                        value: cartVM.showPopup || detailVM.showPopup || favVM.showPopup
                     )
                 }
                 .zIndex(1)
             }
         }
+
     }
     
 }

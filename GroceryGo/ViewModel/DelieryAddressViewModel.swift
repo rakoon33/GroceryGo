@@ -6,50 +6,59 @@
 //
 
 import SwiftUI
+import Foundation
 
 @MainActor
-final class DelieryAddressViewModel: ObservableObject {
+final class DeliveryAddressViewModel: ObservableObject {
     
-    static var shared: CartViewModel = CartViewModel()
+    static let shared = DeliveryAddressViewModel()
     
-    private let cartService: CartServiceProtocol
+    private let addressService: AddressServiceProtocol
+    
+    @Published var txtName: String = ""
+    @Published var txtMobile: String = ""
+    @Published var txtAddress: String = ""
+    @Published var txtCity: String = ""
+    @Published var txtState: String = ""
+    @Published var txtPostalCode: String = ""
+    @Published var txtTypeName: String = ""
     
     @Published var isLoading: Bool = false
     
     @Published var showPopup = false
     @Published var popupType: PopupType = .success
     @Published var popupMessageKey: String = ""
+    @Published var lastOperationSucceeded: Bool = false
     
-    @Published var listArr: [CartItemModel] = []
-    @Published var total: Double = 0.0
-    @Published var discount: Double = 0.0
-    @Published var shippingFee: Double = 0.0
-    @Published var finalPrice: Double = 0.0
+    @Published var listArr: [AddressModel] = []
     
-    init(cartService: CartServiceProtocol = CartService()) {
-        self.cartService = cartService
-        AppLogger.info("CartViewModel initialized", category: .ui)
+    init(addressService: AddressServiceProtocol = AddressService()) {
+        self.addressService = addressService
+        AppLogger.info("DeliveryAddressViewModel initialized", category: .ui)
     }
     
-    func fetchCartList() async {
+    
+    func setAdd(aObj: AddressModel) {
+        txtName = aObj.name
+        txtMobile = aObj.phone
+        txtAddress = aObj.address
+        txtCity = aObj.city
+        txtState = aObj.state
+        txtPostalCode = aObj.postalCode
+        txtTypeName = aObj.typeName
+        
+    }
+    
+    // MARK: - Fetch
+    func fetchAddressList() async {
         isLoading = true
-        AppLogger.debug("Fetching cart list...", category: .network)
         defer { isLoading = false }
         
         do {
-            let response = try await cartService.fetchCartList()
-            
-            // update state
-            listArr = response.payload
-            total = response.total
-            discount = response.discountAmount
-            shippingFee = response.deliverPriceAmount
-            finalPrice = response.userPayPrice
-            
-            AppLogger.info("Fetched \(listArr.count) cart items", category: .ui)
+            listArr = try await addressService.fetchAddressList()
+            AppLogger.info("Fetched \(listArr.count) addresses", category: .ui)
         } catch let error as NetworkErrorType {
             if case .unauthorized = error {
-                // Đẩy sang SessionManager để logout, không show alert
                 SessionManager.shared.logout()
             } else {
                 popupType = .error
@@ -60,80 +69,190 @@ final class DelieryAddressViewModel: ObservableObject {
             popupType = .error
             popupMessageKey = error.localizedDescription
             showPopup = true
-            AppLogger.error("Unexpected error in fetchCartList: \(error.localizedDescription)", category: .network)
+            AppLogger.error("Unexpected error in fetchAddressList: \(error.localizedDescription)", category: .network)
         }
     }
     
-    func addProductToCart(prodId: Int, qty: Int) async {
+    // MARK: - Add
+    func addAddress() async {
+        
+        guard validateInputs() else { return }
+        
+        isLoading = true
+        
+        defer {
+            isLoading = false
+        }
+        
+        do {
+            try await addressService.addAddress(
+                name: txtName,
+                typeName: txtTypeName,
+                phone: txtMobile,
+                address: txtAddress,
+                city: txtCity,
+                state: txtState,
+                postalCode: txtPostalCode
+            )
+            
+            await fetchAddressList()
+            popupType = .success
+            popupMessageKey = "address_added"
+            showPopup = true
+            lastOperationSucceeded = true
+            self.clearAll()
+            AppLogger.info("addAddress successful", category: .ui)
+            
+        } catch let error as NetworkErrorType {
+            if case .unauthorized = error {
+                SessionManager.shared.logout()
+            } else {
+                lastOperationSucceeded = false
+                popupType = .error
+                popupMessageKey = error.errorMessage
+                showPopup = true
+            }
+        } catch {
+            lastOperationSucceeded = false
+            popupType = .error
+            popupMessageKey = "address_add_failed"
+            showPopup = true
+            AppLogger.error("Unexpected error in addAddress: \(error.localizedDescription)", category: .network)
+        }
+    }
+    
+    // MARK: - Update
+    func updateAddress(addressId: Int) async {
+        
+        guard validateInputs() else { return }
+        
+        isLoading = true
+        defer {
+            isLoading = false
+        }
+        
+        do {
+            try await addressService.updateAddress(
+                addressId: addressId,
+                name: txtName,
+                typeName: txtTypeName,
+                phone: txtMobile,
+                address: txtAddress,
+                city: txtCity,
+                state: txtState,
+                postalCode: txtPostalCode
+            )
+            
+            await fetchAddressList()
+            
+            popupType = .success
+            popupMessageKey = "address_updated"
+            showPopup = true
+            lastOperationSucceeded = true
+            self.clearAll()
+            AppLogger.info("updateAddress successful", category: .ui)
+            
+        } catch let error as NetworkErrorType {
+            if case .unauthorized = error {
+                SessionManager.shared.logout()
+            } else {
+                lastOperationSucceeded = false
+                popupType = .error
+                popupMessageKey = error.errorMessage
+                showPopup = true
+            }
+        } catch {
+            lastOperationSucceeded = false
+            popupType = .error
+            popupMessageKey = "address_update_failed"
+            showPopup = true
+            AppLogger.error("Unexpected error in updateAddress: \(error.localizedDescription)", category: .network)
+        }
+    }
+    
+    // MARK: - Remove
+    func removeAddress(addressId: Int) async {
+        
         isLoading = true
         defer { isLoading = false }
         
         do {
-            try await cartService.addToCart(prodId: prodId, qty: qty)
-            await fetchCartList()
+            _ = try await addressService.removeAddress(addressId: addressId)
+            
+            await fetchAddressList()
             
             popupType = .success
-            popupMessageKey = "added_to_cart"
+            popupMessageKey = "address_removed"
             showPopup = true
-            AppLogger.info("addProductToCart successful", category: .ui)
+            AppLogger.info("removeAddress successful", category: .ui)
             
+        } catch let error as NetworkErrorType {
+            if case .unauthorized = error {
+                SessionManager.shared.logout()
+            } else {
+                popupType = .error
+                popupMessageKey = error.errorMessage
+                showPopup = true
+            }
         } catch {
             popupType = .error
-            popupMessageKey = "add_to_cart_failed"
+            popupMessageKey = "address_remove_failed"
             showPopup = true
-            AppLogger.error("Unexpected error in addProductToCart: \(error.localizedDescription)", category: .network)
+            AppLogger.error("Unexpected error in removeAddress: \(error.localizedDescription)", category: .network)
         }
     }
     
-    func updateCartQty(cartId: Int, prodId: Int, newQty: Int) async {
-        isLoading = true
-        defer { isLoading = false }
+    // MARK: - helpers
+    func clearAll() {
+        txtName = ""
+        txtMobile = ""
+        txtAddress = ""
+        txtCity = ""
+        txtState = ""
+        txtPostalCode = ""
+        txtTypeName = "Home"
         
-        do {
-            try await cartService.updateCartQty(cartId: cartId, prodId: prodId, newQty: newQty)
-            await fetchCartList()
-            
-            popupType = .success
-            popupMessageKey = "cart_updated"
-            showPopup = true
-            AppLogger.info("updateCartQty successful", category: .ui)
-            
-        } catch {
-            popupType = .error
-            popupMessageKey = "cart_update_failed"
-            showPopup = true
-            AppLogger.error("Unexpected error in updateCartQty: \(error.localizedDescription)", category: .network)
-        }
     }
     
-    func removeFromCart(cartId: Int, prodId: Int) async {
-        isLoading = true
-        defer { isLoading = false }
-        
-        do {
-            try await cartService.removeFromCart(cartId: cartId, prodId: prodId)
-            await fetchCartList()
-            
-            popupType = .success
-            popupMessageKey = "removed_from_cart"
-            showPopup = true
-            AppLogger.info("removeFromCart successful", category: .ui)
-        } catch {
-            popupType = .error
-            popupMessageKey = "remove_from_cart_failed"
-            showPopup = true
-            AppLogger.error("Unexpected error in removeFromCart: \(error.localizedDescription)", category: .network)
+    func validateInputs() -> Bool {
+        if txtName.trimmingCharacters(in: .whitespaces).isEmpty {
+            showError(messageKey: "name_required")
+            return false
         }
+        if txtMobile.trimmingCharacters(in: .whitespaces).isEmpty {
+            showError(messageKey: "mobile_required")
+            return false
+        }
+        if txtAddress.trimmingCharacters(in: .whitespaces).isEmpty {
+            showError(messageKey: "address_required")
+            return false
+        }
+        if txtCity.trimmingCharacters(in: .whitespaces).isEmpty {
+            showError(messageKey: "city_required")
+            return false
+        }
+        if txtState.trimmingCharacters(in: .whitespaces).isEmpty {
+            showError(messageKey: "state_required")
+            return false
+        }
+        if txtPostalCode.trimmingCharacters(in: .whitespaces).isEmpty {
+            showError(messageKey: "postal_code_required")
+            return false
+        }
+        return true
+    }
+    
+    private func showError(messageKey: String) {
+        popupType = .error
+        popupMessageKey = messageKey
+        showPopup = true
     }
 }
 
-extension CartViewModel: Resettable {
+// MARK: - Reset
+extension DeliveryAddressViewModel: Resettable {
     func reset() {
         listArr = []
-        total = 0
-        discount = 0
-        shippingFee = 0
-        finalPrice = 0
         showPopup = false
         popupType = .success
         popupMessageKey = ""

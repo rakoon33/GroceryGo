@@ -80,7 +80,7 @@ extension UserModel {
             email: "debug@test.com",
             mobile: "0123456789",
             mobileCode: "+84",
-            authToken: "LhFRTu2Mr2oZ4NUs6IGy",
+            authToken: "5WXVGj6niv2XSrmIVKvR",
             createdDate: Date()
         )
     }

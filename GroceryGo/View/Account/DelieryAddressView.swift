@@ -10,13 +10,34 @@ import SwiftUI
 struct DelieryAddressView: View {
     
     @Binding var path: NavigationPath
+    @StateObject var addressVM = DeliveryAddressViewModel.shared
+    
+    @State private var showSheet = false
+    @State private var selectedAddress: AddressModel? = nil
+    @State private var isEditing = false
     
     var body: some View {
         ZStack {
             
             ScrollView {
-                LazyVStack {
-                    
+                LazyVStack(spacing: 15) {
+                    ForEach(addressVM.listArr, id: \.id, content: {
+                        aObj in
+                        
+                        DeliveryAddressRow(
+                            aObj: aObj,
+                            onRemove: { id in
+                                Task {
+                                    await addressVM.removeAddress(addressId: aObj.id)
+                                }
+                            },
+                            onEdit: {
+                                selectedAddress = aObj
+                                showSheet = true
+                            }
+                        )
+                        
+                    })
                 }
                 .padding(20)
                 .padding(.top, .topInsets + 46)
@@ -44,7 +65,8 @@ struct DelieryAddressView: View {
                     Spacer()
                     
                     Button {
-       
+                        selectedAddress = nil // add mới
+                        showSheet = true
                     } label: {
                         Image("add_white")
                             .renderingMode(.template)
@@ -60,17 +82,52 @@ struct DelieryAddressView: View {
                 .shadow(color: Color.black.opacity(0.2), radius: 2)
                 
                 Spacer()
-            
+                
             }
             
         }
-        .onAppear {
-            Task {
-
-            }
+        .task {
+            await addressVM.fetchAddressList()
         }
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
+        .sheet(isPresented: $showSheet) {
+            AddUpdateDeliveryAddressView(
+                editObj: selectedAddress ?? AddressModel(),
+                isEdit: $isEditing
+            )
+            .presentationDetents([.large])          // full height
+            .presentationDragIndicator(.hidden)     // ẩn cái thanh kéo
+            .ignoresSafeArea()   
+        }
+        .overlay {
+            if addressVM.showPopup {
+                ZStack {
+                    // nền đen fade chậm
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.6), value: addressVM.showPopup)
+                    
+                    // popup scale + fade rất chậm
+                    StatusPopupView(
+                        type: addressVM.popupType,
+                        messageKey: LocalizedStringKey(addressVM.popupMessageKey),
+                        buttonKey: "ok_button"
+                    ) {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            addressVM.showPopup = false
+                        }
+                    }
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                    .animation(
+                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
+                        value: addressVM.showPopup
+                    )
+                }
+                .zIndex(1)
+            }
+        }
     }
 }
 

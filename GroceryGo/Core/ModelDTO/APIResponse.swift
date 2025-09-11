@@ -18,8 +18,8 @@ struct APIResponse<T: Decodable>: Decodable {
     
     enum CodingKeys: String, CodingKey {
         case code = "status"   // server trả về key "status" → map vào code
-        case message
-        case payload
+        case message = "message"
+        case payload = "payload"
     }
     
     init(from decoder: Decoder) throws {

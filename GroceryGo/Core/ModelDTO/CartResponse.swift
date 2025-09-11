@@ -24,7 +24,7 @@ struct CartResponse: Decodable {
         case deliverPriceAmount = "deliver_price_amount"
         case discountAmount = "discount_amount"
         case userPayPrice = "user_pay_price"
-        case message
+        case message = "message"
         case code = "status"
     }
     

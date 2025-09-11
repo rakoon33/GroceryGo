@@ -22,7 +22,6 @@
 "see_all" = "See all";
 "search_store" = "Search store";
 
-
 "not_logged_in" = "Not logged in";
 "login_required_action" = "You must login to perform this action.";
 "logout" = "Log Out";
@@ -35,6 +34,23 @@
 "notifications" = "Notifications";
 "help" = "Help";
 "about" = "About";
+
+"home" = "Home";
+"office" = "Office";
+"name_field" = "Name";
+"mobile_field" = "Mobile";
+"address_line_field" = "Address Line";
+"city_field" = "City";
+"state_field" = "State";
+"postal_code_field" = "Postal Code";
+"enter_name" = "Enter your name";
+"enter_mobile" = "Enter your mobile number";
+"enter_address" = "Enter your address";
+"enter_city" = "Enter your city";
+"enter_state" = "Enter your state";
+"enter_postal_code" = "Enter your postal code";
+"add_address_button" = "Add Address";
+"update_address_button" = "Update Address";
 
 // MARK: - POP UP
 "added_to_cart" = "Product added to cart";
@@ -110,14 +126,33 @@
 "check_out" = "Check Out";
 "cart_empty" = "Your cart is empty";
 
+// MARK: - Delivery address View
+"edit_delivery_address" = "Edit Delivery Address";
+"add_delivery_address" = "Add Delivery Address";
+
 // MARK: - Messages
 "success_message" = "Success";
 "fail_message" = "Fail";
 
+"favourite_updated" = "Favourite updated successfully";
+
+"address_added" = "Address has been added successfully";
+"address_updated" = "Address has been updated successfully";
+"address_removed" = "Address has been removed successfully";
+
 // MARK: - Errors
+/* Login/Sign up Validation */
 "error_invalid_email" = "Please enter valid email address";
 "error_invalid_password" = "Please enter valid password";
 "error_invalid_username" = "Please enter valid username";
+
+/* Delivery Address Validation */
+"name_required" = "Please enter your name";
+"mobile_required" = "Please enter your mobile number";
+"address_required" = "Please enter your address";
+"city_required" = "Please enter your city";
+"state_required" = "Please enter your state";
+"postal_code_required" = "Please enter your postal code";
 
 "invalid_URL" = "Invalid URL.";
 "no_data" = "No data received.";
@@ -132,3 +167,16 @@
 "verification_expired" = "Verification expired.";
 "no_internet" = "No internet connection. Please check your network settings.";
 
+"address_add_failed" = "Failed to add address";
+"address_update_failed" = "Failed to update address";
+"address_remove_failed" = "Failed to remove address";
+
+
+// MARK: - AddressViewModel
+"address_list_fetch_failed" = "Failed to fetch address list";
+"address_added" = "Address added successfully";
+"address_add_failed" = "Failed to add address";
+"address_updated" = "Address updated successfully";
+"address_update_failed" = "Failed to update address";
+"address_removed" = "Address removed successfully";
+"address_remove_failed" = "Failed to remove address";

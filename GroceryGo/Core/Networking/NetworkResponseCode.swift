@@ -134,6 +134,7 @@ enum NetworkErrorType: Error {
     }
 
     // MARK: - Message
+    // Này để hiện lên UI
     var errorMessage: String {
         switch self {
         case .decodingError(let msg):
@@ -145,4 +146,40 @@ enum NetworkErrorType: Error {
         }
     }
     
+}
+
+// Này để logger bên AppLogger
+extension NetworkErrorType: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .decodingError(let msg):
+            return "Decoding error" + (msg.map { ": \($0)" } ?? "")
+        case .invalidURL:
+            return "Invalid URL"
+        case .noData:
+            return "No data"
+        case .encodingError:
+            return "Encoding error"
+        case .timeout:
+            return "Request timeout"
+        case .noInternet:
+            return "No internet connection"
+        case .networkLost:
+            return "Network connection lost"
+        case .unauthorized:
+            return "Unauthorized"
+        case .forbidden:
+            return "Forbidden"
+        case .notFound:
+            return "Not Found"
+        case .verificationExpired:
+            return "Verification expired"
+        case .wrongPasswordOrEmail:
+            return "Wrong password or email"
+        case .emailAlreadyExists:
+            return "Email already exists"
+        case .unknown(let code, let msg):
+            return "Unknown error (code: \(code)) \(msg)"
+        }
+    }
 }
