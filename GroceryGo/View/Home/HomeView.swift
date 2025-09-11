@@ -11,6 +11,7 @@ struct HomeView: View {
     
     @Binding var path: NavigationPath
     @StateObject var homeVM = HomeViewModel.shared
+    @StateObject var cartVM = CartViewModel.shared
     
     var body: some View {
         
@@ -27,36 +28,13 @@ struct HomeView: View {
                         .foregroundStyle(.primaryApp)
                         .padding(.bottom, 10)
                     
-//                    HStack {
-//                        
-//                        HStack {
-//                            Image("location")
-//                                .resizable()
-//                                .scaledToFit()
-//                                .frame(width: 16, height: 16)
-//                            
-//                            Text("Viet Nam, HCM")
-//                                .font(.customfont(.semibold, fontSize: 18))
-//                                .foregroundStyle(.darkGray)
-//                        }
-//                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
-//                        
-//                        Image(systemName: "globe")
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(width: 16, height: 16)
-//                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
-//                    }
-//                    .padding(.horizontal ,20)
-//                    
-                    
                     HomeTopBar()
                     
                     SearchTextField(placeholder: "search_store", txt: $homeVM.txtSearch)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
                     
-
+                    
                 }
                 .padding(.top, .topInsets)
                 
@@ -82,7 +60,9 @@ struct HomeView: View {
                                     path.append(AppRoute.productDetail(pObj))
                                 },
                                 didAddCart: {
-                                    // add to cart
+                                    Task {
+                                        await cartVM.addProductToCart(prodId: pObj.id, qty: 1)
+                                    }
                                 }
                             )
                         }
@@ -106,7 +86,9 @@ struct HomeView: View {
                                     path.append(AppRoute.productDetail(pObj))
                                 },
                                 didAddCart: {
-                                    // add to cart
+                                    Task {
+                                        await cartVM.addProductToCart(prodId: pObj.id, qty: 1)
+                                    }
                                 }
                             )
                         }
@@ -143,7 +125,9 @@ struct HomeView: View {
                                     path.append(AppRoute.productDetail(pObj))
                                 },
                                 didAddCart: {
-                                    // add to cart
+                                    Task {
+                                        await cartVM.addProductToCart(prodId: pObj.id, qty: 1)
+                                    }
                                 }
                             )
                         }
@@ -158,17 +142,43 @@ struct HomeView: View {
             SpinnerView(isLoading: $homeVM.isLoading)
             
         }
-        .onAppear {
-            homeVM.fetchData()
+        .task {
+            await homeVM.fetchData()
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)
-        .alert(isPresented: $homeVM.showError) {
-            
-            Alert(title: Text(Globs.AppName), message: Text(homeVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
+        .overlay {
+            if cartVM.showPopup || homeVM.showPopup {
+                ZStack {
+                    // nền đen fade
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.6), value: cartVM.showPopup || homeVM.showPopup)
+
+                    StatusPopupView(
+                        type: cartVM.showPopup ? cartVM.popupType : homeVM.popupType,
+                        messageKey: LocalizedStringKey(cartVM.showPopup ? cartVM.popupMessageKey : homeVM.popupMessageKey),
+                        buttonKey: "ok_button"
+                    ) {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            if cartVM.showPopup {
+                                cartVM.showPopup = false
+                            }
+                            if homeVM.showPopup {
+                                homeVM.showPopup = false
+                            }
+                        }
+                    }
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                    .animation(
+                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
+                        value: cartVM.showPopup || homeVM.showPopup
+                    )
+                }
+                .zIndex(1)
+            }
         }
-        
-        
     }
     
 }

@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 protocol ProductServiceProtocol {
     func fetchProductDetail(prodId: Int) async throws -> (product: ProductModel, nutritions: [NutritionModel], images: [ImageModel])
 }

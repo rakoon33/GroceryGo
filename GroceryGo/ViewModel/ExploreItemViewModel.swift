@@ -14,8 +14,6 @@ final class ExploreItemViewModel: ObservableObject {
     
     @Published var cObj: CategoryModel
     @Published var isLoading: Bool = false
-    @Published var showError = false
-    @Published var errorMessage: String = ""
     
     @Published var listArr: [ProductModel] = []
     
@@ -23,6 +21,10 @@ final class ExploreItemViewModel: ObservableObject {
     @Published var isShowDetail: Bool = false
     @Published var isShowNutrition: Bool = false
     @Published var qty: Int = 1
+    
+    @Published var showPopup = false
+    @Published var popupType: PopupType = .success
+    @Published var popupMessageKey: String = ""
     
     init(cObj: CategoryModel, categoryService: CategoryServiceProtocol = CategoryService()) {
         self.categoryService = categoryService
@@ -41,12 +43,20 @@ final class ExploreItemViewModel: ObservableObject {
                 listArr = try await categoryService.fetchExploreCategoryItem(catId: cObj.id)
                 AppLogger.info("Fetched \(listArr.count) items for category=\(cObj.name)", category: .network)
             } catch let error as NetworkErrorType {
-                errorMessage = error.errorMessage
-                showError = true
-                AppLogger.error("NetworkErrorType while fetching items: \(error.errorMessage)", category: .network)
+                if case .unauthorized = error {
+                    // Đẩy sang SessionManager để logout, không show alert
+                    SessionManager.shared.logout()
+                    AppLogger.error("Unauthorized in fetchExploreItem: \(error.localizedDescription)", category: .network)
+                } else {
+                    popupType = .error
+                    popupMessageKey = error.errorMessage
+                    showPopup = true
+                    AppLogger.error("Unexpected error in fetchExploreItem: \(error.localizedDescription)", category: .network)
+                }
             } catch {
-                errorMessage = error.localizedDescription
-                showError = true
+                popupType = .error
+                popupMessageKey = error.localizedDescription
+                showPopup = true
                 AppLogger.error("Unexpected error while fetching items: \(error.localizedDescription)", category: .network)
             }
         }

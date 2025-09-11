@@ -68,3 +68,21 @@ struct UserModel: Identifiable, Equatable, Codable {
         return lhs.id == rhs.id
     }
 }
+
+
+#if DEBUG
+extension UserModel {
+    static var mock: UserModel {
+        UserModel(
+            id: 999,
+            username: "DebugUser",
+            name: "Debug Name",
+            email: "debug@test.com",
+            mobile: "0123456789",
+            mobileCode: "+84",
+            authToken: "5WXVGj6niv2XSrmIVKvR",
+            createdDate: Date()
+        )
+    }
+}
+#endif

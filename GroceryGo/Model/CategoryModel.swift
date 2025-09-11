@@ -8,7 +8,6 @@
 import Foundation
 import SwiftUI
 
-
 struct CategoryModel: Codable, Identifiable, Equatable, Hashable {
     let id: Int
     let name: String

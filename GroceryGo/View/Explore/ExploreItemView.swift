@@ -11,7 +11,7 @@ struct ExploreItemView: View {
 
     @Binding var path: NavigationPath
     @StateObject var itemsVM = ExploreItemViewModel(cObj: CategoryModel())
-
+    @StateObject var cartVM = CartViewModel.shared
     var column = [
         GridItem(.flexible(), spacing: 15),
         GridItem(.flexible(), spacing: 15)
@@ -59,7 +59,9 @@ struct ExploreItemView: View {
                                     path.append(AppRoute.productDetail(pObj))
                                 },
                                 didAddCart: {
-                                    // add to cart
+                                    Task {
+                                        await cartVM.addProductToCart(prodId: pObj.id, qty: 1)
+                                    }
                                 }
                             )
                         }
@@ -77,10 +79,23 @@ struct ExploreItemView: View {
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)
-        .alert(isPresented: $itemsVM.showError) {
-            
-            Alert(title: Text(Globs.AppName), message: Text(itemsVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
+        .overlay {
+            if cartVM.showPopup || itemsVM.showPopup {
+                StatusPopupView(
+                    type: cartVM.showPopup ? cartVM.popupType : itemsVM.popupType,
+                    messageKey: LocalizedStringKey(cartVM.showPopup ? cartVM.popupMessageKey : itemsVM.popupMessageKey),
+                    buttonKey: "ok_button"
+                ) {
+                    withAnimation(.easeInOut) {
+                        if cartVM.showPopup { cartVM.showPopup = false }
+                        if itemsVM.showPopup { itemsVM.showPopup = false }
+                    }
+                }
+                .transition(.scale(scale: 0.9).combined(with: .opacity))
+                .zIndex(1)
+            }
         }
+        .animation(.easeInOut, value: cartVM.showPopup || itemsVM.showPopup)
     }
 }
 

@@ -7,20 +7,37 @@
 
 import SwiftUI
 
+enum AccountRoute: Hashable {
+    case orders
+    case myDetails
+    case deliveryAddress
+    case paymentMethods
+    case promoCode
+    case notifications
+    case help
+    case about
+}
+
 enum AppRoute: Hashable {
     case welcome
     case login
     case signup
     case signin
     case mainTab
+    
+    // cross-domain detail
     case productDetail(ProductModel)
     case exploreDetail(CategoryModel)
+    
+    // grouped by domain
+    case account(AccountRoute)
 }
 
 struct ContentView: View {
     @State private var path = NavigationPath()
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome: Bool = false
     @StateObject private var session = SessionManager.shared
+    @EnvironmentObject var tabVM: TabViewModel
     
     var body: some View {
         
@@ -52,7 +69,28 @@ struct ContentView: View {
                             path: $path,
                             itemsVM: ExploreItemViewModel(cObj: category)
                         )
+                    case .account(let accRoute):
+                        switch accRoute {
+                        case .orders:
+                            MyOrdersView()
+                        case .deliveryAddress:
+                            DelieryAddressView(path: $path)
+                        case .myDetails:
+                            MyDetailsView()
+                        case .paymentMethods:
+                            PaymentMethodsView()
+                        case .promoCode:
+                            PromoCodeView()
+                        case .notifications:
+                            NotificationView()
+                        case .help:
+                            HelpView()
+                        case .about:
+                            AboutView()
+                        }
+                        
                     }
+                    
                     
                 }
                 .onAppear {

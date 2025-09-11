@@ -20,7 +20,47 @@
 "best_selling" = "Bán chạy nhất";
 "groceries" = "Hàng tạp hóa";
 "see_all" = "Xem tất cả";
-"search_store" = "Search store";
+"search_store" = "Tìm kiếm cửa hàng";
+
+
+"not_logged_in" = "Chưa đăng nhập";
+"login_required_action" = "Bạn phải đăng nhập để thực hiện hành động này.";
+"logout" = "Đăng xuất";
+
+"orders" = "Đơn hàng";
+"my_details" = "Chi tiết của tôi";
+"delivery_address" = "Địa chỉ giao hàng";
+"payment_methods" = "Phương thức thanh toán";
+"promo_code" = "Mã khuyến mãi";
+"notifications" = "Thông báo";
+"help" = "Trợ giúp";
+"about" = "Giới thiệu";
+
+"home" = "Nhà";
+"office" = "Văn phòng";
+"name_field" = "Tên";
+"mobile_field" = "Số điện thoại";
+"address_line_field" = "Địa chỉ";
+"city_field" = "Thành phố";
+"state_field" = "Tỉnh/Thành";
+"postal_code_field" = "Mã bưu điện";
+"enter_name" = "Nhập tên của bạn";
+"enter_mobile" = "Nhập số điện thoại của bạn";
+"enter_address" = "Nhập địa chỉ của bạn";
+"enter_city" = "Nhập thành phố của bạn";
+"enter_state" = "Nhập tỉnh/thành của bạn";
+"enter_postal_code" = "Nhập mã bưu điện của bạn";
+"add_address_button" = "Thêm địa chỉ";
+"update_address_button" = "Cập nhật địa chỉ";
+
+// MARK: - POP UP
+"added_to_cart" = "Đã thêm sản phẩm vào giỏ";
+"add_to_cart_failed" = "Thêm sản phẩm vào giỏ thất bại";
+"cart_updated" = "Cập nhật giỏ hàng thành công";
+"cart_update_failed" = "Cập nhật giỏ hàng thất bại";
+"removed_from_cart" = "Đã xóa khỏi giỏ hàng";
+"remove_from_cart_failed" = "Xóa khỏi giỏ hàng thất bại";
+
 
 // MARK: - Maintab
 "tab_shop" = "Cửa hàng";
@@ -73,6 +113,7 @@
 "product_detail_title" = "Chi tiết sản phẩm";
 "product_detail_nutritions" = "Dinh dưỡng";
 "product_detail_review" = "Đánh giá";
+"add_to_basket" = "Thêm vào giỏ hàng";
 
 // MARK: - FavouriteView
 "product_detail_favorites" = "Yêu thích";
@@ -81,14 +122,42 @@
 // MARK: - ExploreView
 "find_products" = "Tìm sản phẩm";
 
+// MARK: - CartView
+"my_cart_title" = "Giỏ Hàng";
+"check_out" = "Thanh Toán";
+"cart_empty" = "Giỏ hàng của bạn đang trống";
+
+// MARK: - Delivery address View
+"edit_delivery_address" = "Chỉnh sửa địa chỉ giao hàng";
+"add_delivery_address" = "Thêm địa chỉ giao hàng";
+
 // MARK: - Messages
 "success_message" = "Thành công";
 "fail_message" = "Thất bại";
 
+"favourite_updated" = "Đã cập nhật yêu thích";
+
+"address_added" = "Thêm địa chỉ thành công";
+"address_removed" = "Xóa địa chỉ thành công";
+"address_updated" = "Cập nhật địa chỉ thành công";
+
 // MARK: - Errors
+/* Login/Sign up Validation */
 "error_invalid_email" = "Vui lòng nhập địa chỉ email hợp lệ";
 "error_invalid_password" = "Vui lòng nhập mật khẩu hợp lệ";
 "error_invalid_username" = "Vui lòng nhập tên người dùng hợp lệ";
+
+/* Delivery Address Validation */
+"name_required" = "Vui lòng nhập họ tên";
+"mobile_required" = "Vui lòng nhập số điện thoại";
+"address_required" = "Vui lòng nhập địa chỉ";
+"city_required" = "Vui lòng nhập thành phố";
+"state_required" = "Vui lòng nhập tỉnh/bang";
+"postal_code_required" = "Vui lòng nhập mã bưu điện";
+
+"address_add_failed" = "Thêm địa chỉ thất bại";
+"address_update_failed" = "Cập nhật địa chỉ thất bại";
+"address_remove_failed" = "Xóa địa chỉ thất bại";
 
 "invalid_URL" = "URL không hợp lệ.";
 "no_data" = "Không nhận được dữ liệu.";
@@ -103,3 +172,13 @@
 "verification_expired" = "Xác thực đã hết hạn.";
 "no_internet" = "Không có kết nối internet. Vui lòng kiểm tra cài đặt mạng của bạn.";
 
+
+
+// MARK: - AddressViewModel
+"address_list_fetch_failed" = "Không thể tải danh sách địa chỉ";
+"address_added" = "Đã thêm địa chỉ mới";
+"address_add_failed" = "Thêm địa chỉ thất bại";
+"address_updated" = "Đã cập nhật địa chỉ";
+"address_update_failed" = "Cập nhật địa chỉ thất bại";
+"address_removed" = "Đã xóa địa chỉ";
+"address_remove_failed" = "Xóa địa chỉ thất bại";

@@ -58,12 +58,34 @@ struct ExploreView: View {
             
             SpinnerView(isLoading: $exploreVM.isLoading)
         }
-        .onAppear {
-            exploreVM.fetchExploreData()
+        .task {
+            await exploreVM.fetchExploreData()
         }
-        .alert(isPresented: $exploreVM.showError) {
-            
-            Alert(title: Text(Globs.AppName), message: Text(exploreVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
+        .overlay {
+            if exploreVM.showPopup {
+                ZStack {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.6), value: exploreVM.showPopup)
+
+                    StatusPopupView(
+                        type: exploreVM.popupType,
+                        messageKey: LocalizedStringKey(exploreVM.popupMessageKey),
+                        buttonKey: "ok_button"
+                    ) {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            exploreVM.showPopup = false
+                        }
+                    }
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                    .animation(
+                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
+                        value: exploreVM.showPopup
+                    )
+                }
+                .zIndex(1)
+            }
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)

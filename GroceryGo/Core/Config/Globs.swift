@@ -22,6 +22,16 @@ struct Globs {
     static let SV_ADD_REMOVE_FAVOURITE = BASE_URL + "add_remove_favorite"
     static let SV_FAVOURITE_LIST = BASE_URL + "favorite_list"
     
+    static let SV_UPDATE_CART_LIST = BASE_URL + "update_cart"
+    static let SV_REMOVE_CART_LIST = BASE_URL + "remove_cart"
+    static let SV_ADD_CART_LIST = BASE_URL + "add_to_cart"
+    static let SV_CART_LIST = BASE_URL + "cart_list"
+    
+    static let SV_ADD_ADDRESS    = BASE_URL + "add_delivery_address"
+    static let SV_UPDATE_ADDRESS = BASE_URL + "update_delivery_address"
+    static let SV_REMOVE_ADDRESS = BASE_URL + "delete_delivery_address"
+    static let SV_ADDRESS_LIST   = BASE_URL + "delivery_address"
+    
     static let SV_EXPLORE_LIST = BASE_URL + "explore_category_list"
     static let SV_EXPLORE_ITEM_LIST = BASE_URL + "explore_category_items_list"
 }
@@ -36,29 +46,3 @@ struct AuthToken: Codable {
     let expiresAt: Date
 }
 
-struct EmptyPayload: Decodable {}
-
-struct APIResponse<T: Decodable>: Decodable {
-    let code: Int
-    let message: String?
-    let payload: T?
-    
-    enum CodingKeys: String, CodingKey {
-        case code = "status" // map "status" từ server → code
-        case message
-        case payload
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        // dùng extension decodeInt
-        self.code = try container.decodeInt(forKey: .code)
-        
-        // decode message an toàn
-        self.message = try? container.decode(String.self, forKey: .message)
-        
-        // decode payload an toàn
-        self.payload = try? container.decode(T.self, forKey: .payload)
-    }
-}

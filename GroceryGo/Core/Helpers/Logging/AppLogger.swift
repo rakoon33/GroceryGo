@@ -58,7 +58,7 @@ struct AppLogger {
     // MARK: - Redaction helpers
     private static let sensitiveKeys: Set<String> = [
         "password", "token", "refresh_token", "authorization",
-        "client_secret", "apikey"
+        "client_secret", "apikey", "auth_token"
     ]
 
     private static func redactAny(_ dict: [String: Any]) -> [String: Any] {
@@ -141,6 +141,7 @@ struct AppLogger {
         if let error = error {
             log += "\nError: \(error.localizedDescription)"
         }
+
 
         if let data = data,
            let bodyString = String(data: data, encoding: .utf8) {

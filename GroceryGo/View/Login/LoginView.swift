@@ -64,7 +64,9 @@ struct LoginView: View {
                 .padding(.bottom, .screenWidth * 0.05)
                 
                 RoundButton(title: "login_button".localized) {
-                    loginVM.login()
+                    Task {
+                        await loginVM.login()
+                    }
                 }
                 .padding(.bottom, .screenWidth * 0.05)
 
@@ -82,7 +84,6 @@ struct LoginView: View {
                 .onTapGesture {
                     path.append(AppRoute.signup) // Điều hướng sang SignUpView
                 }
-                
                 
                 Spacer()
                 
@@ -116,9 +117,31 @@ struct LoginView: View {
             
             SpinnerView(isLoading: $loginVM.isLoading)
         }
-        .alert(isPresented: $loginVM.showError) {
-            
-            Alert(title: Text(Globs.AppName), message: Text(loginVM.errorMessage), dismissButton: .default(Text("ok_button".localized)))
+        .overlay {
+            if loginVM.showPopup {
+                ZStack {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.6), value: loginVM.showPopup)
+
+                    StatusPopupView(
+                        type: loginVM.popupType,
+                        messageKey: LocalizedStringKey(loginVM.popupMessageKey),
+                        buttonKey: "ok_button"
+                    ) {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            loginVM.showPopup = false
+                        }
+                    }
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                    .animation(
+                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
+                        value: loginVM.showPopup
+                    )
+                }
+                .zIndex(1)
+            }
         }
         .background(.systemBackground)
         .toolbar(.hidden, for: .navigationBar)

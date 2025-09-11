@@ -12,10 +12,11 @@ struct ProductDetailView: View {
     
     @Binding var path: NavigationPath
     @StateObject var detailVM: ProductDetailViewModel = ProductDetailViewModel(prodObj: ProductModel())
+    @StateObject var favVM = FavouriteViewModel.shared
+    @StateObject var cartVM = CartViewModel.shared
     
     var body: some View {
         ZStack {
-            
             
             ScrollView {
                 ZStack {
@@ -42,7 +43,9 @@ struct ProductDetailView: View {
                             .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                         
                         Button {
-                            detailVM.toggleFavourite()
+                            Task {
+                                await detailVM.toggleFavourite()
+                            }
                         } label: {
                             Image(detailVM.isFav ? "favorite" : "not_fav")
                                 .renderingMode(.template)
@@ -241,8 +244,12 @@ struct ProductDetailView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 10)
                 
-                RoundButton(title: "Add to Basket") {
-                    
+                RoundButton(title: "add_to_basket".localized) {
+                    Task {
+                        await cartVM.addProductToCart(prodId: detailVM.pObj.id, qty: detailVM.qty)
+                        
+                        detailVM.qty = 1
+                    }
                 }
                 .padding(20)
             }
@@ -276,6 +283,7 @@ struct ProductDetailView: View {
             }
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
+
             
             SpinnerView(isLoading: $detailVM.isLoading)
             
@@ -283,7 +291,48 @@ struct ProductDetailView: View {
         .background(.systemBackground)
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
-        
+        .overlay {
+            if cartVM.showPopup || detailVM.showPopup || favVM.showPopup {
+                ZStack {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .animation(.easeInOut(duration: 0.6),
+                                   value: cartVM.showPopup || detailVM.showPopup || favVM.showPopup)
+
+                    StatusPopupView(
+                        type: cartVM.showPopup ? cartVM.popupType
+                             : detailVM.showPopup ? detailVM.popupType
+                             : favVM.popupType,
+                        messageKey: LocalizedStringKey(
+                            cartVM.showPopup ? cartVM.popupMessageKey
+                            : detailVM.showPopup ? detailVM.popupMessageKey
+                            : favVM.popupMessageKey
+                        ),
+                        buttonKey: "ok_button"
+                    ) {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            if cartVM.showPopup {
+                                cartVM.showPopup = false
+                            }
+                            if detailVM.showPopup {
+                                detailVM.showPopup = false
+                            }
+                            if favVM.showPopup {
+                                favVM.showPopup = false
+                            }
+                        }
+                    }
+                    .transition(.scale(scale: 0.9).combined(with: .opacity))
+                    .animation(
+                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
+                        value: cartVM.showPopup || detailVM.showPopup || favVM.showPopup
+                    )
+                }
+                .zIndex(1)
+            }
+        }
+
     }
     
 }

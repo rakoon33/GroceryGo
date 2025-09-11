@@ -84,4 +84,79 @@ final class ServiceCall {
             responseType: responseType
         )
     }
+    
+    // MARK: - Convenience wrappers with raw decoding
+    class func getRaw<T: Decodable>(
+        path: String,
+        parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
+        headers: [String: String] = [:],
+        responseType: T.Type
+    ) async throws -> T {
+        try await NetworkManager.shared.requestRaw(
+            method: .GET,
+            path: path,
+            parameters: parameters,
+            isTokenRequired: isTokenRequired,
+            headers: headers,
+            responseType: responseType
+        )
+    }
+    
+    class func postRaw<T: Decodable>(
+        path: String,
+        parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
+        headers: [String: String] = [:],
+        contentType: ContentType = .form,
+        responseType: T.Type
+    ) async throws -> T {
+        try await NetworkManager.shared.requestRaw(
+            method: .POST,
+            path: path,
+            parameters: parameters,
+            isTokenRequired: isTokenRequired,
+            headers: headers,
+            contentType: contentType,
+            responseType: responseType
+        )
+    }
+    
+    class func putRaw<T: Decodable>(
+        path: String,
+        parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
+        headers: [String: String] = [:],
+        contentType: ContentType = .form,
+        responseType: T.Type
+    ) async throws -> T {
+        try await NetworkManager.shared.requestRaw(
+            method: .PUT,
+            path: path,
+            parameters: parameters,
+            isTokenRequired: isTokenRequired,
+            headers: headers,
+            contentType: contentType,
+            responseType: responseType
+        )
+    }
+    
+    class func deleteRaw<T: Decodable>(
+        path: String,
+        parameters: [String: Any]? = nil,
+        isTokenRequired: Bool = false,
+        headers: [String: String] = [:],
+        contentType: ContentType = .form,
+        responseType: T.Type
+    ) async throws -> T {
+        try await NetworkManager.shared.requestRaw(
+            method: .DELETE,
+            path: path,
+            parameters: parameters,
+            isTokenRequired: isTokenRequired,
+            headers: headers,
+            contentType: contentType,
+            responseType: responseType
+        )
+    }
 }
