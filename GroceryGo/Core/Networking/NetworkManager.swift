@@ -137,6 +137,9 @@ final class NetworkManager {
             let wrapper = try JSONDecoder().decode(APIResponse<T>.self, from: data)
             
             if wrapper.code == APISuccessCode.success {
+                if T.self is EmptyPayload.Type {
+                    return EmptyPayload() as! T
+                }
                 guard let payload = wrapper.payload else {
                     throw NetworkErrorType.decodingError(message: "Missing payload")
                 }
