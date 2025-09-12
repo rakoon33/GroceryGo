@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DelieryAddressView: View {
     
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     @StateObject var addressVM = DeliveryAddressViewModel.shared
     
     @State private var showSheet = false
@@ -48,7 +48,7 @@ struct DelieryAddressView: View {
                 HStack {
                     
                     Button {
-                        path.removeLast()
+                        navigationState.removeLast()
                     } label: {
                         Image("back")
                             .resizable()
@@ -84,7 +84,6 @@ struct DelieryAddressView: View {
                 Spacer()
                 
             }
-            
         }
         .task {
             await addressVM.fetchAddressList()
@@ -96,41 +95,10 @@ struct DelieryAddressView: View {
                 editObj: selectedAddress ?? AddressModel(),
                 isEdit: $isEditing
             )
-            .presentationDetents([.large])          // full height
-            .presentationDragIndicator(.hidden)     // ẩn cái thanh kéo
-            .ignoresSafeArea()   
-        }
-        .overlay {
-            if addressVM.showPopup {
-                ZStack {
-                    // nền đen fade chậm
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: addressVM.showPopup)
-                    
-                    // popup scale + fade rất chậm
-                    StatusPopupView(
-                        type: addressVM.popupType,
-                        messageKey: LocalizedStringKey(addressVM.popupMessageKey),
-                        buttonKey: "ok_button"
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            addressVM.showPopup = false
-                        }
-                    }
-                    .transition(.scale(scale: 0.9).combined(with: .opacity))
-                    .animation(
-                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: addressVM.showPopup
-                    )
-                }
-                .zIndex(1)
-            }
         }
     }
 }
 
 #Preview {
-    DelieryAddressView(path: .constant(NavigationPath()))
+    DelieryAddressView()
 }

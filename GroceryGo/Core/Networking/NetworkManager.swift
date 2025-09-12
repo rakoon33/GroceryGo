@@ -150,14 +150,33 @@ final class NetworkManager {
             }
             
         } catch let urlErr as URLError {
+            // Log request/response
             logResponse(data: nil, response: nil, error: urlErr)
+            
+            // Map URLError.Code sang NetworkErrorType
+            let networkError: NetworkErrorType
             switch urlErr.code {
-            case .notConnectedToInternet: throw NetworkErrorType.noInternet
-            case .networkConnectionLost:  throw NetworkErrorType.networkLost
-            case .timedOut:               throw NetworkErrorType.timeout
+            case .notConnectedToInternet:
+                networkError = .noInternet
+            case .networkConnectionLost:
+                networkError = .networkLost
+            case .timedOut:
+                networkError = .timeout
+            case .cannotConnectToHost, .cannotFindHost:
+                networkError = .serverUnreachable
+            case .dnsLookupFailed:
+                networkError = .dnsFailed
+            case .badServerResponse:
+                networkError = .badResponse
+            case .resourceUnavailable:
+                networkError = .resourceUnavailable
+            case .cancelled:
+                networkError = .cancelled
             default:
-                throw NetworkErrorType.unknown(code: urlErr.errorCode, message: urlErr.localizedDescription)
+                networkError = .unknown(code: urlErr.errorCode, message: urlErr.localizedDescription)
             }
+            
+            throw networkError
         } catch let e as DecodingError {
             logResponse(data: nil, response: nil, error: e)
             throw NetworkErrorType.decodingError(message: e.detailedMessage)

@@ -10,7 +10,7 @@ import SDWebImageSwiftUI
 
 struct ProductDetailView: View {
     
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     @StateObject var detailVM: ProductDetailViewModel = ProductDetailViewModel(prodObj: ProductModel())
     @StateObject var favVM = FavouriteViewModel.shared
     @StateObject var cartVM = CartViewModel.shared
@@ -257,9 +257,7 @@ struct ProductDetailView: View {
             VStack {
                 HStack {
                     Button {
-                        if !path.isEmpty {
-                            path.removeLast()
-                        }
+                        navigationState.removeLast()
                         
                     } label: {
                         Image("back")
@@ -283,60 +281,16 @@ struct ProductDetailView: View {
             }
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
-
-            
-            SpinnerView(isLoading: $detailVM.isLoading)
             
         }
         .background(.systemBackground)
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
-        .overlay {
-            if cartVM.showPopup || detailVM.showPopup || favVM.showPopup {
-                ZStack {
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6),
-                                   value: cartVM.showPopup || detailVM.showPopup || favVM.showPopup)
-
-                    StatusPopupView(
-                        type: cartVM.showPopup ? cartVM.popupType
-                             : detailVM.showPopup ? detailVM.popupType
-                             : favVM.popupType,
-                        messageKey: LocalizedStringKey(
-                            cartVM.showPopup ? cartVM.popupMessageKey
-                            : detailVM.showPopup ? detailVM.popupMessageKey
-                            : favVM.popupMessageKey
-                        ),
-                        buttonKey: "ok_button"
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            if cartVM.showPopup {
-                                cartVM.showPopup = false
-                            }
-                            if detailVM.showPopup {
-                                detailVM.showPopup = false
-                            }
-                            if favVM.showPopup {
-                                favVM.showPopup = false
-                            }
-                        }
-                    }
-                    .transition(.scale(scale: 0.9).combined(with: .opacity))
-                    .animation(
-                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: cartVM.showPopup || detailVM.showPopup || favVM.showPopup
-                    )
-                }
-                .zIndex(1)
-            }
-        }
 
     }
     
 }
 
 #Preview {
-    ProductDetailView(path: .constant(NavigationPath()), detailVM: ProductDetailViewModel(prodObj: ProductModel(id: 5, catId: 1, brandId: 1, typeId: 1, name: "Organic Banana", detail: "banana, fruit of the genus Musa, of the family Musacee, one of the most important fruit crops of the world. The banana is grown in the tropics, and, though it is most widely consumed in those regions, it is valued worldwide for its flavour, nutritional value, and availability throughout the year", unitName: "pcs", unitValue: "7", nutritionWeight: "200g", offerPrice: 2.99, startDate: Date(), endDate: Date(), price: 2.99, image: "http://localhost:3001/img/product/202307310947354735xuruflIucc.png", catName: "Frash Fruits & Vegetable", typeName: "Pulses", isFav: false, avgRating: 5.0)))
+    ProductDetailView(detailVM: ProductDetailViewModel(prodObj: ProductModel(id: 5, catId: 1, brandId: 1, typeId: 1, name: "Organic Banana", detail: "banana, fruit of the genus Musa, of the family Musacee, one of the most important fruit crops of the world. The banana is grown in the tropics, and, though it is most widely consumed in those regions, it is valued worldwide for its flavour, nutritional value, and availability throughout the year", unitName: "pcs", unitValue: "7", nutritionWeight: "200g", offerPrice: 2.99, startDate: Date(), endDate: Date(), price: 2.99, image: "http://localhost:3001/img/product/202307310947354735xuruflIucc.png", catName: "Frash Fruits & Vegetable", typeName: "Pulses", isFav: false, avgRating: 5.0)))
 }

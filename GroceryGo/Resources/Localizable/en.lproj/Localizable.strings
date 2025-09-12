@@ -160,6 +160,11 @@
 "encoding_failed" = "Failed to encode data.";
 "timeout" = "Request timed out.";
 "network_lost" = "Network connection lost.";
+"server_unreachable" = "Cannot connect to server.";
+"dns_failed" = "DNS lookup failed.";
+"bad_response" = "Bad server response.";
+"resource_unavailable" = "Resource unavailable.";
+"cancelled" = "Request cancelled.";
 "unauthorized" = "Unauthorized access.";
 "forbidden" = "Access forbidden.";
 "not_found" = "Resource not found.";

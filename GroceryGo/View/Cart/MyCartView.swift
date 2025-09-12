@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MyCartView: View {
     
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     @StateObject var cartVM = CartViewModel.shared
     
     var body: some View {
@@ -88,8 +88,6 @@ struct MyCartView: View {
                 
                 }
             }
-            
-            SpinnerView(isLoading: $cartVM.isLoading)
         }
         .navigationTitle("")
         .toolbar(.hidden, for: .navigationBar)
@@ -97,38 +95,9 @@ struct MyCartView: View {
         .task {
             await cartVM.fetchCartList()
         }
-        .overlay {
-            if cartVM.showPopup {
-                ZStack {
-                    // nền đen fade chậm
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: cartVM.showPopup)
-
-                    // popup scale + fade rất chậm
-                    StatusPopupView(
-                        type: cartVM.popupType,
-                        messageKey: LocalizedStringKey(cartVM.popupMessageKey),
-                        buttonKey: "ok_button"
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            cartVM.showPopup = false
-                        }
-                    }
-                    .transition(.scale(scale: 0.9).combined(with: .opacity))
-                    .animation(
-                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: cartVM.showPopup
-                    )
-                }
-                .zIndex(1)
-            }
-        }
-
     }
 }
 
 #Preview {
-    MyCartView(path: .constant(NavigationPath()))
+    MyCartView()
 }

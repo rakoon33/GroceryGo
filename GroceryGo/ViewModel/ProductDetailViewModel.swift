@@ -13,8 +13,6 @@ final class ProductDetailViewModel: ObservableObject {
     private let productService: ProductServiceProtocol
     
     @Published var pObj: ProductModel = ProductModel()
-    @Published var isLoading: Bool = false
-    
     @Published var nutritionArr: [NutritionModel] = []
     @Published var imageArr: [ImageModel] = []
     
@@ -23,9 +21,8 @@ final class ProductDetailViewModel: ObservableObject {
     @Published var isShowNutrition: Bool = false
     @Published var qty: Int = 1
     
-    @Published var showPopup = false
-    @Published var popupType: PopupType = .success
-    @Published var popupMessageKey: String = ""
+    private let loadingState = LoadingManager.shared
+    private let popupState = PopupManager.shared
     
     // MARK: - UI actions
     func showDetail() {
@@ -59,9 +56,9 @@ final class ProductDetailViewModel: ObservableObject {
     
     // MARK: - Fetch detail
     func fetchProductDetail() async {
-        isLoading = true
+        loadingState.isLoading = true
         AppLogger.debug("Fetching detail for productId=\(pObj.id)", category: .network)
-        defer { isLoading = false }
+        defer { loadingState.isLoading = false }
         
         do {
             let data = try await productService.fetchProductDetail(prodId: pObj.id)
@@ -73,15 +70,11 @@ final class ProductDetailViewModel: ObservableObject {
                 SessionManager.shared.logout()
                 AppLogger.error("Unauthorized in fetchProductDetail: \(error.localizedDescription)", category: .network)
             } else {
-                popupType = .error
-                popupMessageKey = error.errorMessage
-                showPopup = true
+                popupState.showErrorPopup(error.errorMessage)
             }
         } catch {
-            popupType = .error
-            popupMessageKey = error.localizedDescription
-            showPopup = true
-            AppLogger.error("Unexpected error fetching product detail: \(popupMessageKey)", category: .network)
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
+            AppLogger.error("Unexpected error fetching product detail: \(error as? NetworkErrorType)?.errorMessage)", category: .network)
         }
     }
 }
@@ -95,8 +88,5 @@ extension ProductDetailViewModel: Resettable {
         isShowDetail = false
         isShowNutrition = false
         qty = 1
-        showPopup = false
-        popupType = .success
-        popupMessageKey = ""
     }
 }

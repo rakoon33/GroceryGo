@@ -9,9 +9,9 @@
 import SwiftUI
 
 struct AccountView: View {
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     @StateObject private var session = SessionManager.shared
-
+    
     var body: some View {
         
         let user = session.user
@@ -26,11 +26,11 @@ struct AccountView: View {
                         .cornerRadius(30)
                     VStack {
                         HStack {
-               
+                            
                             Text("Hello, \(user?.username ?? "Rakoon")")
                                 .font(.customfont(.bold, fontSize: 16))
                                 .foregroundColor(.primaryText)
-                        
+                            
                             Image(systemName: "pencil")
                                 .foregroundColor(.primaryApp)
                             
@@ -38,7 +38,7 @@ struct AccountView: View {
                         }
                         .padding(.bottom, 2)
                         
-                    Text( "\(user?.email ?? "Rakoon@gmail.com")")
+                        Text( "\(user?.email ?? "Rakoon@gmail.com")")
                             .font(.customfont(.regular, fontSize: 16))
                             .foregroundColor(.secondaryText)
                             .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
@@ -56,31 +56,31 @@ struct AccountView: View {
                     LazyVStack {
                         VStack {
                             AccountCell(item: .orders) {
-                                path.append(AppRoute.account(.orders))
+                                navigationState.navigate(to: .account(.orders))
                             }
                             AccountCell(item: .myDetails) {
-                                path.append(AppRoute.account(.myDetails))
+                                navigationState.navigate(to: .account(.myDetails))
                             }
                             AccountCell(item: .deliveryAddress) {
-                                path.append(AppRoute.account(.deliveryAddress))
+                                navigationState.navigate(to: .account(.deliveryAddress))
                             }
                             AccountCell(item: .paymentMethods) {
-                                path.append(AppRoute.account(.paymentMethods))
+                                navigationState.navigate(to: .account(.paymentMethods))
                             }
                             AccountCell(item: .promoCode) {
-                                path.append(AppRoute.account(.promoCode))
+                                navigationState.navigate(to: .account(.promoCode))
                             }
                         }
-
+                        
                         VStack {
                             AccountCell(item: .notifications) {
-                                path.append(AppRoute.account(.notifications))
+                                navigationState.navigate(to: .account(.notifications))
                             }
                             AccountCell(item: .help) {
-                                path.append(AppRoute.account(.help))
+                                navigationState.navigate(to: .account(.help))
                             }
                             AccountCell(item: .about) {
-                                path.append(AppRoute.account(.about))
+                                navigationState.navigate(to: .account(.about))
                             }
                         }
                         
@@ -103,7 +103,7 @@ struct AccountView: View {
                                         .frame(width: 20, height: 20)
                                         .padding(.trailing, 20)
                                 }
-               
+                                
                             }
                             
                         }
@@ -124,6 +124,6 @@ struct AccountView: View {
 }
 
 #Preview {
-    AccountView(path: .constant(NavigationPath()))
+    AccountView()
 }
 

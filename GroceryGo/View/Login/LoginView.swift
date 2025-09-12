@@ -9,8 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     
-    @Binding var path: NavigationPath
-//    @Environment(\.presentationMode) var mode: Binding<PresentationMode> nếu xài navigationView
+    @EnvironmentObject var navigationState: NavigationManager
     @StateObject var loginVM = MainViewModel.shared
     
     var body: some View {
@@ -82,7 +81,7 @@ struct LoginView: View {
                         .foregroundColor(.primaryApp)
                 }
                 .onTapGesture {
-                    path.append(AppRoute.signup) // Điều hướng sang SignUpView
+                    navigationState.navigate(to: .signup)
                 }
                 
                 Spacer()
@@ -95,9 +94,7 @@ struct LoginView: View {
             VStack {
                 HStack {
                     Button {
-                        if !path.isEmpty {
-                            path.removeLast() // bỏ màn hình hiện tại khỏi stack
-                        }
+                        navigationState.removeLast()
                     } label: {
                         Image("back")
                             .resizable()
@@ -110,38 +107,10 @@ struct LoginView: View {
                 
                 Spacer()
                 
-                
             }
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
             
-            SpinnerView(isLoading: $loginVM.isLoading)
-        }
-        .overlay {
-            if loginVM.showPopup {
-                ZStack {
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: loginVM.showPopup)
-
-                    StatusPopupView(
-                        type: loginVM.popupType,
-                        messageKey: LocalizedStringKey(loginVM.popupMessageKey),
-                        buttonKey: "ok_button"
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            loginVM.showPopup = false
-                        }
-                    }
-                    .transition(.scale(scale: 0.9).combined(with: .opacity))
-                    .animation(
-                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: loginVM.showPopup
-                    )
-                }
-                .zIndex(1)
-            }
         }
         .background(.systemBackground)
         .toolbar(.hidden, for: .navigationBar)
@@ -151,5 +120,5 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView(path: .constant(NavigationPath()))
+    LoginView()
 }

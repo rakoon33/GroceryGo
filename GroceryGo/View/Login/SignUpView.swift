@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SignUpView: View {
     
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     @StateObject var mainVM = MainViewModel.shared;
     
     var body: some View {
@@ -104,7 +104,7 @@ struct SignUpView: View {
                             .foregroundColor(.primaryApp)
                     }
                     .onTapGesture {
-                        path = NavigationPath([AppRoute.signin]) // Điều hướng sang SignInView
+                        navigationState.navigate(to: .signin)
                     }
                     
                     
@@ -121,9 +121,7 @@ struct SignUpView: View {
                 
                 HStack {
                     Button {
-                        if !path.isEmpty {
-                            path.removeLast()
-                        }
+                        navigationState.removeLast()
                     } label: {
                         Image("back")
                             .resizable()
@@ -139,34 +137,6 @@ struct SignUpView: View {
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
             
-            SpinnerView(isLoading: $mainVM.isLoading)
-            
-        }
-        .overlay {
-            if mainVM.showPopup {
-                ZStack {
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: mainVM.showPopup)
-
-                    StatusPopupView(
-                        type: mainVM.popupType,
-                        messageKey: LocalizedStringKey(mainVM.popupMessageKey),
-                        buttonKey: "ok_button"
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            mainVM.showPopup = false
-                        }
-                    }
-                    .transition(.scale(scale: 0.9).combined(with: .opacity))
-                    .animation(
-                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: mainVM.showPopup
-                    )
-                }
-                .zIndex(1)
-            }
         }
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
@@ -176,5 +146,5 @@ struct SignUpView: View {
 }
 
 #Preview {
-    SignUpView(path: .constant(NavigationPath()))
+    SignUpView()
 }

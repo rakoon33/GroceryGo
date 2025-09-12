@@ -23,6 +23,12 @@ struct NetworkErrorCode {
         static let timeout       = -1005
         static let noInternet    = -1006
         static let networkLost   = -1007
+        
+        static let serverUnreachable = -1008   // cannotConnectToHost, cannotFindHost
+        static let dnsFailed         = -1009   // dnsLookupFailed
+        static let badResponse       = -1010   // badServerResponse
+        static let resourceUnavailable = -1011 // resourceUnavailable
+        static let cancelled         = -1012   // request bị cancel
     }
     struct HTTP {
         static let unauthorized  = 401
@@ -46,24 +52,29 @@ enum NetworkErrorType: Error {
     case timeout
     case noInternet
     case networkLost
-
+    case serverUnreachable
+    case dnsFailed
+    case badResponse
+    case resourceUnavailable
+    case cancelled
+    
     // HTTP
     case unauthorized
     case forbidden
     case notFound
-
+    
     // Business
     case verificationExpired
     case wrongPasswordOrEmail
     case emailAlreadyExists
-
+    
     // Unknown
     case unknown(code: Int, message: String)
-
+    
     // MARK: - Init mapping
     init(code: Int, message: String = "") {
         switch code {
-        // Client
+            // Client
         case NetworkErrorCode.Client.invalidURL:    self = .invalidURL
         case NetworkErrorCode.Client.noData:        self = .noData
         case NetworkErrorCode.Client.decodingError: self = .decodingError(message: message)
@@ -71,25 +82,30 @@ enum NetworkErrorType: Error {
         case NetworkErrorCode.Client.timeout:       self = .timeout
         case NetworkErrorCode.Client.noInternet:    self = .noInternet
         case NetworkErrorCode.Client.networkLost:   self = .networkLost
-
-        // HTTP
+        case NetworkErrorCode.Client.serverUnreachable:   self = .serverUnreachable
+        case NetworkErrorCode.Client.dnsFailed:           self = .dnsFailed
+        case NetworkErrorCode.Client.badResponse:         self = .badResponse
+        case NetworkErrorCode.Client.resourceUnavailable: self = .resourceUnavailable
+        case NetworkErrorCode.Client.cancelled:           self = .cancelled
+            
+            // HTTP
         case NetworkErrorCode.HTTP.unauthorized:    self = .unauthorized
         case NetworkErrorCode.HTTP.forbidden:       self = .forbidden
         case NetworkErrorCode.HTTP.notFound:        self = .notFound
-
-        // Business
+            
+            // Business
         case NetworkErrorCode.Business.verificationExpired:  self = .verificationExpired
         case NetworkErrorCode.Business.wrongPasswordOrEmail: self = .wrongPasswordOrEmail
         case NetworkErrorCode.Business.emailAlreadyExists:   self = .emailAlreadyExists
-
+            
         default: self = .unknown(code: code, message: message)
         }
     }
-
+    
     // MARK: - Code
     var code: Int {
         switch self {
-        // Client
+            // Client
         case .invalidURL:       return NetworkErrorCode.Client.invalidURL
         case .noData:           return NetworkErrorCode.Client.noData
         case .decodingError:    return NetworkErrorCode.Client.decodingError
@@ -97,22 +113,27 @@ enum NetworkErrorType: Error {
         case .timeout:          return NetworkErrorCode.Client.timeout
         case .noInternet:       return NetworkErrorCode.Client.noInternet
         case .networkLost:      return NetworkErrorCode.Client.networkLost
-
-        // HTTP
+        case .serverUnreachable:   return NetworkErrorCode.Client.serverUnreachable
+        case .dnsFailed:           return NetworkErrorCode.Client.dnsFailed
+        case .badResponse:         return NetworkErrorCode.Client.badResponse
+        case .resourceUnavailable: return NetworkErrorCode.Client.resourceUnavailable
+        case .cancelled:           return NetworkErrorCode.Client.cancelled
+            
+            // HTTP
         case .unauthorized:     return NetworkErrorCode.HTTP.unauthorized
         case .forbidden:        return NetworkErrorCode.HTTP.forbidden
         case .notFound:         return NetworkErrorCode.HTTP.notFound
-
-        // Business
+            
+            // Business
         case .verificationExpired:   return NetworkErrorCode.Business.verificationExpired
         case .wrongPasswordOrEmail:  return NetworkErrorCode.Business.wrongPasswordOrEmail
         case .emailAlreadyExists:    return NetworkErrorCode.Business.emailAlreadyExists
-
-        // Unknown
+            
+            // Unknown
         case .unknown(let code, _):  return code
         }
     }
-
+    
     // MARK: - Localization key
     var localizationKey: String {
         switch self {
@@ -123,6 +144,11 @@ enum NetworkErrorType: Error {
         case .timeout:                return "timeout"
         case .networkLost:            return "network_lost"
         case .noInternet:             return "no_internet"
+        case .serverUnreachable:   return "server_unreachable"
+        case .dnsFailed:           return "dns_failed"
+        case .badResponse:         return "bad_response"
+        case .resourceUnavailable: return "resource_unavailable"
+        case .cancelled:           return "cancelled"
         case .unauthorized:           return "unauthorized"
         case .forbidden:              return "forbidden"
         case .notFound:               return "not_found"
@@ -132,7 +158,7 @@ enum NetworkErrorType: Error {
         case .unknown:                return "unknown_error"
         }
     }
-
+    
     // MARK: - Message
     // Này để hiện lên UI
     var errorMessage: String {
@@ -166,6 +192,16 @@ extension NetworkErrorType: LocalizedError {
             return "No internet connection"
         case .networkLost:
             return "Network connection lost"
+        case .serverUnreachable:
+            return "Cannot connect to server"
+        case .dnsFailed:
+            return "DNS lookup failed"
+        case .badResponse:
+            return "Bad server response"
+        case .resourceUnavailable:
+            return "Resource unavailable"
+        case .cancelled:
+            return "Request cancelled"
         case .unauthorized:
             return "Unauthorized"
         case .forbidden:

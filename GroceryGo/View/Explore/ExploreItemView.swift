@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ExploreItemView: View {
 
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     @StateObject var itemsVM = ExploreItemViewModel(cObj: CategoryModel())
     @StateObject var cartVM = CartViewModel.shared
     var column = [
@@ -23,9 +23,7 @@ struct ExploreItemView: View {
             VStack {
                 HStack {
                     Button {
-                        if !path.isEmpty {
-                            path.removeLast()
-                        }
+                        navigationState.removeLast()
                         
                     } label: {
                         Image("back")
@@ -56,7 +54,7 @@ struct ExploreItemView: View {
                                 pObj: pObj,
                                 width: .infinity,
                                 didTapProduct: {
-                                    path.append(AppRoute.productDetail(pObj))
+                                    navigationState.navigate(to: .productDetail(pObj))
                                 },
                                 didAddCart: {
                                     Task {
@@ -74,31 +72,12 @@ struct ExploreItemView: View {
             .padding(.top, .topInsets)
             .padding(.horizontal, 20)
             
-            SpinnerView(isLoading: $itemsVM.isLoading)
-            
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)
-        .overlay {
-            if cartVM.showPopup || itemsVM.showPopup {
-                StatusPopupView(
-                    type: cartVM.showPopup ? cartVM.popupType : itemsVM.popupType,
-                    messageKey: LocalizedStringKey(cartVM.showPopup ? cartVM.popupMessageKey : itemsVM.popupMessageKey),
-                    buttonKey: "ok_button"
-                ) {
-                    withAnimation(.easeInOut) {
-                        if cartVM.showPopup { cartVM.showPopup = false }
-                        if itemsVM.showPopup { itemsVM.showPopup = false }
-                    }
-                }
-                .transition(.scale(scale: 0.9).combined(with: .opacity))
-                .zIndex(1)
-            }
-        }
-        .animation(.easeInOut, value: cartVM.showPopup || itemsVM.showPopup)
     }
 }
 
 #Preview {
-    ExploreItemView(path: .constant(NavigationPath()), itemsVM: ExploreItemViewModel(cObj: CategoryModel(id: 1, name: "Frash Fruits & Vegetable", image: "http://localhost:3001/img/category/20230726155407547qM5gSxkrCh.png", colorHex: "53B175")))
+    ExploreItemView(itemsVM: ExploreItemViewModel(cObj: CategoryModel(id: 1, name: "Frash Fruits & Vegetable", image: "http://localhost:3001/img/category/20230726155407547qM5gSxkrCh.png", colorHex: "53B175")))
 }

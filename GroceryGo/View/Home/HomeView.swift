@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     @StateObject var homeVM = HomeViewModel.shared
     @StateObject var cartVM = CartViewModel.shared
     
@@ -57,7 +57,7 @@ struct HomeView: View {
                             ProductCell(
                                 pObj: pObj,
                                 didTapProduct: {
-                                    path.append(AppRoute.productDetail(pObj))
+                                    navigationState.navigate(to: .productDetail(pObj))
                                 },
                                 didAddCart: {
                                     Task {
@@ -83,7 +83,7 @@ struct HomeView: View {
                             ProductCell(
                                 pObj: pObj,
                                 didTapProduct: {
-                                    path.append(AppRoute.productDetail(pObj))
+                                    navigationState.navigate(to: .productDetail(pObj))
                                 },
                                 didAddCart: {
                                     Task {
@@ -122,7 +122,7 @@ struct HomeView: View {
                             ProductCell(
                                 pObj: pObj,
                                 didTapProduct: {
-                                    path.append(AppRoute.productDetail(pObj))
+                                    navigationState.navigate(to: .productDetail(pObj))
                                 },
                                 didAddCart: {
                                     Task {
@@ -139,50 +139,16 @@ struct HomeView: View {
             }
             .padding(.bottom, .bottomInsets + 60)
             
-            SpinnerView(isLoading: $homeVM.isLoading)
-            
         }
         .task {
             await homeVM.fetchData()
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)
-        .overlay {
-            if cartVM.showPopup || homeVM.showPopup {
-                ZStack {
-                    // nền đen fade
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: cartVM.showPopup || homeVM.showPopup)
-
-                    StatusPopupView(
-                        type: cartVM.showPopup ? cartVM.popupType : homeVM.popupType,
-                        messageKey: LocalizedStringKey(cartVM.showPopup ? cartVM.popupMessageKey : homeVM.popupMessageKey),
-                        buttonKey: "ok_button"
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            if cartVM.showPopup {
-                                cartVM.showPopup = false
-                            }
-                            if homeVM.showPopup {
-                                homeVM.showPopup = false
-                            }
-                        }
-                    }
-                    .transition(.scale(scale: 0.9).combined(with: .opacity))
-                    .animation(
-                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: cartVM.showPopup || homeVM.showPopup
-                    )
-                }
-                .zIndex(1)
-            }
-        }
     }
     
 }
 
 #Preview {
-    HomeView(path: .constant(NavigationPath()))
+    HomeView()
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ExploreView: View {
     
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     @State var txtSearch: String = ""
     @StateObject var exploreVM = ExploreViewModel.shared
     
@@ -43,7 +43,7 @@ struct ExploreView: View {
                             cObj in
                             ExploreCategoryCell(cObj: cObj)
                             {
-                                path.append(AppRoute.exploreDetail(cObj) )
+                                navigationState.navigate(to: .exploreDetail(cObj) )
                             }
                             .aspectRatio(0.95, contentMode: .fill)
                         }
@@ -56,36 +56,9 @@ struct ExploreView: View {
                 Spacer()
             }
             
-            SpinnerView(isLoading: $exploreVM.isLoading)
         }
         .task {
             await exploreVM.fetchExploreData()
-        }
-        .overlay {
-            if exploreVM.showPopup {
-                ZStack {
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: exploreVM.showPopup)
-
-                    StatusPopupView(
-                        type: exploreVM.popupType,
-                        messageKey: LocalizedStringKey(exploreVM.popupMessageKey),
-                        buttonKey: "ok_button"
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            exploreVM.showPopup = false
-                        }
-                    }
-                    .transition(.scale(scale: 0.9).combined(with: .opacity))
-                    .animation(
-                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: exploreVM.showPopup
-                    )
-                }
-                .zIndex(1)
-            }
         }
         .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)
@@ -94,5 +67,5 @@ struct ExploreView: View {
 }
 
 #Preview {
-    ExploreView(path: .constant(NavigationPath()))
+    ExploreView()
 }
