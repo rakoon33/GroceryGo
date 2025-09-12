@@ -34,14 +34,14 @@ enum AppRoute: Hashable {
 }
 
 struct ContentView: View {
-    @State private var path = NavigationPath()
+    @EnvironmentObject var navigation: NavigationManager
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome: Bool = false
     @StateObject private var session = SessionManager.shared
     @EnvironmentObject var tabVM: TabViewModel
     
     var body: some View {
         
-        NavigationStack(path: $path) {
+        NavigationStack(path: $navigation.path) {
             // Root view trống (Splash)
             Color.clear
                 .toolbar(.hidden, for: .navigationBar)
@@ -49,24 +49,22 @@ struct ContentView: View {
                 .navigationDestination(for: AppRoute.self) { route in
                     switch route {
                     case .welcome:
-                        WelcomeView(path: $path)
+                        WelcomeView()
                     case .login:
-                        LoginView(path: $path)
+                        LoginView()
                     case .signup:
-                        SignUpView(path: $path)
+                        SignUpView()
                     case .signin:
-                        SignInView(path: $path)
+                        SignInView()
                     case .mainTab:
-                        MainTabView(path: $path)
+                        MainTabView()
                     case .productDetail(let product):
                         ProductDetailView(
-                            path: $path,
                             detailVM: ProductDetailViewModel(prodObj: product)
                         )
                         
                     case .exploreDetail(let category):
                         ExploreItemView(
-                            path: $path,
                             itemsVM: ExploreItemViewModel(cObj: category)
                         )
                     case .account(let accRoute):
@@ -74,7 +72,7 @@ struct ContentView: View {
                         case .orders:
                             MyOrdersView()
                         case .deliveryAddress:
-                            DelieryAddressView(path: $path)
+                            DelieryAddressView()
                         case .myDetails:
                             MyDetailsView()
                         case .paymentMethods:
@@ -90,34 +88,30 @@ struct ContentView: View {
                         }
                         
                     }
-                    
-                    
                 }
                 .onAppear {
-                    
-                    path = NavigationPath()
+                    navigation.resetNavigation()
                     
                     if !hasSeenWelcome {
                         // Người dùng chưa vào app lần nào → Welcome
-                        path.append(AppRoute.welcome)
+                        navigation.navigate(to: .welcome)
                     } else if !session.isLoggedIn {
                         // Chưa login → SignIn
-                        path.append(AppRoute.signin)
+                        navigation.navigate(to: .signin)
                     } else {
                         // Đã login → MainTab
-                        path.append(AppRoute.mainTab)
+                        navigation.navigate(to: .mainTab)
                     }
                 }
                 .onChange(of: session.isLoggedIn) { newValue in
-                    
                     if newValue {
                         // Login thành công → đi thẳng MainTab
-                        path = NavigationPath()
-                        path.append(AppRoute.mainTab)
+                        navigation.resetNavigation()
+                        navigation.navigate(to: .mainTab)
                     } else {
-                        path = NavigationPath()
+                        navigation.resetNavigation()
                         // Logout hoặc token hết hạn → về SignIn
-                        path.append(AppRoute.signin)
+                        navigation.navigate(to: .signin)
                     }
                 }
         }

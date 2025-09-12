@@ -14,13 +14,10 @@ final class FavouriteViewModel: ObservableObject {
     
     private let favouriteService: FavouriteServiceProtocol
     
-    @Published var isLoading: Bool = false
-    
     @Published var listArr: [FavouriteModel] = []
     
-    @Published var showPopup = false
-    @Published var popupType: PopupType = .success
-    @Published var popupMessageKey: String = ""
+    private let loadingState = LoadingManager.shared
+    private let popupState = PopupManager.shared
     
     init(favouriteService: FavouriteServiceProtocol = FavouriteService()) {
         self.favouriteService = favouriteService
@@ -28,30 +25,26 @@ final class FavouriteViewModel: ObservableObject {
     }
     
     func fetchFavouriteList() async {
-        isLoading = true
+        loadingState.isLoading = true
         AppLogger.debug("Fetching favourite list...", category: .network)
-        defer { isLoading = false }
+        defer { loadingState.isLoading = false }
         
         do {
             listArr = try await favouriteService.fetchFavouriteList()
             AppLogger.info("Fetched \(listArr.count) favourite items", category: .network)
         } catch let error as NetworkErrorType {
-            popupType = .error
-            popupMessageKey = error.errorMessage
-            showPopup = true
+            popupState.showErrorPopup(error.errorMessage)
             AppLogger.error("Network error in fetchFavouriteList: \(error.errorMessage)", category: .network)
         } catch {
-            popupType = .error
-            popupMessageKey = error.localizedDescription
-            showPopup = true
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in fetchFavouriteList: \(error.localizedDescription)", category: .network)
         }
     }
     
     func addOrRemoveFavourite(prodId: Int) async {
-        isLoading = true
+        loadingState.isLoading = true
         AppLogger.debug("Toggling favourite for prodId=\(prodId)", category: .network)
-        defer { isLoading = false }
+        defer { loadingState.isLoading = false }
         
         do {
             try await favouriteService.addOrRemoveFavourite(prodId: prodId)
@@ -60,23 +53,18 @@ final class FavouriteViewModel: ObservableObject {
             await fetchFavouriteList()
             await HomeViewModel.shared.fetchData()
             
-            popupType = .success
-            popupMessageKey = "favourite_updated"
-            showPopup = true
+            popupState.showSuccessPopup("favourite_updated")
+
         } catch let error as NetworkErrorType {
             if case .unauthorized = error {
                 // Đẩy sang SessionManager để logout, không show alert
                 SessionManager.shared.logout()
                 AppLogger.error("Unauthorized in addOrRemoveFavourite: \(error.localizedDescription)", category: .network)
             } else {
-                popupType = .error
-                popupMessageKey = error.errorMessage
-                showPopup = true
+                popupState.showErrorPopup(error.errorMessage)
             }
         } catch {
-            popupType = .error
-            popupMessageKey = error.localizedDescription
-            showPopup = true
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in addOrRemoveFavourite: \(error.localizedDescription)", category: .network)
         }
     }
@@ -85,8 +73,5 @@ final class FavouriteViewModel: ObservableObject {
 extension FavouriteViewModel: Resettable {
     func reset() {
         listArr = []
-        showPopup = false
-        popupType = .success
-        popupMessageKey = ""
     }
 }

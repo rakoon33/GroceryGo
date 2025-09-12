@@ -103,7 +103,8 @@ struct AddUpdateDeliveryAddressView: View {
                     }
                 }
                 .padding(20)
-                .padding(.top, .topInsets + 10)
+                .padding(.top, .topInsets + 46)
+                .padding(.bottom, .bottomInsets + 60)
                 
             }
             
@@ -128,7 +129,8 @@ struct AddUpdateDeliveryAddressView: View {
                     Spacer()
                     
                 }
-                .padding(15)
+                .padding(.top, .topInsets)
+                .padding(.horizontal, 20)
                 .background(Color.white)
                 .shadow(color: Color.black.opacity(0.2), radius: 2)
                 
@@ -138,32 +140,6 @@ struct AddUpdateDeliveryAddressView: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
-        .overlay {
-            if addressVM.showPopup {
-                ZStack {
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: addressVM.showPopup)
-                    
-                    StatusPopupView(
-                        type: addressVM.popupType,
-                        messageKey: LocalizedStringKey(addressVM.popupMessageKey),
-                        buttonKey: "ok_button"
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            addressVM.showPopup = false
-                        }
-                    }
-                    .transition(.scale(scale: 0.9).combined(with: .opacity))
-                    .animation(
-                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: addressVM.showPopup
-                    )
-                }
-                .zIndex(1)
-            }
-        }
     }
 }
 

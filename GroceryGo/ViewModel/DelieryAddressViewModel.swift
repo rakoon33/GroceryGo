@@ -23,11 +23,8 @@ final class DeliveryAddressViewModel: ObservableObject {
     @Published var txtPostalCode: String = ""
     @Published var txtTypeName: String = ""
     
-    @Published var isLoading: Bool = false
-    
-    @Published var showPopup = false
-    @Published var popupType: PopupType = .success
-    @Published var popupMessageKey: String = ""
+    private let loadingState = LoadingManager.shared
+    private let popupState = PopupManager.shared
     @Published var lastOperationSucceeded: Bool = false
     
     @Published var listArr: [AddressModel] = []
@@ -51,8 +48,8 @@ final class DeliveryAddressViewModel: ObservableObject {
     
     // MARK: - Fetch
     func fetchAddressList() async {
-        isLoading = true
-        defer { isLoading = false }
+        loadingState.isLoading = true
+        defer { loadingState.isLoading = false }
         
         do {
             listArr = try await addressService.fetchAddressList()
@@ -61,14 +58,10 @@ final class DeliveryAddressViewModel: ObservableObject {
             if case .unauthorized = error {
                 SessionManager.shared.logout()
             } else {
-                popupType = .error
-                popupMessageKey = error.errorMessage
-                showPopup = true
+                popupState.showErrorPopup(error.errorMessage)
             }
         } catch {
-            popupType = .error
-            popupMessageKey = error.localizedDescription
-            showPopup = true
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in fetchAddressList: \(error.localizedDescription)", category: .network)
         }
     }
@@ -78,12 +71,9 @@ final class DeliveryAddressViewModel: ObservableObject {
         
         guard validateInputs() else { return }
         
-        isLoading = true
-        
-        defer {
-            isLoading = false
-        }
-        
+        loadingState.isLoading = true
+
+        defer { loadingState.isLoading = false}
         do {
             try await addressService.addAddress(
                 name: txtName,
@@ -96,9 +86,7 @@ final class DeliveryAddressViewModel: ObservableObject {
             )
             
             await fetchAddressList()
-            popupType = .success
-            popupMessageKey = "address_added"
-            showPopup = true
+            popupState.showSuccessPopup("address_added")
             lastOperationSucceeded = true
             self.clearAll()
             AppLogger.info("addAddress successful", category: .ui)
@@ -108,28 +96,20 @@ final class DeliveryAddressViewModel: ObservableObject {
                 SessionManager.shared.logout()
             } else {
                 lastOperationSucceeded = false
-                popupType = .error
-                popupMessageKey = error.errorMessage
-                showPopup = true
+                popupState.showErrorPopup(error.errorMessage)
             }
         } catch {
             lastOperationSucceeded = false
-            popupType = .error
-            popupMessageKey = "address_add_failed"
-            showPopup = true
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in addAddress: \(error.localizedDescription)", category: .network)
         }
     }
     
     // MARK: - Update
     func updateAddress(addressId: Int) async {
-        
         guard validateInputs() else { return }
-        
-        isLoading = true
-        defer {
-            isLoading = false
-        }
+        loadingState.isLoading = true
+        defer { loadingState.isLoading = false }
         
         do {
             try await addressService.updateAddress(
@@ -145,9 +125,7 @@ final class DeliveryAddressViewModel: ObservableObject {
             
             await fetchAddressList()
             
-            popupType = .success
-            popupMessageKey = "address_updated"
-            showPopup = true
+            popupState.showSuccessPopup("address_updated")
             lastOperationSucceeded = true
             self.clearAll()
             AppLogger.info("updateAddress successful", category: .ui)
@@ -157,15 +135,11 @@ final class DeliveryAddressViewModel: ObservableObject {
                 SessionManager.shared.logout()
             } else {
                 lastOperationSucceeded = false
-                popupType = .error
-                popupMessageKey = error.errorMessage
-                showPopup = true
+                popupState.showErrorPopup(error.errorMessage)
             }
         } catch {
             lastOperationSucceeded = false
-            popupType = .error
-            popupMessageKey = "address_update_failed"
-            showPopup = true
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in updateAddress: \(error.localizedDescription)", category: .network)
         }
     }
@@ -173,31 +147,25 @@ final class DeliveryAddressViewModel: ObservableObject {
     // MARK: - Remove
     func removeAddress(addressId: Int) async {
         
-        isLoading = true
-        defer { isLoading = false }
+        loadingState.isLoading = true
+        defer { loadingState.isLoading = false }
         
         do {
             _ = try await addressService.removeAddress(addressId: addressId)
             
             await fetchAddressList()
             
-            popupType = .success
-            popupMessageKey = "address_removed"
-            showPopup = true
+            popupState.showSuccessPopup("address_removed")
             AppLogger.info("removeAddress successful", category: .ui)
             
         } catch let error as NetworkErrorType {
             if case .unauthorized = error {
                 SessionManager.shared.logout()
             } else {
-                popupType = .error
-                popupMessageKey = error.errorMessage
-                showPopup = true
+                popupState.showErrorPopup(error.errorMessage)
             }
         } catch {
-            popupType = .error
-            popupMessageKey = "address_remove_failed"
-            showPopup = true
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in removeAddress: \(error.localizedDescription)", category: .network)
         }
     }
@@ -216,45 +184,37 @@ final class DeliveryAddressViewModel: ObservableObject {
     
     func validateInputs() -> Bool {
         if txtName.trimmingCharacters(in: .whitespaces).isEmpty {
-            showError(messageKey: "name_required")
+            popupState.showErrorPopup("name_required")
             return false
         }
         if txtMobile.trimmingCharacters(in: .whitespaces).isEmpty {
-            showError(messageKey: "mobile_required")
+            popupState.showErrorPopup("mobile_required")
             return false
         }
         if txtAddress.trimmingCharacters(in: .whitespaces).isEmpty {
-            showError(messageKey: "address_required")
+            popupState.showErrorPopup("address_required")
             return false
         }
         if txtCity.trimmingCharacters(in: .whitespaces).isEmpty {
-            showError(messageKey: "city_required")
+            popupState.showErrorPopup("city_required")
             return false
         }
         if txtState.trimmingCharacters(in: .whitespaces).isEmpty {
-            showError(messageKey: "state_required")
+            popupState.showErrorPopup("state_required")
             return false
         }
         if txtPostalCode.trimmingCharacters(in: .whitespaces).isEmpty {
-            showError(messageKey: "postal_code_required")
+            popupState.showErrorPopup("postal_code_required")
             return false
         }
         return true
     }
     
-    private func showError(messageKey: String) {
-        popupType = .error
-        popupMessageKey = messageKey
-        showPopup = true
-    }
 }
 
 // MARK: - Reset
 extension DeliveryAddressViewModel: Resettable {
     func reset() {
         listArr = []
-        showPopup = false
-        popupType = .success
-        popupMessageKey = ""
     }
 }

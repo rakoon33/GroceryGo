@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WelcomeView: View {
     
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     
     var body: some View {
         
@@ -42,7 +42,7 @@ struct WelcomeView: View {
                 
                 RoundButton(title: "welcome_get_started".localized) {
                     UserDefaults.standard.set(true, forKey: "hasSeenWelcome")
-                    path.append(AppRoute.signin)
+                    navigationState.navigate(to: .signin)
                 }
                 
                 Spacer()
@@ -57,5 +57,5 @@ struct WelcomeView: View {
 }
 
 #Preview {
-    WelcomeView(path: .constant(NavigationPath()))
+    WelcomeView()
 }

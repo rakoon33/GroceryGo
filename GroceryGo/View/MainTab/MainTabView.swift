@@ -17,7 +17,6 @@ enum MainTab: Int {
 
 struct MainTabView: View {
     
-    @Binding var path: NavigationPath
     @EnvironmentObject var tabVM: TabViewModel
     
     var body: some View {
@@ -26,15 +25,15 @@ struct MainTabView: View {
             
             switch tabVM.selectedTab {
             case .shop:
-                HomeView(path: $path)
+                HomeView()
             case .explore:
-                ExploreView(path: $path)
+                ExploreView()
             case .cart:
-                MyCartView(path: $path)
+                MyCartView()
             case .favorite:
-                FavouriteView(path: $path)
+                FavouriteView()
             case .account:
-                AccountView(path: $path) //
+                AccountView() //
             }
             
             VStack {
@@ -87,5 +86,5 @@ struct MainTabView: View {
 }
 
 #Preview {
-    MainTabView(path: .constant(NavigationPath()))
+    MainTabView()
 }

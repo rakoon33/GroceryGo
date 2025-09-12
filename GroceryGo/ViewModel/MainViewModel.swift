@@ -13,18 +13,15 @@ class MainViewModel: ObservableObject {
     
     // MARK: - Dependencies
     private let authService: AuthServiceProtocol
-    private let session: SessionManager
+    private let session = SessionManager.shared
+    private let loadingState = LoadingManager.shared
+    private let popupState = PopupManager.shared
     
     // MARK: - Published state
     @Published var txtUsername: String = ""
     @Published var txtEmail: String = ""
     @Published var txtPassword: String = ""
     @Published var isShowPassword: Bool = false
-    @Published var isLoading: Bool = false
-    
-    @Published var showPopup = false
-    @Published var popupType: PopupType = .success
-    @Published var popupMessageKey: String = ""
     
     // Expose từ Session
     @Published private(set) var isUserLogin: Bool = false
@@ -33,7 +30,6 @@ class MainViewModel: ObservableObject {
     // MARK: - Init
     init(authService: AuthServiceProtocol = AuthService()) {
         self.authService = authService
-        self.session = SessionManager.shared
         
         if let user = session.user {
             self.userObj = user
@@ -54,10 +50,10 @@ class MainViewModel: ObservableObject {
     
     func login() async {
         guard validateLoginInputs() else { return }
-        isLoading = true
+        loadingState.isLoading = true
         AppLogger.debug("Attempting login for email=\(txtEmail)", category: .session)
         
-        defer { isLoading = false }
+        defer { loadingState.isLoading = false }
         do {
             let user = try await authService.login(email: txtEmail, password: txtPassword)
             session.setUser(user)
@@ -66,23 +62,19 @@ class MainViewModel: ObservableObject {
             resetForm()
             AppLogger.info("Login success: \(user.username)", category: .session)
         } catch let error as NetworkErrorType {
-            popupType = .error
-            popupMessageKey = error.errorMessage
-            showPopup = true
+            popupState.showErrorPopup(error.errorMessage)
         } catch {
-            popupType = .error
-            popupMessageKey = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
-            showPopup = true
-            AppLogger.error("Login failed: \(popupMessageKey)", category: .session)
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
+            AppLogger.error("Login failed: \(error as? NetworkErrorType)?.errorMessage)", category: .session)
         }
     }
     
     func signUp() async {
         guard validateSignUpInputs() else { return }
-        isLoading = true
+        loadingState.isLoading = true
         AppLogger.debug("Attempting signup for username=\(txtUsername), email=\(txtEmail)", category: .session)
         
-        defer { isLoading = false }
+        defer { loadingState.isLoading = false }
         do {
             let user = try await authService.signUp(username: txtUsername, email: txtEmail, password: txtPassword)
             session.setUser(user)
@@ -90,30 +82,23 @@ class MainViewModel: ObservableObject {
             self.isUserLogin = true
             resetForm()
             AppLogger.info("Signup success: \(user.username)", category: .session)
+            popupState.showSuccessPopup("signup_success_message")
         } catch let error as NetworkErrorType {
-            popupType = .error
-            popupMessageKey = error.errorMessage
-            showPopup = true
+            popupState.showErrorPopup(error.errorMessage)
         } catch {
-            popupType = .error
-            popupMessageKey = (error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription
-            showPopup = true
-            AppLogger.error("Signup failed: \(popupMessageKey)", category: .session)
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
+            AppLogger.error("Signup failed: \(error.localizedDescription)", category: .session)
         }
     }
     
     // MARK: - Validation
     private func validateLoginInputs() -> Bool {
         if txtEmail.isEmpty || !txtEmail.isValidEmail {
-            popupType = .error
-            popupMessageKey = "error_invalid_email".localized
-            showPopup = true
+            popupState.showErrorPopup("error_invalid_email".localized)
             return false
         }
         if txtPassword.isEmpty {
-            popupType = .error
-            popupMessageKey = "error_invalid_password".localized
-            showPopup = true
+            popupState.showErrorPopup("error_invalid_password".localized)
             return false
         }
         return true
@@ -121,9 +106,7 @@ class MainViewModel: ObservableObject {
     
     private func validateSignUpInputs() -> Bool {
         if txtUsername.isEmpty {
-            popupType = .error
-            popupMessageKey = "error_invalid_username".localized
-            showPopup = true
+            popupState.showErrorPopup("error_invalid_username".localized)
             return false
         }
         return validateLoginInputs()
@@ -144,10 +127,6 @@ extension MainViewModel: Resettable {
         txtEmail = ""
         txtPassword = ""
         isShowPassword = false
-        isLoading = false
-        showPopup = false
-        popupType = .success
-        popupMessageKey = ""
         isUserLogin = false
         userObj = UserModel()
     }

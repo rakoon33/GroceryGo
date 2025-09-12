@@ -21,9 +21,8 @@ final class HomeViewModel: ObservableObject {
     @Published var listArr: [ProductModel] = []
     @Published var typeArr: [TypeModel] = []
     
-    @Published var showPopup = false
-    @Published var popupType: PopupType = .success
-    @Published var popupMessageKey: String = ""
+    private let loadingState = LoadingManager.shared
+    private let popupState = PopupManager.shared
     
     init(homeService: HomeServiceProtocol = HomeService()) {
         self.homeService = homeService
@@ -47,14 +46,10 @@ final class HomeViewModel: ObservableObject {
                 SessionManager.shared.logout()
                 AppLogger.error("Unauthorized in fetchData: \(error.localizedDescription)", category: .network)
             } else {
-                popupType = .error
-                popupMessageKey = error.errorMessage
-                showPopup = true
+                popupState.showErrorPopup(error.errorMessage)
             }
         } catch {
-            popupType = .error
-            popupMessageKey = error.localizedDescription
-            showPopup = true
+            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Home data fetch failed (unexpected error): \(error.localizedDescription)", category: .network)
         }
     }
@@ -66,8 +61,5 @@ extension HomeViewModel: Resettable {
         bestArr = []
         listArr = []
         typeArr = []
-        showPopup = false
-        popupType = .success
-        popupMessageKey = ""
     }
 }

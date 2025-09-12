@@ -10,7 +10,7 @@ import CountryPicker
 
 struct SignInView: View {
     
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     
     @State var txtMobile: String = ""
     @State var isShowPicker: Bool = false
@@ -76,7 +76,7 @@ struct SignInView: View {
                         .cornerRadius(20)
                         .padding(.top, 8)
                         .onTapGesture {
-                            path.append(AppRoute.login)
+                            navigationState.navigate(to: .login)
                         }
                     
                     Text("sign_in_continue_email_signup".localized)
@@ -87,7 +87,7 @@ struct SignInView: View {
                         .background(Color.primaryApp)
                         .cornerRadius(20)
                         .onTapGesture {
-                            path.append(AppRoute.signup)
+                            navigationState.navigate(to: .signup)
                         }
                     
                     Divider()
@@ -161,6 +161,6 @@ struct SignInView: View {
 }
 
 #Preview {
-    SignInView(path: .constant(NavigationPath()))
+    SignInView()
 }
 

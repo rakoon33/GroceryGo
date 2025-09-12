@@ -11,3 +11,4 @@ import SwiftUI
 final class TabViewModel: ObservableObject {
     @Published var selectedTab: MainTab = .shop
 }
+    

@@ -10,7 +10,7 @@ import SDWebImageSwiftUI
 
 struct FavouriteView: View {
     
-    @Binding var path: NavigationPath
+    @EnvironmentObject var navigationState: NavigationManager
     @StateObject var favVM = FavouriteViewModel.shared
     var body: some View {
         ZStack {
@@ -21,7 +21,7 @@ struct FavouriteView: View {
                         fObj in
                         
                         FavouriteRow(fObj: fObj) {
-                            path.append(AppRoute.productDetail(fObj.product))
+                            navigationState.navigate(to: .productDetail(fObj.product))
                         }
                     })
                 }
@@ -51,8 +51,6 @@ struct FavouriteView: View {
                     .padding(.bottom, .bottomInsets + 80)
             }
             
-            SpinnerView(isLoading: $favVM.isLoading)
-            
         }
         .onAppear {
             Task {
@@ -60,36 +58,10 @@ struct FavouriteView: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
-        .overlay {
-            if favVM.showPopup {
-                ZStack {
-                    Color.black.opacity(0.4)
-                        .ignoresSafeArea()
-                        .transition(.opacity)
-                        .animation(.easeInOut(duration: 0.6), value: favVM.showPopup)
-
-                    StatusPopupView(
-                        type: favVM.popupType,
-                        messageKey: LocalizedStringKey(favVM.popupMessageKey),
-                        buttonKey: "ok_button"
-                    ) {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            favVM.showPopup = false
-                        }
-                    }
-                    .transition(.scale(scale: 0.9).combined(with: .opacity))
-                    .animation(
-                        .spring(response: 0.7, dampingFraction: 0.9, blendDuration: 0.3),
-                        value: favVM.showPopup
-                    )
-                }
-                .zIndex(1)
-            }
-        }
         .ignoresSafeArea()
     }
 }
 
 #Preview {
-    FavouriteView(path: .constant(NavigationPath()))
+    FavouriteView()
 }

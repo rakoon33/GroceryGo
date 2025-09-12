@@ -165,6 +165,11 @@
 "encoding_failed" = "Không thể mã hóa dữ liệu.";
 "timeout" = "Yêu cầu hết thời gian chờ.";
 "network_lost" = "Mất kết nối mạng.";
+"server_unreachable" = "Không thể kết nối đến server.";
+"dns_failed" = "DNS thất bại.";
+"bad_response" = "Phản hồi không hợp lệ từ server.";
+"resource_unavailable" = "Tài nguyên không khả dụng.";
+"cancelled" = "Yêu cầu bị hủy.";
 "unauthorized" = "Không được phép truy cập.";
 "forbidden" = "Truy cập bị cấm.";
 "not_found" = "Không tìm thấy tài nguyên.";
