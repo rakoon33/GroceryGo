@@ -27,10 +27,14 @@ final class DeliveryAddressViewModel: ObservableObject {
     private let popupState = PopupManager.shared
     @Published var lastOperationSucceeded: Bool = false
     
+    @Published var fieldError: [String: String] = [:]
+    @Published var formErrorMessage: String = ""
+
     @Published var listArr: [AddressModel] = []
     
     init(addressService: AddressServiceProtocol = AddressService()) {
         self.addressService = addressService
+        self.txtTypeName = AddressType.home.rawValue
         AppLogger.info("DeliveryAddressViewModel initialized", category: .ui)
     }
     
@@ -72,7 +76,9 @@ final class DeliveryAddressViewModel: ObservableObject {
         guard validateInputs() else { return }
         
         loadingState.isLoading = true
-
+        
+        formErrorMessage = ""
+        
         defer { loadingState.isLoading = false}
         do {
             try await addressService.addAddress(
@@ -86,9 +92,9 @@ final class DeliveryAddressViewModel: ObservableObject {
             )
             
             await fetchAddressList()
-            popupState.showSuccessPopup("address_added")
             lastOperationSucceeded = true
-            self.clearAll()
+            clearAll()
+            
             AppLogger.info("addAddress successful", category: .ui)
             
         } catch let error as NetworkErrorType {
@@ -96,11 +102,11 @@ final class DeliveryAddressViewModel: ObservableObject {
                 SessionManager.shared.logout()
             } else {
                 lastOperationSucceeded = false
-                popupState.showErrorPopup(error.errorMessage)
+                formErrorMessage = error.errorMessage
             }
         } catch {
             lastOperationSucceeded = false
-            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
+            formErrorMessage = error.localizedDescription
             AppLogger.error("Unexpected error in addAddress: \(error.localizedDescription)", category: .network)
         }
     }
@@ -109,6 +115,7 @@ final class DeliveryAddressViewModel: ObservableObject {
     func updateAddress(addressId: Int) async {
         guard validateInputs() else { return }
         loadingState.isLoading = true
+        formErrorMessage = ""
         defer { loadingState.isLoading = false }
         
         do {
@@ -124,10 +131,8 @@ final class DeliveryAddressViewModel: ObservableObject {
             )
             
             await fetchAddressList()
-            
-            popupState.showSuccessPopup("address_updated")
             lastOperationSucceeded = true
-            self.clearAll()
+            clearAll()
             AppLogger.info("updateAddress successful", category: .ui)
             
         } catch let error as NetworkErrorType {
@@ -135,11 +140,11 @@ final class DeliveryAddressViewModel: ObservableObject {
                 SessionManager.shared.logout()
             } else {
                 lastOperationSucceeded = false
-                popupState.showErrorPopup(error.errorMessage)
+                formErrorMessage = error.errorMessage
             }
         } catch {
             lastOperationSucceeded = false
-            popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
+            formErrorMessage = error.localizedDescription
             AppLogger.error("Unexpected error in updateAddress: \(error.localizedDescription)", category: .network)
         }
     }
@@ -183,31 +188,28 @@ final class DeliveryAddressViewModel: ObservableObject {
     }
     
     func validateInputs() -> Bool {
+        fieldError = [:]
+        
         if txtName.trimmingCharacters(in: .whitespaces).isEmpty {
-            popupState.showErrorPopup("name_required")
-            return false
+            fieldError["name"] = "name_required".localized
         }
         if txtMobile.trimmingCharacters(in: .whitespaces).isEmpty {
-            popupState.showErrorPopup("mobile_required")
-            return false
+            fieldError["mobile"] = "mobile_required".localized
         }
         if txtAddress.trimmingCharacters(in: .whitespaces).isEmpty {
-            popupState.showErrorPopup("address_required")
-            return false
+            fieldError["address"] = "address_required".localized
         }
         if txtCity.trimmingCharacters(in: .whitespaces).isEmpty {
-            popupState.showErrorPopup("city_required")
-            return false
+            fieldError["city"] = "city_required".localized
         }
         if txtState.trimmingCharacters(in: .whitespaces).isEmpty {
-            popupState.showErrorPopup("state_required")
-            return false
+            fieldError["state"] = "state_required".localized
         }
         if txtPostalCode.trimmingCharacters(in: .whitespaces).isEmpty {
-            popupState.showErrorPopup("postal_code_required")
-            return false
+            fieldError["postal"] = "postal_code_required".localized
         }
-        return true
+        
+        return fieldError.isEmpty
     }
     
 }

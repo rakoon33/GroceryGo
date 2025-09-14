@@ -90,7 +90,7 @@ struct DelieryAddressView: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
-        .sheet(isPresented: $showSheet) {
+        .fullScreenCover(isPresented: $showSheet) {
             AddUpdateDeliveryAddressView(
                 editObj: selectedAddress ?? AddressModel(),
                 isEdit: $isEditing
