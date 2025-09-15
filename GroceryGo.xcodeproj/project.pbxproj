@@ -35,10 +35,10 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C41E0A7C2E4A4A47002793F5 /* Exceptions for "GroceryGo" folder in "GroceryGo" target */ = {
+		C44333C52E783B4500ABF695 /* Exceptions for "GroceryGo" folder in "GroceryGo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				App/Info.plist,
 			);
 			target = C4CF54EA2D91976700A22244 /* GroceryGo */;
 		};
@@ -48,7 +48,7 @@
 		C4CF54ED2D91976700A22244 /* GroceryGo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C41E0A7C2E4A4A47002793F5 /* Exceptions for "GroceryGo" folder in "GroceryGo" target */,
+				C44333C52E783B4500ABF695 /* Exceptions for "GroceryGo" folder in "GroceryGo" target */,
 			);
 			path = GroceryGo;
 			sourceTree = "<group>";
@@ -435,8 +435,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"GroceryGo/Preview Content\"";
 				DEVELOPMENT_TEAM = F9LTZK48FH;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GroceryGo/Info.plist;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = GroceryGo/App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -472,8 +472,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"GroceryGo/Preview Content\"";
 				DEVELOPMENT_TEAM = F9LTZK48FH;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = GroceryGo/Info.plist;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = GroceryGo/App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

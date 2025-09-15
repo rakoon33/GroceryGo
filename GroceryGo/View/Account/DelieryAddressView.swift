@@ -33,6 +33,8 @@ struct DelieryAddressView: View {
                             },
                             onEdit: {
                                 selectedAddress = aObj
+                                addressVM.setAdd(aObj: aObj) 
+                                isEditing = true
                                 showSheet = true
                             }
                         )
@@ -65,8 +67,10 @@ struct DelieryAddressView: View {
                     Spacer()
                     
                     Button {
-                        selectedAddress = nil // add mới
+                        selectedAddress = nil
+                        isEditing = false
                         showSheet = true
+                        addressVM.clearAll()
                     } label: {
                         Image("add_white")
                             .renderingMode(.template)
@@ -90,7 +94,7 @@ struct DelieryAddressView: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
-        .sheet(isPresented: $showSheet) {
+        .fullScreenCover(isPresented: $showSheet) {
             AddUpdateDeliveryAddressView(
                 editObj: selectedAddress ?? AddressModel(),
                 isEdit: $isEditing

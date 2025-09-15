@@ -32,6 +32,8 @@ struct Globs {
     static let SV_REMOVE_ADDRESS = BASE_URL + "delete_delivery_address"
     static let SV_ADDRESS_LIST   = BASE_URL + "delivery_address"
     
+    static let SV_PROMO_CODE_LIST = BASE_URL + "promo_code_list"
+    
     static let SV_EXPLORE_LIST = BASE_URL + "explore_category_list"
     static let SV_EXPLORE_ITEM_LIST = BASE_URL + "explore_category_items_list"
 }

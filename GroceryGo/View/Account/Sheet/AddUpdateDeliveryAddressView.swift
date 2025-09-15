@@ -7,19 +7,8 @@
 
 import SwiftUI
 
+
 struct AddUpdateDeliveryAddressView: View {
-    
-    enum AddressType: String, CaseIterable {
-        case home
-        case office
-        
-        var localized: String {
-            switch self {
-            case .home: return "home".localized
-            case .office: return "office".localized
-            }
-        }
-    }
     
     @StateObject var addressVM = DeliveryAddressViewModel.shared
     @Environment(\.dismiss) var dismiss
@@ -37,6 +26,7 @@ struct AddUpdateDeliveryAddressView: View {
                             } label: {
                                 Image(systemName: addressVM.txtTypeName == type.rawValue ? "record.circle" : "circle")
                                     .renderingMode(.template)
+                                    .foregroundColor(addressVM.txtTypeName == type.rawValue ? .primaryApp : .primaryText)
                                 Text(type.localized)
                                     .font(.customfont(.medium, fontSize: 16))
                                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
@@ -45,36 +35,73 @@ struct AddUpdateDeliveryAddressView: View {
                         }
                     }
                     
+                    // Name
                     LineTextField(
                         title: "name_field".localized,
                         placeholder: "enter_name".localized,
                         txt: $addressVM.txtName
                     )
+                    if let error = addressVM.fieldError["name"] {
+                        Text(error)
+                            .font(.customfont(.medium, fontSize: 16))
+                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                            .foregroundColor(Color.red)
+                    }
                     
+                    // Mobile
                     LineTextField(
                         title: "mobile_field".localized,
                         placeholder: "enter_mobile".localized,
                         txt: $addressVM.txtMobile,
                         keyboardType: .numberPad
                     )
+                    if let error = addressVM.fieldError["mobile"] {
+                        Text(error)
+                            .font(.customfont(.medium, fontSize: 16))
+                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                            .foregroundColor(Color.red)
+                    }
                     
+                    // Address
                     LineTextField(
                         title: "address_line_field".localized,
                         placeholder: "enter_address".localized,
                         txt: $addressVM.txtAddress
                     )
+                    if let error = addressVM.fieldError["address"] {
+                        Text(error)
+                            .font(.customfont(.medium, fontSize: 16))
+                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                            .foregroundColor(Color.red)
+                    }
                     
                     HStack{
-                        LineTextField(
-                            title: "city_field".localized,
-                            placeholder: "enter_city".localized,
-                            txt: $addressVM.txtCity
-                        )
-                        LineTextField(
-                            title: "state_field".localized,
-                            placeholder: "enter_state".localized,
-                            txt: $addressVM.txtState
-                        )
+                        VStack {
+                            LineTextField(
+                                title: "city_field".localized,
+                                placeholder: "enter_city".localized,
+                                txt: $addressVM.txtCity
+                            )
+                            if let error = addressVM.fieldError["city"] {
+                                Text(error)
+                                    .font(.customfont(.medium, fontSize: 16))
+                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                    .foregroundColor(Color.red)
+                            }
+                        }
+                        VStack {
+                            LineTextField(
+                                title: "state_field".localized,
+                                placeholder: "enter_state".localized,
+                                txt: $addressVM.txtState
+                            )
+                            if let error = addressVM.fieldError["state"] {
+                                Text(error)
+                                    .font(.customfont(.medium, fontSize: 16))
+                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                                    .foregroundColor(Color.red)
+                            }
+                        }
                     }
                     
                     LineTextField(
@@ -82,28 +109,45 @@ struct AddUpdateDeliveryAddressView: View {
                         placeholder: "enter_postal_code".localized,
                         txt: $addressVM.txtPostalCode
                     )
-                    .padding(.bottom, 10)
+                    if let error = addressVM.fieldError["postal"] {
+                        Text(error)
+                            .font(.customfont(.medium, fontSize: 16))
+                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                            .foregroundColor(Color.red)
+                    }
                     
+                    // Submit
                     RoundButton(
                         title: isEdit ? "update_address_button".localized : "add_address_button".localized
                     ) {
                         if isEdit {
                             Task {
                                 await addressVM.updateAddress(addressId: editObj.id)
+                                if addressVM.lastOperationSucceeded {
+                                    dismiss()
+                                }
                             }
                         } else {
                             Task {
                                 await addressVM.addAddress()
+                                if addressVM.lastOperationSucceeded {
+                                    dismiss()
+                                }
                             }
                         }
-
-                        if addressVM.lastOperationSucceeded {
-                            dismiss()
-                        }
+                    }
+                    .padding(.top, 10)
+                    
+                    // API error dưới nút
+                    if !addressVM.formErrorMessage.isEmpty {
+                        Text(addressVM.formErrorMessage)
+                            .font(.caption)
+                            .foregroundColor(.red)
+                            .padding(.top, 4)
                     }
                 }
                 .padding(20)
-                .padding(.top, .topInsets + 46)
+                .padding(.top, .topInsets + 50)
                 .padding(.bottom, .bottomInsets + 60)
                 
             }

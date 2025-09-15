@@ -41,10 +41,7 @@ class MainViewModel: ObservableObject {
         self.txtPassword = "123456"
         self.txtUsername = "TestUser"
         
-        let mockUser = UserModel.mock
-        session.setUser(mockUser)
-        self.userObj = mockUser
-        self.isUserLogin = true
+
 #endif
     }
     
