@@ -115,5 +115,12 @@ struct ContentView: View {
                     }
                 }
         }
+        .onAppear {
+            #if DEBUG
+            let mockUser = UserModel.mock
+            SessionManager.shared.setUser(mockUser)
+            #endif
+        }
+
     }
 }

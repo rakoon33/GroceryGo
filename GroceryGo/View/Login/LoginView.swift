@@ -115,6 +115,9 @@ struct LoginView: View {
         .background(.systemBackground)
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
+        .onAppear {
+            print("navigate: \(navigationState.path)")
+        }
         
     }
 }

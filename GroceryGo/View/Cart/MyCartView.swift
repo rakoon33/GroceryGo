@@ -70,7 +70,7 @@ struct MyCartView: View {
                                 Spacer()
                                 
                                 Text("$\(cartVM.total, specifier: "%.2f")")
-                                    .font(.customfont(.semibold, fontSize: 12))
+                                    .font(.customfont(.semibold, fontSize: 14))
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 4)
