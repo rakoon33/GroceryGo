@@ -1,8 +1,0 @@
-//
-//  InfoPlist.strings
-//  GroceryGo
-//
-//  Created by Phạm Văn Nam on 25/8/25.
-//
-
-"NSLocationWhenInUseUsageDescription" = "Ứng dụng cần quyền truy cập vị trí để hiển thị cửa hàng gần bạn.";
