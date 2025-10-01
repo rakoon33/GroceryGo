@@ -53,11 +53,9 @@ struct MyCartView: View {
                 
                 Spacer()
                 
-                if(cartVM.listArr.count > 1) {
-                    
-                    
+                if(cartVM.listArr.count > 0) {
                     Button {
-
+                        cartVM.showCheckout = true
                     } label: {
                         ZStack {
                             Text("check_out".localized)
@@ -95,6 +93,9 @@ struct MyCartView: View {
         .task {
             await cartVM.fetchCartList()
         }
+        .sheet(isPresented: $cartVM.showCheckout, content: {
+            CheckoutView()
+        })
     }
 }
 

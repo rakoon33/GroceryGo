@@ -17,6 +17,8 @@ final class CartViewModel: ObservableObject {
     private let loadingState = LoadingManager.shared
     private let popupState = PopupManager.shared
     
+    @Published var showCheckout: Bool = false
+    
     @Published var listArr: [CartItemModel] = []
     @Published var total: Double = 0.0
     @Published var discount: Double = 0.0

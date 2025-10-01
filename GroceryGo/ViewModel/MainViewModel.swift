@@ -31,18 +31,12 @@ class MainViewModel: ObservableObject {
     init(authService: AuthServiceProtocol = AuthService()) {
         self.authService = authService
         
-        if let user = session.user {
-            self.userObj = user
-            self.isUserLogin = true
-        }
-        
 #if DEBUG
         self.txtEmail = "test@gmail.com"
         self.txtPassword = "123456"
         self.txtUsername = "TestUser"
-        
-
 #endif
+        
     }
     
     func login() async {

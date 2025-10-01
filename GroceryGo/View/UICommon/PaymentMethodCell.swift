@@ -1,10 +1,19 @@
+//
+//  PaymentMethodCell.swift
+//  GroceryGo
+//
+//  Created by Phạm Văn Nam on 30/9/25.
+//
+
+import SwiftUI
+
 struct PaymentMethodCell: View {
     let pObj: PaymentModel
     let onRemove: () -> Void
     
     var body: some View {
         HStack(spacing: 15) {
-            Image("payment_methods")
+            Image("a_payment_methods")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 35, height: 35)
@@ -33,4 +42,9 @@ struct PaymentMethodCell: View {
         .cornerRadius(5)
         .shadow(color: Color.black.opacity(0.15), radius: 2)
     }
+}
+
+#Preview {
+    PaymentMethodCell(pObj: PaymentModel(), onRemove: {} )
+        .padding(.horizontal, 20)
 }

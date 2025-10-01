@@ -88,19 +88,16 @@ struct ContentView: View {
                         }
                         
                     }
-                }
-                .onAppear {
-                    navigation.resetNavigation()
-                    
-                    if !hasSeenWelcome {
-                        // Người dùng chưa vào app lần nào → Welcome
-                        navigation.navigate(to: .welcome)
-                    } else if !session.isLoggedIn {
-                        // Chưa login → SignIn
-                        navigation.navigate(to: .signin)
-                    } else {
-                        // Đã login → MainTab
-                        navigation.navigate(to: .mainTab)
+                } 
+                .task {
+                    if navigation.path.isEmpty {
+                        if !hasSeenWelcome {
+                            navigation.navigate(to: .welcome)
+                        } else if !session.isLoggedIn {
+                            navigation.navigate(to: .signin)
+                        } else {
+                            navigation.navigate(to: .mainTab)
+                        }
                     }
                 }
                 .onChange(of: session.isLoggedIn) { newValue in
@@ -114,12 +111,6 @@ struct ContentView: View {
                         navigation.navigate(to: .signin)
                     }
                 }
-        }
-        .onAppear {
-            #if DEBUG
-            let mockUser = UserModel.mock
-            SessionManager.shared.setUser(mockUser)
-            #endif
         }
 
     }

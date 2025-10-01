@@ -17,8 +17,12 @@ extension Date {
         return formatter
     }()
     
-    func displayDate(offsetMinutes: Int = 0) -> String {
+    func displayDate(format: String, offsetMinutes: Int = 0) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = .current
         let adjustedDate = addingTimeInterval(TimeInterval(offsetMinutes * 60))
-        return Date.displayFormatter.string(from: adjustedDate)
+        return formatter.string(from: adjustedDate)
     }
 }

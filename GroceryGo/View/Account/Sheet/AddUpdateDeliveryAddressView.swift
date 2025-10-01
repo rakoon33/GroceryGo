@@ -41,6 +41,7 @@ struct AddUpdateDeliveryAddressView: View {
                         placeholder: "enter_name".localized,
                         txt: $addressVM.txtName
                     )
+                    
                     if let error = addressVM.fieldError["name"] {
                         Text(error)
                             .font(.customfont(.medium, fontSize: 16))

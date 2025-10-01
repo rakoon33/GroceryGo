@@ -4,6 +4,12 @@
     "" : {
 
     },
+    "- $ 0.80" : {
+
+    },
+    "**** **** **** %@" : {
+
+    },
     "%@" : {
 
     },
@@ -50,7 +56,16 @@
     "%lld" : {
 
     },
+    "+ $ 2.00" : {
+
+    },
     "+%@" : {
+
+    },
+    "$ 3.29" : {
+
+    },
+    "$ 4.26" : {
 
     },
     "$%.2f" : {
@@ -123,6 +138,57 @@
         }
       }
     },
+    "add_payment_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Payment"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thêm phương thức thanh toán"
+          }
+        }
+      }
+    },
+    "add_payment_fail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to add payment method"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thêm phương thức thanh toán thất bại"
+          }
+        }
+      }
+    },
+    "add_payment_success" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Payment method added successfully"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thêm phương thức thanh toán thành công"
+          }
+        }
+      }
+    },
     "add_to_basket" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -158,7 +224,6 @@
       }
     },
     "added_to_cart" : {
-      "comment" : "MARK: - POP UP",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -227,7 +292,6 @@
       }
     },
     "address_list_fetch_failed" : {
-      "comment" : "MARK: - AddressViewModel",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -414,6 +478,57 @@
         }
       }
     },
+    "card_month_field" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Month"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tháng"
+          }
+        }
+      }
+    },
+    "card_number_field" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Card Number"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhập số thẻ"
+          }
+        }
+      }
+    },
+    "card_year_field" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Year"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Năm"
+          }
+        }
+      }
+    },
     "cart_empty" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -482,6 +597,9 @@
         }
       }
     },
+    "Checkout" : {
+
+    },
     "city_field" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -515,6 +633,12 @@
           }
         }
       }
+    },
+    "COD" : {
+
+    },
+    "Collection" : {
+
     },
     "continue_button" : {
       "extractionState" : "manual",
@@ -550,6 +674,15 @@
         }
       }
     },
+    "Delivery" : {
+
+    },
+    "Delivery Cost" : {
+
+    },
+    "Delivery Type" : {
+
+    },
     "delivery_address" : {
       "localizations" : {
         "en" : {
@@ -565,6 +698,9 @@
           }
         }
       }
+    },
+    "Discount" : {
+
     },
     "dns_failed" : {
       "extractionState" : "manual",
@@ -584,7 +720,6 @@
       }
     },
     "edit_delivery_address" : {
-      "comment" : "MARK: - Delivery address View",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -631,6 +766,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nhập địa chỉ của bạn"
+          }
+        }
+      }
+    },
+    "enter_card_number" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter card number"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhập số thẻ"
           }
         }
       }
@@ -721,7 +873,6 @@
       }
     },
     "error_invalid_email" : {
-      "comment" : "Login/Sign up Validation",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -789,6 +940,23 @@
         }
       }
     },
+    "expiry_date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expiry Date:"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ngày hết hạn:"
+          }
+        }
+      }
+    },
     "fail_message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -823,8 +991,10 @@
         }
       }
     },
+    "Final total" : {
+
+    },
     "find_products" : {
-      "comment" : "MARK: - ExploreView",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -876,10 +1046,24 @@
       }
     },
     "Hello, %@" : {
-
+      "localizations" : {
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xin chào, %@"
+          }
+        }
+      }
     },
     "Hello, World!" : {
-
+      "localizations" : {
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xin chào, Thế giới!"
+          }
+        }
+      }
     },
     "help" : {
       "localizations" : {
@@ -1085,7 +1269,6 @@
       }
     },
     "login_title" : {
-      "comment" : "MARK: - Login",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1115,6 +1298,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Đăng xuất"
+          }
+        }
+      }
+    },
+    "mm_placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MM"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MM"
           }
         }
       }
@@ -1154,7 +1354,6 @@
       }
     },
     "my_cart_title" : {
-      "comment" : "MARK: - CartView",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1205,7 +1404,6 @@
       }
     },
     "name_required" : {
-      "comment" : "Delivery Address Validation",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1290,6 +1488,23 @@
         }
       }
     },
+    "no_payment_methods" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No payment methods yet."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Không có phương thức thanh toán nào"
+          }
+        }
+      }
+    },
     "not_found" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1358,7 +1573,6 @@
       }
     },
     "ok_button" : {
-      "comment" : "MARK: - Common",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1373,6 +1587,9 @@
           }
         }
       }
+    },
+    "Online" : {
+
     },
     "orders" : {
       "localizations" : {
@@ -1390,6 +1607,12 @@
         }
       }
     },
+    "Payment" : {
+
+    },
+    "Payment Type" : {
+
+    },
     "payment_methods" : {
       "localizations" : {
         "en" : {
@@ -1406,11 +1629,40 @@
         }
       }
     },
-    "popup_error_title" : {
+    "Pick Discount" : {
 
     },
+    "popup_error_title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lỗi"
+          }
+        }
+      }
+    },
     "popup_success_title" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Success"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thành công"
+          }
+        }
+      }
     },
     "postal_code_field" : {
       "extractionState" : "manual",
@@ -1447,7 +1699,6 @@
       }
     },
     "product_detail_favorites" : {
-      "comment" : "MARK: - FavouriteView",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1499,7 +1750,6 @@
       }
     },
     "product_detail_title" : {
-      "comment" : "MARK: - ProductDetailView",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1512,6 +1762,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chi tiết sản phẩm"
+          }
+        }
+      }
+    },
+    "Promo Code" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Promo Code"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mã khuyến mãi"
           }
         }
       }
@@ -1545,6 +1811,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Xóa khỏi giỏ hàng thất bại"
+          }
+        }
+      }
+    },
+    "remove_payment_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove payment metho"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Xoá phương thức thanh toán"
+          }
+        }
+      }
+    },
+    "remove_payment_fail" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove payment method failed"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Xoá phương thức thanh toán thất bại"
+          }
+        }
+      }
+    },
+    "remove_payment_method" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove payment method"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Xoá phương thức thanh toán"
+          }
+        }
+      }
+    },
+    "remove_payment_success" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove payment method successfully"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Xoá phương thức thanh toán thành công"
           }
         }
       }
@@ -1617,6 +1951,9 @@
         }
       }
     },
+    "Select" : {
+
+    },
     "select_language" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1630,6 +1967,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chọn ngôn ngữ"
+          }
+        }
+      }
+    },
+    "select_payment_method" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select payment method"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Chọn phương thức thanh toán"
           }
         }
       }
@@ -1771,7 +2125,6 @@
       }
     },
     "sign_in_title" : {
-      "comment" : "MARK: - SignIn",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -1993,7 +2346,6 @@
       }
     },
     "signup_title" : {
-      "comment" : "MARK: - SignUp",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -2079,7 +2431,6 @@
       }
     },
     "success_message" : {
-      "comment" : "MARK: - Messages",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -2165,7 +2516,6 @@
       }
     },
     "tab_shop" : {
-      "comment" : "MARK: - Maintab",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -2198,6 +2548,9 @@
           }
         }
       }
+    },
+    "Total" : {
+
     },
     "unauthorized" : {
       "extractionState" : "manual",
@@ -2285,7 +2638,6 @@
       }
     },
     "welcome_title" : {
-      "comment" : "MARK: - Welcome",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -2298,6 +2650,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chào mừng\ntới cửa hàng của chúng tôi"
+          }
+        }
+      }
+    },
+    "yyyy_placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YYYY"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YYYY"
           }
         }
       }

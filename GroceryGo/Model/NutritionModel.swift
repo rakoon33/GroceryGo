@@ -21,10 +21,10 @@ struct NutritionModel: Codable, Identifiable, Equatable {
     }
     
     init(id: Int = 0, nutritionName: String = "", nutritionValue: String = "") {
-           self.id = id
-           self.nutritionName = nutritionName
-           self.nutritionValue = nutritionValue
-       }
+        self.id = id
+        self.nutritionName = nutritionName
+        self.nutritionValue = nutritionValue
+    }
     
     static func == (lhs: NutritionModel, rhs: NutritionModel) -> Bool {
         lhs.id == rhs.id
