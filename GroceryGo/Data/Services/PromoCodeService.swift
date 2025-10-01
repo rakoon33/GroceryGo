@@ -5,14 +5,20 @@
 //  Created by Phạm Văn Nam on 24/9/25.
 //
 
-import SwiftUI
+import Foundation
 
-struct PromoCodeService: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
+protocol PromoCodeServiceProtocol {
+    func fetchPromoCodeList() async throws -> [PromoCodeModel]
 }
 
-#Preview {
-    PromoCodeService()
+final class PromoCodeService: PromoCodeServiceProtocol {
+    
+    func fetchPromoCodeList() async throws -> [PromoCodeModel] {
+        try await ServiceCall.post(
+            path: Globs.SV_PROMO_CODE_LIST,
+            parameters: [:],
+            isTokenRequired: true,
+            responseType: [PromoCodeModel].self
+        )
+    }
 }

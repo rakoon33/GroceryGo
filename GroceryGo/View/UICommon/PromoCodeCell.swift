@@ -1,3 +1,12 @@
+//
+//  PromoCodeCell.swift
+//  GroceryGo
+//
+//  Created by Phạm Văn Nam on 24/9/25.
+//
+
+import SwiftUI
+
 struct PromoCodeCell: View {
     let pObj: PromoCodeModel
     let isPicker: Bool
@@ -11,7 +20,7 @@ struct PromoCodeCell: View {
                     .font(.customfont(.bold, fontSize: 14))
                     .foregroundColor(.primaryText)
                     .frame(maxWidth: .infinity, alignment: .leading)
-
+                
                 Text(pObj.code)
                     .font(.customfont(.bold, fontSize: 15))
                     .foregroundColor(.primaryApp)
@@ -20,20 +29,20 @@ struct PromoCodeCell: View {
                     .background(Color.secondaryText.opacity(0.3))
                     .cornerRadius(5)
             }
-
+            
             Text(pObj.description)
                 .font(.customfont(.medium, fontSize: 14))
                 .foregroundColor(.secondaryText)
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
-
+            
             HStack {
-                Text("Expiry Date:")
+                Text("expiry_date".localized)
                     .font(.customfont(.bold, fontSize: 14))
                     .foregroundColor(.primaryText)
                     .padding(.vertical, 8)
-
-                Text(pObj.endDate.displayDate(format: "yyyy-MM-dd hh:mm a"))
+                
+                Text((pObj.endDate?.displayDate(format: "yyyy-MM-dd hh:mm a") ?? ""))
                     .font(.customfont(.bold, fontSize: 12))
                     .foregroundColor(.secondaryText)
                     .padding(.vertical, 8)
