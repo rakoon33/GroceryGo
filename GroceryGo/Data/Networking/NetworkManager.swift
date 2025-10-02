@@ -74,6 +74,7 @@ final class NetworkManager {
         headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
         
         if isTokenRequired {
+            
             let token = await SessionManager.shared.token
             
             guard !token.isEmpty else {

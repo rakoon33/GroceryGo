@@ -17,13 +17,18 @@ final class CartViewModel: ObservableObject {
     private let loadingState = LoadingManager.shared
     private let popupState = PopupManager.shared
     
-    @Published var showCheckout: Bool = false
-    
     @Published var listArr: [CartItemModel] = []
     @Published var total: Double = 0.0
     @Published var discount: Double = 0.0
     @Published var shippingFee: Double = 0.0
     @Published var finalPrice: Double = 0.0
+    
+    @Published var showCheckout: Bool = false
+    @Published var deliveryType: Int = 1
+    @Published var paymentType: Int = 1
+    @Published var deliverObj: AddressModel?
+    @Published var paymentObj: PaymentModel?
+    @Published var promoObj: PromoCodeModel?
     
     init(cartService: CartServiceProtocol = CartService()) {
         self.cartService = cartService

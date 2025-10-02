@@ -31,6 +31,7 @@ enum AppRoute: Hashable {
     
     // grouped by domain
     case account(AccountRoute)
+    
 }
 
 struct ContentView: View {
