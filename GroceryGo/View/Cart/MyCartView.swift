@@ -86,22 +86,6 @@ struct MyCartView: View {
                 
                 }
             }
-            
-            if(cartVM.showCheckout) {
-                Color.black
-                    .opacity(0.3)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        withAnimation {
-                            cartVM.showCheckout = false
-                        }
-                    }
-                
-                
-                CheckoutView(isShow: $cartVM.showCheckout)
-                    .offset(y: cartVM.showCheckout ? 0 : .screenHeight)
-                    .opacity(cartVM.showCheckout ? 1 : 0)
-            }
         }
         .animation(.easeInOut, value: cartVM.showCheckout)
         .navigationTitle("")

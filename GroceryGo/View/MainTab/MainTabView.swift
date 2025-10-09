@@ -19,6 +19,7 @@ struct MainTabView: View {
     
     @EnvironmentObject var tabVM: TabViewModel
     
+    @StateObject var cartVM = CartViewModel.shared
     var body: some View {
         
         ZStack {
@@ -77,7 +78,26 @@ struct MainTabView: View {
                 .cornerRadius(15)
                 .shadow(color: Color.black.opacity(0.15), radius: 3, x: 0, y: -2)
             }
+            .zIndex(0)
             
+            // Overlay Checkout đặt trên cùng để không bị tab bar che
+            if cartVM.showCheckout {
+                Color.black
+                    .opacity(0.3)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        withAnimation {
+                            cartVM.showCheckout = false
+                        }
+                    }
+                    .zIndex(10)
+                
+                CheckoutView(isShow: $cartVM.showCheckout)
+                    .offset(y: cartVM.showCheckout ? 0 : .screenHeight)
+                    .opacity(cartVM.showCheckout ? 1 : 0)
+                    .animation(.easeInOut, value: cartVM.showCheckout)
+                    .zIndex(11)
+            }
             
         }
         .toolbar(.hidden, for: .navigationBar)
