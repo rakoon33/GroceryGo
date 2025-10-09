@@ -17,6 +17,7 @@ struct WelcomeView: View {
             Image("welcom_bg")
                 .resizable()
                 .scaledToFill()
+                .ignoresSafeArea()
                 .frame(width: .screenWidth, height: .screenHeight)
             
             VStack {
@@ -50,6 +51,7 @@ struct WelcomeView: View {
             }
             .padding(.horizontal, 20)
         }
+        .navigationTitle("")
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
     }

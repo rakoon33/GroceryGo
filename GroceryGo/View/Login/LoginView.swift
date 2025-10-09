@@ -14,10 +14,13 @@ struct LoginView: View {
     
     var body: some View {
         ZStack {
+            
             Image("bottom_bg")
                 .resizable()
-                .scaledToFit()
+                .scaledToFill()
+                .ignoresSafeArea()
                 .frame(width: .screenWidth, height: .screenHeight)
+            
             
             
             VStack {
@@ -68,7 +71,7 @@ struct LoginView: View {
                     }
                 }
                 .padding(.bottom, .screenWidth * 0.05)
-
+                
                 
                 
                 HStack {
@@ -112,10 +115,9 @@ struct LoginView: View {
             .padding(.horizontal, 20)
             
         }
-        .background(.systemBackground)
+        .navigationTitle("")
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
-        
     }
 }
 

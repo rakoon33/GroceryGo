@@ -15,11 +15,13 @@ struct SignUpView: View {
     var body: some View {
         ZStack {
             
+          
             Image("bottom_bg")
                 .resizable()
-                .scaledToFit()
+                .scaledToFill()
+                .ignoresSafeArea()
                 .frame(width: .screenWidth, height: .screenHeight)
-            
+   
             ScrollView {
                 VStack {
                     
@@ -138,6 +140,7 @@ struct SignUpView: View {
             .padding(.horizontal, 20)
             
         }
+        .navigationTitle("")
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
         
