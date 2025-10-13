@@ -10,8 +10,8 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject var navigationState: NavigationManager
-    @StateObject var homeVM = HomeViewModel.shared
-    @StateObject var cartVM = CartViewModel.shared
+    @ObservedObject var homeVM = HomeViewModel.shared
+    @ObservedObject var cartVM = CartViewModel.shared
     
     var body: some View {
         
@@ -141,6 +141,11 @@ struct HomeView: View {
             
         }
         .task {
+            if homeVM.offerArr.isEmpty {
+                await homeVM.fetchData()
+            }
+        }
+        .refreshable {
             await homeVM.fetchData()
         }
         .ignoresSafeArea()

@@ -40,14 +40,9 @@ final class ExploreItemViewModel: ObservableObject {
                 listArr = try await categoryService.fetchExploreCategoryItem(catId: cObj.id)
                 AppLogger.info("Fetched \(listArr.count) items for category=\(cObj.name)", category: .network)
             } catch let error as NetworkErrorType {
-                if case .unauthorized = error {
-                    // Đẩy sang SessionManager để logout, không show alert
-                    SessionManager.shared.logout()
-                    AppLogger.error("Unauthorized in fetchExploreItem: \(error.localizedDescription)", category: .network)
-                } else {
-                    popupState.showErrorPopup(error.errorMessage)
-                    AppLogger.error("Unexpected error in fetchExploreItem: \(error.localizedDescription)", category: .network)
-                }
+
+                popupState.showErrorPopup(error.errorMessage)
+
             } catch {
                 popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
                 AppLogger.error("Unexpected error while fetching items: \(error.localizedDescription)", category: .network)

@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AddUpdateDeliveryAddressView: View {
     
-    @StateObject var addressVM = DeliveryAddressViewModel.shared
+    @ObservedObject var addressVM = DeliveryAddressViewModel.shared
     @Environment(\.dismiss) var dismiss
     @State var editObj: AddressModel = AddressModel()
     @Binding var isEdit: Bool

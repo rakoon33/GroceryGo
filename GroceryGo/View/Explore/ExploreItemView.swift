@@ -10,8 +10,8 @@ import SwiftUI
 struct ExploreItemView: View {
 
     @EnvironmentObject var navigationState: NavigationManager
-    @StateObject var itemsVM = ExploreItemViewModel(cObj: CategoryModel())
-    @StateObject var cartVM = CartViewModel.shared
+    @ObservedObject var itemsVM = ExploreItemViewModel(cObj: CategoryModel())
+    @ObservedObject var cartVM = CartViewModel.shared
     var column = [
         GridItem(.flexible(), spacing: 15),
         GridItem(.flexible(), spacing: 15)

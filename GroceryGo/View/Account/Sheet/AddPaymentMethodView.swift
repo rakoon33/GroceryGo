@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AddPaymentMethodView: View {
     
-    @StateObject var payVM = PaymentViewModel.shared
+    @ObservedObject var payVM = PaymentViewModel.shared
     @Environment(\.dismiss) var dismiss
     
     var body: some View {

@@ -37,11 +37,7 @@ final class PromoCodeViewModel: ObservableObject {
             listArr = try await promoCodeService.fetchPromoCodeList()
             AppLogger.info("Fetched \(listArr.count) addresses", category: .ui)
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                SessionManager.shared.logout()
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+            popupState.showErrorPopup(error.errorMessage)
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in fetchAddressList: \(error.localizedDescription)", category: .network)

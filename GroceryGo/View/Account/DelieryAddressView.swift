@@ -10,7 +10,7 @@ import SwiftUI
 struct DelieryAddressView: View {
     
     @EnvironmentObject var navigationState: NavigationManager
-    @StateObject var addressVM = DeliveryAddressViewModel.shared
+    @ObservedObject var addressVM = DeliveryAddressViewModel.shared
     
     @State private var showSheet = false
     @State private var selectedAddress: AddressModel? = nil

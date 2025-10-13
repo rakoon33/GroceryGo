@@ -52,12 +52,9 @@ final class CartViewModel: ObservableObject {
             
             AppLogger.info("Fetched \(listArr.count) cart items", category: .ui)
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                // Đẩy sang SessionManager để logout, không show alert
-                SessionManager.shared.logout()
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+
+            popupState.showErrorPopup(error.errorMessage)
+            
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in fetchCartList: \(error.localizedDescription)", category: .network)
@@ -76,12 +73,9 @@ final class CartViewModel: ObservableObject {
             AppLogger.info("addProductToCart successful", category: .ui)
             
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                // Đẩy sang SessionManager để logout, không show alert
-                SessionManager.shared.logout()
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+
+            popupState.showErrorPopup(error.errorMessage)
+            
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in addProductToCart: \(error.localizedDescription)", category: .network)
@@ -100,12 +94,9 @@ final class CartViewModel: ObservableObject {
             AppLogger.info("updateCartQty successful", category: .ui)
             
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                // Đẩy sang SessionManager để logout, không show alert
-                SessionManager.shared.logout()
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+
+            popupState.showErrorPopup(error.errorMessage)
+            
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in updateCartQty: \(error.localizedDescription)", category: .network)
@@ -123,12 +114,9 @@ final class CartViewModel: ObservableObject {
             popupState.showSuccessPopup("removed_from_cart")
             AppLogger.info("removeFromCart successful", category: .ui)
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                // Đẩy sang SessionManager để logout, không show alert
-                SessionManager.shared.logout()
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+
+            popupState.showErrorPopup(error.errorMessage)
+            
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in removeFromCart: \(error.localizedDescription)", category: .network)

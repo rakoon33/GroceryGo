@@ -10,7 +10,7 @@ import SwiftUI
 struct PaymentMethodsView: View {
     
     @EnvironmentObject var navigationState: NavigationManager
-    @StateObject var payVM = PaymentViewModel.shared
+    @ObservedObject var payVM = PaymentViewModel.shared
     
     @State private var showSheet = false
     

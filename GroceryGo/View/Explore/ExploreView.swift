@@ -11,7 +11,7 @@ struct ExploreView: View {
     
     @EnvironmentObject var navigationState: NavigationManager
     @State var txtSearch: String = ""
-    @StateObject var exploreVM = ExploreViewModel.shared
+    @ObservedObject var exploreVM = ExploreViewModel.shared
     
     var columns = [
         GridItem(.flexible(), spacing: 15),
@@ -58,6 +58,11 @@ struct ExploreView: View {
             
         }
         .task {
+            if exploreVM.listArr.isEmpty {
+                await exploreVM.fetchExploreData()
+            }
+        }
+        .refreshable {
             await exploreVM.fetchExploreData()
         }
         .ignoresSafeArea()

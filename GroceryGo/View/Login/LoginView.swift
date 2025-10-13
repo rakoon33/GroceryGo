@@ -10,7 +10,7 @@ import SwiftUI
 struct LoginView: View {
     
     @EnvironmentObject var navigationState: NavigationManager
-    @StateObject var loginVM = MainViewModel.shared
+    @ObservedObject var loginVM = MainViewModel.shared
     
     var body: some View {
         ZStack {

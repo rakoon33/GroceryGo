@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AccountView: View {
     @EnvironmentObject var navigationState: NavigationManager
-    @StateObject private var session = SessionManager.shared
+    @ObservedObject private var session = SessionManager.shared
     
     var body: some View {
         

@@ -119,10 +119,10 @@ final class NetworkManager {
             if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
                 
                 if http.statusCode == 401 {
-                    // unauthorized, thuong nen refresh_token nêu refresh vân k đc throw unauthorized
+                    await SessionManager.shared.logout()
                     throw NetworkErrorType.unauthorized
-                    
                 }
+
                 
                 var serverMessage = HTTPURLResponse.localizedString(forStatusCode: http.statusCode)
                 

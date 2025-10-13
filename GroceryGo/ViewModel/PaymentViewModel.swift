@@ -112,14 +112,8 @@ final class PaymentViewModel: ObservableObject {
             
             
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                // Đẩy sang SessionManager để logout, không show alert
-                SessionManager.shared.logout()
-                AppLogger.error("Unauthorized in addOrRemoveFavourite: \(error.localizedDescription)", category: .network)
-            } else {
-                lastOperationSucceeded = false
-                popupState.showErrorPopup(error.errorMessage)
-            }
+            lastOperationSucceeded = false
+            popupState.showErrorPopup(error.errorMessage)
         } catch {
             lastOperationSucceeded = false
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)

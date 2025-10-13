@@ -59,11 +59,9 @@ final class DeliveryAddressViewModel: ObservableObject {
             listArr = try await addressService.fetchAddressList()
             AppLogger.info("Fetched \(listArr.count) addresses", category: .ui)
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                SessionManager.shared.logout()
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+
+            popupState.showErrorPopup(error.errorMessage)
+            
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in fetchAddressList: \(error.localizedDescription)", category: .network)
@@ -98,12 +96,9 @@ final class DeliveryAddressViewModel: ObservableObject {
             AppLogger.info("addAddress successful", category: .ui)
             
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                SessionManager.shared.logout()
-            } else {
-                lastOperationSucceeded = false
-                formErrorMessage = error.errorMessage
-            }
+            lastOperationSucceeded = false
+            formErrorMessage = error.errorMessage
+            
         } catch {
             lastOperationSucceeded = false
             formErrorMessage = error.localizedDescription
@@ -136,12 +131,9 @@ final class DeliveryAddressViewModel: ObservableObject {
             AppLogger.info("updateAddress successful", category: .ui)
             
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                SessionManager.shared.logout()
-            } else {
-                lastOperationSucceeded = false
-                formErrorMessage = error.errorMessage
-            }
+            lastOperationSucceeded = false
+            formErrorMessage = error.errorMessage
+            
         } catch {
             lastOperationSucceeded = false
             formErrorMessage = error.localizedDescription
@@ -164,11 +156,9 @@ final class DeliveryAddressViewModel: ObservableObject {
             AppLogger.info("removeAddress successful", category: .ui)
             
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                SessionManager.shared.logout()
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+
+            popupState.showErrorPopup(error.errorMessage)
+            
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in removeAddress: \(error.localizedDescription)", category: .network)

@@ -10,7 +10,7 @@ struct PromoCodeView: View {
     
     @EnvironmentObject var navigationState: NavigationManager
     
-    @StateObject var promoVM = PromoCodeViewModel.shared
+    @ObservedObject var promoVM = PromoCodeViewModel.shared
     @State var isPicker: Bool = false
     var didSelect:( (_ obj: PromoCodeModel) -> () )?
     

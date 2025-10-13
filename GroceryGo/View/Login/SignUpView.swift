@@ -10,7 +10,7 @@ import SwiftUI
 struct SignUpView: View {
     
     @EnvironmentObject var navigationState: NavigationManager
-    @StateObject var mainVM = MainViewModel.shared;
+    @ObservedObject var mainVM = MainViewModel.shared;
     
     var body: some View {
         ZStack {

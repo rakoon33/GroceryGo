@@ -13,7 +13,7 @@ struct CheckoutView: View {
     
     @Binding var isShow: Bool
     
-    @StateObject var cartVM = CartViewModel.shared
+    @ObservedObject var cartVM = CartViewModel.shared
     
     var body: some View {
         VStack {

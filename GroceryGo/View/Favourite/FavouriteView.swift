@@ -11,7 +11,7 @@ import SDWebImageSwiftUI
 struct FavouriteView: View {
     
     @EnvironmentObject var navigationState: NavigationManager
-    @StateObject var favVM = FavouriteViewModel.shared
+    @ObservedObject var favVM = FavouriteViewModel.shared
     var body: some View {
         ZStack {
             
@@ -52,10 +52,14 @@ struct FavouriteView: View {
             }
             
         }
-        .onAppear {
-            Task {
+
+        .task {
+            if favVM.listArr.isEmpty {
                 await favVM.fetchFavouriteList()
             }
+        }
+        .refreshable {
+            await favVM.fetchFavouriteList()
         }
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()

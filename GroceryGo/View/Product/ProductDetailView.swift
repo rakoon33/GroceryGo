@@ -11,9 +11,9 @@ import SDWebImageSwiftUI
 struct ProductDetailView: View {
     
     @EnvironmentObject var navigationState: NavigationManager
-    @StateObject var detailVM: ProductDetailViewModel = ProductDetailViewModel(prodObj: ProductModel())
-    @StateObject var favVM = FavouriteViewModel.shared
-    @StateObject var cartVM = CartViewModel.shared
+    @ObservedObject var detailVM: ProductDetailViewModel = ProductDetailViewModel(prodObj: ProductModel())
+    @ObservedObject var favVM = FavouriteViewModel.shared
+    @ObservedObject var cartVM = CartViewModel.shared
     
     var body: some View {
         ZStack {

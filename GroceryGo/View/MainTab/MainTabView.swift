@@ -24,18 +24,26 @@ struct MainTabView: View {
         
         ZStack {
             
-            switch tabVM.selectedTab {
-            case .shop:
-                HomeView()
-            case .explore:
-                ExploreView()
-            case .cart:
-                MyCartView()
-            case .favorite:
-                FavouriteView()
-            case .account:
-                AccountView() //
-            }
+            // Giữ tất cả tab cùng tồn tại, chỉ ẩn/khóa tương tác tab không được chọn
+            HomeView()
+                .opacity(tabVM.selectedTab == .shop ? 1 : 0)
+                .allowsHitTesting(tabVM.selectedTab == .shop)
+            
+            ExploreView()
+                .opacity(tabVM.selectedTab == .explore ? 1 : 0)
+                .allowsHitTesting(tabVM.selectedTab == .explore)
+            
+            MyCartView()
+                .opacity(tabVM.selectedTab == .cart ? 1 : 0)
+                .allowsHitTesting(tabVM.selectedTab == .cart)
+            
+            FavouriteView()
+                .opacity(tabVM.selectedTab == .favorite ? 1 : 0)
+                .allowsHitTesting(tabVM.selectedTab == .favorite)
+            
+            AccountView()
+                .opacity(tabVM.selectedTab == .account ? 1 : 0)
+                .allowsHitTesting(tabVM.selectedTab == .account)
             
             VStack {
                 
@@ -43,33 +51,25 @@ struct MainTabView: View {
                 
                 HStack {
                     
-                    
                     TabButton(title: "tab_shop", icon: "store_tab", isSelected: tabVM.selectedTab == .shop) {
-                        
                         withAnimation { tabVM.selectedTab = .shop }
-                        
                     }
+                    
                     TabButton(title: "tab_explore", icon: "explore_tab", isSelected: tabVM.selectedTab == .explore) {
-                        
                         withAnimation { tabVM.selectedTab = .explore }
                     }
+                    
                     TabButton(title: "tab_cart", icon: "cart_tab", isSelected: tabVM.selectedTab == .cart) {
-                        
                         withAnimation { tabVM.selectedTab = .cart }
-                        
                     }
+                    
                     TabButton(title: "tab_favorite", icon: "fav_tab", isSelected: tabVM.selectedTab == .favorite) {
-                        
                         withAnimation { tabVM.selectedTab = .favorite }
-                        
                     }
+                    
                     TabButton(title: "tab_account", icon: "account_tab", isSelected: tabVM.selectedTab == .account) {
-                        
                         withAnimation { tabVM.selectedTab = .account }
-                        
                     }
-                    
-                    
                 }
                 .padding(.top, 10)
                 .padding(.bottom, .bottomInsets)

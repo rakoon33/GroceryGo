@@ -42,12 +42,9 @@ final class HomeViewModel: ObservableObject {
             typeArr = data.types
             AppLogger.info("Fetched home data: \(offerArr.count) offers, \(bestArr.count) bests, \(listArr.count) products, \(typeArr.count) types", category: .network)
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                SessionManager.shared.logout()
-                AppLogger.error("Unauthorized in fetchData: \(error.localizedDescription)", category: .network)
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+
+            popupState.showErrorPopup(error.errorMessage)
+
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Home data fetch failed (unexpected error): \(error.localizedDescription)", category: .network)

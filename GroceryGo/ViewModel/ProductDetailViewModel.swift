@@ -66,12 +66,8 @@ final class ProductDetailViewModel: ObservableObject {
             nutritionArr = data.nutritions
             imageArr = data.images
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                SessionManager.shared.logout()
-                AppLogger.error("Unauthorized in fetchProductDetail: \(error.localizedDescription)", category: .network)
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+            popupState.showErrorPopup(error.errorMessage)
+            
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error fetching product detail: \(error as? NetworkErrorType)?.errorMessage)", category: .network)

@@ -56,13 +56,7 @@ final class FavouriteViewModel: ObservableObject {
             popupState.showSuccessPopup("favourite_updated")
 
         } catch let error as NetworkErrorType {
-            if case .unauthorized = error {
-                // Đẩy sang SessionManager để logout, không show alert
-                SessionManager.shared.logout()
-                AppLogger.error("Unauthorized in addOrRemoveFavourite: \(error.localizedDescription)", category: .network)
-            } else {
-                popupState.showErrorPopup(error.errorMessage)
-            }
+            popupState.showErrorPopup(error.errorMessage)
         } catch {
             popupState.showErrorPopup((error as? NetworkErrorType)?.errorMessage ?? error.localizedDescription)
             AppLogger.error("Unexpected error in addOrRemoveFavourite: \(error.localizedDescription)", category: .network)
