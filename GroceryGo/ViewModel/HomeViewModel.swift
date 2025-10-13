@@ -24,9 +24,16 @@ final class HomeViewModel: ObservableObject {
     private let loadingState = LoadingManager.shared
     private let popupState = PopupManager.shared
     
+    private(set) var didLoad: Bool = false
+    
     init(homeService: HomeServiceProtocol = HomeService()) {
         self.homeService = homeService
         AppLogger.info("HomeViewModel initialized", category: .ui)
+    }
+    
+    func loadIfNeeded() async {
+        guard !didLoad else { return }
+        await fetchData()
     }
     
     func fetchData() async {
@@ -36,11 +43,15 @@ final class HomeViewModel: ObservableObject {
         
         do {
             let data = try await homeService.fetchHomeData()
+            if Task.isCancelled { return }
             offerArr = data.offers
             bestArr = data.bests
             listArr = data.list
             typeArr = data.types
+            didLoad = true
             AppLogger.info("Fetched home data: \(offerArr.count) offers, \(bestArr.count) bests, \(listArr.count) products, \(typeArr.count) types", category: .network)
+        } catch is CancellationError {
+            AppLogger.debug("Home fetch cancelled", category: .network)
         } catch let error as NetworkErrorType {
 
             popupState.showErrorPopup(error.errorMessage)
@@ -58,5 +69,6 @@ extension HomeViewModel: Resettable {
         bestArr = []
         listArr = []
         typeArr = []
+        didLoad = false
     }
 }

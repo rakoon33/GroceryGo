@@ -23,9 +23,16 @@ final class ExploreViewModel: ObservableObject {
     private let loadingState = LoadingManager.shared
     private let popupState = PopupManager.shared
     
+    private(set) var didLoad: Bool = false
+    
     init(categoryService: CategoryServiceProtocol = CategoryService()) {
         self.categoryService = categoryService
         AppLogger.info("ExploreViewModel initialized", category: .ui)
+    }
+    
+    func loadIfNeeded() async {
+        guard !didLoad else { return }
+        await fetchExploreData()
     }
     
     func fetchExploreData() async {
@@ -34,8 +41,13 @@ final class ExploreViewModel: ObservableObject {
         defer { loadingState.isLoading = false }
         
         do {
-            listArr = try await categoryService.fetchExploreList()
+            let list = try await categoryService.fetchExploreList()
+            if Task.isCancelled { return }
+            listArr = list
+            didLoad = true
             AppLogger.info("Fetched \(listArr.count) categories", category: .network)
+        } catch is CancellationError {
+            AppLogger.debug("Explore fetch cancelled", category: .network)
         } catch let error as NetworkErrorType {
             popupState.showErrorPopup(error.errorMessage)
         } catch {
@@ -49,5 +61,6 @@ extension ExploreViewModel: Resettable {
     func reset() {
         listArr = []
         txtSearch = ""
+        didLoad = false
     }
 }

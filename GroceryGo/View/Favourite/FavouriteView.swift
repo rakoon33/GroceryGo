@@ -54,9 +54,7 @@ struct FavouriteView: View {
         }
 
         .task {
-            if favVM.listArr.isEmpty {
-                await favVM.fetchFavouriteList()
-            }
+            await favVM.loadIfNeeded()
         }
         .refreshable {
             await favVM.fetchFavouriteList()

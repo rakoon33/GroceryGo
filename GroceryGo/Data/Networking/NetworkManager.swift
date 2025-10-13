@@ -74,15 +74,11 @@ final class NetworkManager {
         headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
         
         if isTokenRequired {
-            
             let token = await SessionManager.shared.token
-            
             guard !token.isEmpty else {
                 throw NetworkErrorType.unauthorized
             }
             request.setValue(token, forHTTPHeaderField: APIHeader.tokenHeader)
-            
-//            request.setValue("Bearer \(token)", forHTTPHeaderField: APIHeader.tokenHeader)
         }
         
         if method != .GET {
@@ -123,7 +119,6 @@ final class NetworkManager {
                     throw NetworkErrorType.unauthorized
                 }
 
-                
                 var serverMessage = HTTPURLResponse.localizedString(forStatusCode: http.statusCode)
                 
                 if let decoded = try? JSONDecoder().decode(APIResponse<EmptyPayload>.self, from: data),
@@ -151,6 +146,13 @@ final class NetworkManager {
             }
             
         } catch let urlErr as URLError {
+            // Special handling for cancellation
+            if urlErr.code == .cancelled {
+                // Log nhẹ, không coi là lỗi mạng
+                AppLogger.debug("Request cancelled: \(path)", category: .network)
+                throw CancellationError()
+            }
+            
             // Log request/response
             logResponse(data: nil, response: nil, error: urlErr)
             
@@ -171,8 +173,6 @@ final class NetworkManager {
                 networkError = .badResponse
             case .resourceUnavailable:
                 networkError = .resourceUnavailable
-            case .cancelled:
-                networkError = .cancelled
             default:
                 networkError = .unknown(code: urlErr.errorCode, message: urlErr.localizedDescription)
             }
@@ -213,9 +213,7 @@ final class NetworkManager {
         headers.forEach { request.setValue($0.value, forHTTPHeaderField: $0.key) }
         
         if isTokenRequired {
-            
             let token = await SessionManager.shared.token
-            
             guard !token.isEmpty else { throw NetworkErrorType.unauthorized }
             request.setValue(token, forHTTPHeaderField: APIHeader.tokenHeader)
         }
@@ -249,6 +247,10 @@ final class NetworkManager {
             return try JSONDecoder().decode(T.self, from: data)
             
         } catch let urlErr as URLError {
+            if urlErr.code == .cancelled {
+                AppLogger.debug("Request (raw) cancelled: \(path)", category: .network)
+                throw CancellationError()
+            }
             logResponse(data: nil, response: nil, error: urlErr)
             throw urlErr
         } catch {

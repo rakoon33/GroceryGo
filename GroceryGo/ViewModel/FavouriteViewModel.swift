@@ -19,9 +19,16 @@ final class FavouriteViewModel: ObservableObject {
     private let loadingState = LoadingManager.shared
     private let popupState = PopupManager.shared
     
+    private(set) var didLoad: Bool = false
+    
     init(favouriteService: FavouriteServiceProtocol = FavouriteService()) {
         self.favouriteService = favouriteService
         AppLogger.info("FavouriteViewModel initialized", category: .ui)
+    }
+    
+    func loadIfNeeded() async {
+        guard !didLoad else { return }
+        await fetchFavouriteList()
     }
     
     func fetchFavouriteList() async {
@@ -31,7 +38,11 @@ final class FavouriteViewModel: ObservableObject {
         
         do {
             listArr = try await favouriteService.fetchFavouriteList()
+            if Task.isCancelled { return }
+            didLoad = true
             AppLogger.info("Fetched \(listArr.count) favourite items", category: .network)
+        } catch is CancellationError {
+            AppLogger.debug("Favourite fetch cancelled", category: .network)
         } catch let error as NetworkErrorType {
             popupState.showErrorPopup(error.errorMessage)
             AppLogger.error("Network error in fetchFavouriteList: \(error.errorMessage)", category: .network)
@@ -48,13 +59,12 @@ final class FavouriteViewModel: ObservableObject {
         
         do {
             try await favouriteService.addOrRemoveFavourite(prodId: prodId)
-            AppLogger.info("Toggled favourite success for prodId=\(prodId)", category: .network)
-            
             await fetchFavouriteList()
-            await HomeViewModel.shared.fetchData()
             
             popupState.showSuccessPopup("favourite_updated")
 
+        } catch is CancellationError {
+            AppLogger.debug("Toggle favourite cancelled", category: .network)
         } catch let error as NetworkErrorType {
             popupState.showErrorPopup(error.errorMessage)
         } catch {
@@ -67,5 +77,6 @@ final class FavouriteViewModel: ObservableObject {
 extension FavouriteViewModel: Resettable {
     func reset() {
         listArr = []
+        didLoad = false
     }
 }

@@ -92,6 +92,9 @@ struct MyCartView: View {
         .toolbar(.hidden, for: .navigationBar)
         .ignoresSafeArea()
         .task {
+            await cartVM.loadIfNeeded()
+        }
+        .refreshable {
             await cartVM.fetchCartList()
         }
     }

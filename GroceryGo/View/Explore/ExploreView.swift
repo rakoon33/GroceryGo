@@ -58,9 +58,7 @@ struct ExploreView: View {
             
         }
         .task {
-            if exploreVM.listArr.isEmpty {
-                await exploreVM.fetchExploreData()
-            }
+            await exploreVM.loadIfNeeded()
         }
         .refreshable {
             await exploreVM.fetchExploreData()

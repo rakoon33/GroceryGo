@@ -141,9 +141,7 @@ struct HomeView: View {
             
         }
         .task {
-            if homeVM.offerArr.isEmpty {
-                await homeVM.fetchData()
-            }
+            await homeVM.loadIfNeeded()
         }
         .refreshable {
             await homeVM.fetchData()

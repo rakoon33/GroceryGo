@@ -30,9 +30,16 @@ final class CartViewModel: ObservableObject {
     @Published var paymentObj: PaymentModel?
     @Published var promoObj: PromoCodeModel?
     
+    private(set) var didLoad: Bool = false
+    
     init(cartService: CartServiceProtocol = CartService()) {
         self.cartService = cartService
         AppLogger.info("CartViewModel initialized", category: .ui)
+    }
+    
+    func loadIfNeeded() async {
+        guard !didLoad else { return }
+        await fetchCartList()
     }
     
     func fetchCartList() async {
@@ -42,6 +49,7 @@ final class CartViewModel: ObservableObject {
         
         do {
             let response = try await cartService.fetchCartList()
+            if Task.isCancelled { return }
             
             // update state
             listArr = response.payload
@@ -49,8 +57,11 @@ final class CartViewModel: ObservableObject {
             discount = response.discountAmount
             shippingFee = response.deliverPriceAmount
             finalPrice = response.userPayPrice
+            didLoad = true
             
             AppLogger.info("Fetched \(listArr.count) cart items", category: .ui)
+        } catch is CancellationError {
+            AppLogger.debug("Cart fetch cancelled", category: .network)
         } catch let error as NetworkErrorType {
 
             popupState.showErrorPopup(error.errorMessage)
@@ -72,6 +83,8 @@ final class CartViewModel: ObservableObject {
             popupState.showSuccessPopup("added_to_cart")
             AppLogger.info("addProductToCart successful", category: .ui)
             
+        } catch is CancellationError {
+            AppLogger.debug("Add to cart cancelled", category: .network)
         } catch let error as NetworkErrorType {
 
             popupState.showErrorPopup(error.errorMessage)
@@ -93,6 +106,8 @@ final class CartViewModel: ObservableObject {
             popupState.showSuccessPopup("cart_updated")
             AppLogger.info("updateCartQty successful", category: .ui)
             
+        } catch is CancellationError {
+            AppLogger.debug("Update cart cancelled", category: .network)
         } catch let error as NetworkErrorType {
 
             popupState.showErrorPopup(error.errorMessage)
@@ -113,6 +128,8 @@ final class CartViewModel: ObservableObject {
             
             popupState.showSuccessPopup("removed_from_cart")
             AppLogger.info("removeFromCart successful", category: .ui)
+        } catch is CancellationError {
+            AppLogger.debug("Remove from cart cancelled", category: .network)
         } catch let error as NetworkErrorType {
 
             popupState.showErrorPopup(error.errorMessage)
@@ -131,5 +148,6 @@ extension CartViewModel: Resettable {
         discount = 0
         shippingFee = 0
         finalPrice = 0
+        didLoad = false
     }
 }
